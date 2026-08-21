@@ -1,132 +1,116 @@
 # CSE276 — Artificial Intelligence Foundations
 
-Course material for **CSE276**, Lovely Professional University, session 2026–27
-(August–February).
-
 > **Important Note:** If you experience access issues, preview errors, or are
 > unable to view any PDF or script directly on GitHub, please download the file
 > to your local machine to access it properly.
 
 ---
 
-## Course at a glance
+## Units and Topics
 
-| | |
-|---|---|
-| **Course code** | CSE276 |
-| **Course title** | Artificial Intelligence Foundations |
-| **L : T : P** | 2 : 0 : 2 |
-| **Credits** | 3 |
-| **Course planner** | 32983 :: Dr. Anurag Tewari |
-| **Weightage** | ATT 5 · CA 25 · MTT 20 · ETT 50 |
-| **Mid Term** | Applicable |
+### Unit I — Foundations of Artificial Intelligence
+- characteristics and types of Artificial Intelligence
+- Artificial Intelligence vs Machine Learning vs Deep Learning vs Data Science
+- Intelligent systems & Artificial Intelligence lifecycle
+- applications of Artificial Intelligence in healthcare, agriculture, finance, education, manufacturing, robotics and smart cities
 
-This is the **foundations** course: it covers how AI reasons and searches
-before any learning from data is introduced. Two thirds of the syllabus is
-artificial intelligence *without* machine learning.
+**Artificial Intelligence Problem Solving**
+- Artificial Intelligence problem formulation and state-space representation
+- problem characteristics, search space and solution space
+- performance measures
+- overview of Artificial Intelligence based problem-solving approaches
 
----
+### Unit II — Problem Solving using Search Techniques
+- Uninformed search (Breadth First Search and Depth First Search)
+- informed search (Best First Search, Hill Climbing and A* Search)
+- heuristic functions
+- comparison and applications of search algorithms
 
-## Course outcomes
-
-Through this course students should be able to:
-
-| CO | Outcome |
-|---|---|
-| **CO1** | Explain the foundations, evolution, characteristics and applications of Artificial Intelligence. |
-| **CO2** | Apply state-space formulation and classical search techniques for solving Artificial Intelligence problems. |
-| **CO3** | Describe knowledge representation, reasoning techniques and intelligent agent models in Artificial Intelligence. |
-| **CO4** | Explain the evolution of Machine Learning, Deep Learning and modern Artificial Intelligence paradigms. |
-| **CO5** | Apply prompt engineering principles and Responsible AI concepts for effective use of Generative AI and Large Language Models. |
-| **CO6** | Describe the Artificial Intelligence development ecosystem, emerging technologies and future trends. |
-
----
-
-## Units
-
-### Unit I — Foundations of AI and AI Problem Solving
-Characteristics and types of Artificial Intelligence · History and evolution of
-the field · AI vs ML vs Deep Learning vs Data Science · Intelligent systems and
-the AI development lifecycle · Applications of AI · AI problem formulation and
-state-space representation · Problem characteristics, search space and solution
-space · Performance measures · Overview of AI-based problem-solving approaches
-
-### Unit II — Search Techniques and Knowledge Representation
-**Problem solving using search:** uninformed search (breadth first, depth
-first) · informed search (best first search, hill climbing, A*) · heuristic
-functions · comparison and applications of search algorithms
-
-**Knowledge representation and reasoning:** knowledge representation ·
-semantic networks and frames · production systems and expert systems ·
-propositional logic and first-order predicate logic · reasoning under
-uncertainty using Bayes' theorem
+**Knowledge Representation and Reasoning**
+- Knowledge representation
+- semantic networks & frames
+- Production systems & expert systems
+- Propositional logic & first-order predicate logic
+- Reasoning under uncertainty using Bayes' theorem
 
 ### Unit III — Intelligent Agents
-Introduction to intelligent agents and agent architecture · The PEAS framework
-— performance measure, environment, actuators, sensors · Simple reflex agents
-and model-based agents · Autonomous intelligent systems and multi-agent
-systems · Human–AI collaboration and applications of intelligent agents
+- Introduction to intelligent agents and agent architecture
+- PEAS Framework: Performance Measure, Environment, Actuators and Sensors
+- Rational agents & agent environments
+- simple reflex agents & model-based agents
+- goal-based agents, utility-based agents & learning agents
+- Autonomous intelligent systems and multi-agent systems
+- cooperation and coordination
+- human-AI collaboration and applications of intelligent agents
 
 ### Unit IV — Evolution of Modern Artificial Intelligence
-Symbolic and statistical Artificial Intelligence · Introduction to Deep
-Learning · Foundation models and modern AI paradigms · Edge AI and Tiny AI
+- Symbolic and statistical Artificial Intelligence
+- Overview of Machine Learning and its types: supervised, unsupervised and reinforcement learning
+- Introduction to Deep Learning
+- Types and applications of Deep Learning
 
-### Unit V — Generative and Responsible Artificial Intelligence
-Generative AI concepts and applications · Large Language Models · Explainable
-Artificial Intelligence · AI governance, ethical and societal implications
+**Foundation Models and Modern Artificial Intelligence Paradigms**
+- Foundation models
+- multimodal Artificial Intelligence
+- Agentic Artificial Intelligence
+- Edge Artificial Intelligence and Tiny Artificial Intelligence
 
-### Unit VI — AI Ecosystem and Future Trends
-The AI development ecosystem and the Python ecosystem · Vector databases (a
-conceptual overview) · Hugging Face · The AI development workflow · Emerging
-technologies and future trends
+### Unit V — Generative Artificial Intelligence
+- Generative Artificial Intelligence concepts and their applications
+- Large Language Models
+- prompt engineering fundamentals and prompt design techniques
+- Retrieval-Augmented Generation (RAG)
+- Hallucination in Large Language Models and their mitigation strategies
 
----
+**Responsible and Explainable Artificial Intelligence**
+- Explainable Artificial Intelligence
+- fairness, bias and transparency
+- Responsible Artificial Intelligence principles: privacy and security
+- Artificial Intelligence governance, ethical and societal implications
 
-## Practicals
-
-| # | Practical | Unit |
-|---|---|---|
-| 1 | Intelligent route planner using classical search — BFS and DFS compared on path quality, states explored and running time | II |
-| 2 | AI-based puzzle solver using heuristic search — hill climbing and A* on the 8-puzzle | II |
-| 3 | Intelligent medical expert system — production rules, forward chaining and an explanation facility | II |
-| 4 | Smart decision support using knowledge representation — semantic networks, frames and logic | II |
-| 5 | Intelligent autonomous agent for a smart environment | III |
-| 6 | Multi-agent simulation | III |
-| 7 | Supervised versus unsupervised learning | IV |
-| 8 | AI assistant built on a Large Language Model | V |
-| 9 | Prompt engineering | V |
-| 10 | Responsible AI and Explainable AI | V |
-| 11 | The modern AI development ecosystem | VI |
-| 12 | Capstone — AI for social good | VI |
-
----
-
-## Reading
-
-**Textbook**
-
-- **T-1** — *Artificial Intelligence: A Modern Approach*, Stuart Russell and
-  Peter Norvig (Pearson)
-
-**Reference book**
-
-- **R-1** — *Artificial Intelligence and Intelligent Systems*, N. P. Padhy
-  (Oxford University Press)
-
-**Relevant websites**
-
-- **RW-1** — [Google Machine Learning Crash Course](https://developers.google.com/machine-learning/crash-course)
-  — AI and ML fundamentals, applications, intelligent systems, the AI lifecycle
-- **RW-2** — [IBM: Expert Systems](https://www.ibm.com/topics/expert-system)
-  — knowledge representation, expert systems, rule-based reasoning
-- **RW-3** — [Agents Guide](https://agentsguide.ai/)
-  — AI agents, agent architectures, autonomous and multi-agent systems
-- **RW-4** — [Hugging Face Learn](https://huggingface.co/learn)
-  — foundation models, transformers, LLMs, multimodal AI
-- **RW-5** — [TensorFlow Learn](https://www.tensorflow.org/learn)
-  — deep learning ecosystem and model development
+### Unit VI — Artificial Intelligence Ecosystem and Future Trends
+- Artificial Intelligence development ecosystem and Python ecosystem
+- TensorFlow and PyTorch
+- Hugging Face
+- Ollama and LangChain
+- vector databases (conceptual overview)
+- Artificial Intelligence development workflow
+- future trends in Artificial Intelligence (Artificial General Intelligence (AGI) and sustainable AI)
 
 ---
 
-*Maintained for teaching use. Question banks and assessment material are
-confidential and are deliberately not included in this repository.*
+## List of Practicals
+
+**Practical 1** — Develop an Intelligent Route Planner using Classical Search Algorithms: Design an AI-based route planning system for emergency response or campus navigation by implementing Breadth First Search (BFS) and Depth First Search (DFS). Compare both algorithms in terms of path quality, explored states and execution time.
+*Implement and compare classical search algorithms (BFS and DFS) for intelligent route planning problems.*
+
+**Practical 2** — Design an AI-Based Puzzle Solver using Heuristic Search: Develop an intelligent solver for problems such as the 8-Puzzle or maze navigation using Hill Climbing and A* Search algorithms. Evaluate how heuristic functions improve search efficiency compared to uninformed search methods.
+*Develop heuristic search-based solutions using Hill Climbing and A\* algorithms for AI problem solving.*
+
+**Practical 3** — Build an Intelligent Medical Expert System: Develop a rule-based expert system to assist in the preliminary diagnosis of common diseases based on symptoms using production rules and logical reasoning. Analyze how expert systems support decision-making in healthcare.
+*Design a rule-based expert system for intelligent decision-making using production rules and logical reasoning.*
+
+**Practical 4** — Develop a Smart Decision Support System using Knowledge Representation: Implement knowledge representation techniques such as semantic networks, frames, propositional logic or predicate logic to model a real-world problem like university admission, loan approval or career guidance. Demonstrate intelligent reasoning using the developed knowledge base.
+*Apply knowledge representation techniques to model and reason about real-world problems.*
+
+**Practical 5** — Design an Intelligent Autonomous Agent for Smart Environments: Develop a simple intelligent agent capable of making decisions in a simulated environment such as a robotic vacuum cleaner, warehouse robot or traffic signal controller. Demonstrate different agent architectures and compare their behaviors.
+*Develop an intelligent autonomous agent capable of making decisions in a simulated environment.*
+
+**Practical 6** — Develop a Multi-Agent Simulation for Collaborative Problem Solving: Implement a multi-agent system where multiple intelligent agents cooperate to accomplish tasks such as warehouse management, disaster response or autonomous traffic management. Analyze communication and coordination among intelligent agents.
+*Implement a multi-agent system demonstrating cooperation and coordination among intelligent agents.*
+
+**Practical 7** — Explore the Evolution of AI through a Comparative Machine Learning Study: Implement simple examples demonstrating supervised and unsupervised learning using publicly available datasets. Compare these approaches conceptually with classical AI methods to understand the evolution of intelligent systems.
+*Compare supervised and unsupervised machine learning approaches to understand the evolution of AI techniques.*
+
+**Practical 8** — Build an AI Assistant using a Large Language Model: Develop a domain-specific AI assistant (such as a Student Assistant, Healthcare Assistant or Travel Guide) using an open-source or publicly available Large Language Model through Ollama or Hugging Face. Design effective prompts to improve response quality.
+*Build a domain-specific AI assistant using a Large Language Model and appropriate prompting techniques.*
+
+**Practical 9** — Enhance AI Responses using Prompt Engineering: Experiment with different prompt engineering strategies to improve the accuracy, reasoning and creativity of responses generated by a Large Language Model. Analyze the impact of prompt design on AI-generated outputs across different application scenarios.
+*Apply prompt engineering techniques to improve the quality and effectiveness of AI-generated responses.*
+
+**Practical 10** — Investigate Responsible AI using Explainability Techniques: Develop an AI application and evaluate its fairness, transparency and interpretability using Explainable AI concepts. Analyze prediction bias and discuss ethical implications in domains such as healthcare, education or finance.
+
+**Practical 11** — Develop an AI Application using the Modern AI Development Ecosystem: Build a simple AI application using tools from the modern AI ecosystem such as TensorFlow, PyTorch, Hugging Face or Ollama. Understand the complete AI development workflow from model selection to inference without focusing on complex model training.
+*Develop an AI application using modern AI development frameworks and deployment tools.*
+
+**Practical 12** — Capstone Mini Project: Artificial Intelligence for Social Good: Design and implement an AI-based solution addressing a real-world societal challenge such as crop disease advisory, waste segregation, fake news detection, smart attendance, disaster response, traffic monitoring or AI-assisted education. Integrate multiple Artificial Intelligence concepts studied throughout the course and evaluate the effectiveness of the solution.
