@@ -1,0 +1,1732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Search &amp; Knowledge — CSE276 Unit II</title>
+<meta name="description" content="Interactive study guide for CSE276 Unit II: uninformed and informed search (BFS, DFS, Best First, Hill Climbing, A*), heuristics and admissibility, knowledge representation, production and expert systems, logic, and Bayes' theorem.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,500;0,600;0,700;1,600&family=Karla:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f4f5f7; --surface:#ffffff; --surface-2:#eceef2; --surface-3:#e2e5eb;
+    --ink:#15181e; --ink-muted:#525a67; --line:#d3d7df;
+    --band:#1f3a68; --band-deep:#16294a; --band-ink:#f2f5fa; --band-ink-muted:#b9c6dc;
+    --search:#1b6ec2; --search-soft:#e2eefb;
+    --know:#0f7a5a; --know-soft:#ddf1e9;
+    --warn:#a6690a; --warn-soft:#fbf0d8;
+    --danger:#b3261e; --danger-soft:#fbe4e2;
+    --logic:#6b3fc4; --logic-soft:#ece5fb;
+    --gold:#c9a227;
+    --mono:'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#14161a; --surface:#1c1f25; --surface-2:#23272f; --surface-3:#2b3039;
+      --ink:#eef1f6; --ink-muted:#a8b1c0; --line:#39404b;
+      --band:#24406e; --band-deep:#1a2e50; --band-ink:#f2f5fa; --band-ink-muted:#a9bad4;
+      --search:#63a8ea; --search-soft:#152941;
+      --know:#4fc79e; --know-soft:#10312a;
+      --warn:#e0a63c; --warn-soft:#332713;
+      --danger:#f07068; --danger-soft:#3a1d1b;
+      --logic:#b39bf0; --logic-soft:#251d3c;
+      --gold:#d8b84a;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#14161a; --surface:#1c1f25; --surface-2:#23272f; --surface-3:#2b3039;
+    --ink:#eef1f6; --ink-muted:#a8b1c0; --line:#39404b;
+    --band:#24406e; --band-deep:#1a2e50; --band-ink:#f2f5fa; --band-ink-muted:#a9bad4;
+    --search:#63a8ea; --search-soft:#152941;
+    --know:#4fc79e; --know-soft:#10312a;
+    --warn:#e0a63c; --warn-soft:#332713;
+    --danger:#f07068; --danger-soft:#3a1d1b;
+    --logic:#b39bf0; --logic-soft:#251d3c;
+    --gold:#d8b84a;
+  }
+
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink);
+       font-family:'Karla', system-ui, -apple-system, sans-serif; font-size:16px; line-height:1.6;}
+  h1,h2,h3,h4{font-family:'Newsreader', Georgia, serif; margin:0; font-weight:600; text-wrap:balance;}
+  p{margin:0;}
+  img{max-width:100%;}
+  code,.mono{font-family:var(--mono);}
+  strong{color:var(--ink); font-weight:700;}
+  a{color:var(--search);}
+
+  .page{max-width:1180px; margin:0 auto; padding-inline:18px; padding-block:26px 70px;
+        display:flex; flex-direction:column; gap:16px;}
+
+  /* ---------- hero ---------- */
+  .hero{background:var(--band); color:var(--band-ink); border-radius:16px; padding:34px 34px 30px;
+        display:flex; flex-direction:column; gap:12px;}
+  .eyebrow{font-family:var(--mono); font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--band-ink-muted);}
+  .hero h1{font-size:clamp(30px,5vw,46px); font-style:italic; color:var(--band-ink); line-height:1.1;}
+  .hero p{color:var(--band-ink-muted); font-size:16.5px; max-width:74ch;}
+  .halves{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:8px;}
+  .half{background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.16); border-radius:11px; padding:14px 16px;}
+  .half h4{color:var(--band-ink); font-size:16px; margin-bottom:5px;}
+  .half ul{margin:0; padding-left:17px; color:var(--band-ink-muted); font-size:13.5px; line-height:1.55;}
+
+  /* ---------- nav ---------- */
+  nav.toc{position:sticky; top:0; z-index:40; background:var(--bg); padding:9px 0 8px; border-bottom:1px solid var(--line);
+          display:flex; gap:7px; overflow-x:auto; scrollbar-width:thin;}
+  nav.toc a{flex:none; text-decoration:none; font-size:12.5px; font-weight:600; color:var(--ink-muted);
+            padding:5px 11px; border:1px solid var(--line); border-radius:99px; background:var(--surface); white-space:nowrap;}
+  nav.toc a:hover{color:var(--ink); border-color:var(--ink-muted);}
+  nav.toc a.on{background:var(--band); border-color:var(--band); color:var(--band-ink);}
+
+  /* ---------- section bands ---------- */
+  .band{background:var(--band); border-radius:13px; padding:15px 22px; display:flex; align-items:baseline;
+        justify-content:space-between; gap:14px; flex-wrap:wrap; scroll-margin-top:60px;}
+  .band h2{font-style:italic; font-size:25px; color:var(--band-ink);}
+  .band p{font-size:13.5px; color:var(--band-ink-muted); max-width:66ch;}
+  .part{display:flex; align-items:center; gap:12px; margin-top:16px;}
+  .part span{font-family:var(--mono); font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-muted); white-space:nowrap;}
+  .part i{flex:1; height:1px; background:var(--line);}
+
+  /* ---------- cards ---------- */
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:18px 20px;
+        display:flex; flex-direction:column; gap:11px; min-width:0;}
+  .card.top{border-top:4px solid var(--accent,var(--ink-muted));}
+  .card h3{font-size:18px;}
+  .card h3 small{font-family:'Karla',sans-serif; font-weight:500; font-size:12px; color:var(--ink-muted); margin-left:6px;}
+  .card p,.card li{font-size:14.5px; color:var(--ink-muted);}
+  .card ul,.card ol{margin:0; padding-left:19px; display:flex; flex-direction:column; gap:5px;}
+  .a-search{--accent:var(--search); --soft:var(--search-soft); --acc-ink:var(--search);}
+  .a-know{--accent:var(--know); --soft:var(--know-soft); --acc-ink:var(--know);}
+  .a-warn{--accent:var(--warn); --soft:var(--warn-soft); --acc-ink:var(--warn);}
+  .a-danger{--accent:var(--danger); --soft:var(--danger-soft); --acc-ink:var(--danger);}
+  .a-logic{--accent:var(--logic); --soft:var(--logic-soft); --acc-ink:var(--logic);}
+  .card.top h3{color:var(--acc-ink,var(--ink));}
+
+  .note{border-radius:9px; padding:11px 13px; font-size:13.5px; line-height:1.55; background:var(--surface-2); color:var(--ink-muted);}
+  .note.tint{background:var(--soft,var(--surface-2)); color:var(--acc-ink,var(--ink-muted));}
+  .note.tint strong{color:inherit;}
+  .note b.lab{font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; display:block; margin-bottom:3px;}
+
+  .def{background:var(--surface-2); border-radius:8px; padding:10px 13px; font-family:var(--mono);
+       font-size:13px; color:var(--ink); line-height:1.65; overflow-x:auto;}
+  .def em{color:var(--ink-muted); font-style:normal;}
+
+  .grid2{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px;}
+  .grid3{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px;}
+  .lab{display:grid; grid-template-columns:minmax(0,0.92fr) minmax(0,1.08fr); gap:14px; align-items:start;}
+  .lab.flip{grid-template-columns:minmax(0,1.08fr) minmax(0,0.92fr);}
+
+  /* ---------- tables ---------- */
+  .tablewrap{overflow-x:auto;}
+  table{width:100%; border-collapse:collapse; font-size:13.5px; min-width:640px;}
+  th,td{text-align:left; padding:9px 12px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.5;}
+  th{font-family:var(--mono); font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-muted); font-weight:600;}
+  td:first-child{font-weight:600; color:var(--ink);}
+  td{color:var(--ink-muted);}
+  tr:last-child td{border-bottom:none;}
+  td.good{color:var(--know); font-weight:600;}
+  td.bad{color:var(--danger); font-weight:600;}
+
+  /* ---------- controls ---------- */
+  .row{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
+  .btn{appearance:none; font:inherit; font-weight:600; font-size:13px; padding:7px 13px; border-radius:7px;
+       cursor:pointer; border:1px solid var(--line); background:var(--surface-2); color:var(--ink);}
+  .btn:hover{border-color:var(--ink-muted);}
+  .btn.primary{background:var(--band); border-color:var(--band); color:var(--band-ink);}
+  .btn:disabled{opacity:.45; cursor:not-allowed;}
+  .seg{display:flex; border:1px solid var(--line); border-radius:8px; overflow:hidden; background:var(--surface-2); flex-wrap:wrap;}
+  .seg button{appearance:none; border:none; background:transparent; color:var(--ink-muted); font:inherit;
+              font-weight:600; font-size:12.5px; padding:7px 12px; cursor:pointer; border-right:1px solid var(--line); flex:1 1 auto;}
+  .seg button:last-child{border-right:none;}
+  .seg button[aria-pressed="true"]{background:var(--band); color:var(--band-ink);}
+  .field{display:flex; flex-direction:column; gap:3px; min-width:150px; flex:1;}
+  .field label{font-size:12px; font-weight:600; color:var(--ink-muted); display:flex; justify-content:space-between; gap:8px;}
+  .field label b{font-family:var(--mono); color:var(--ink); font-variant-numeric:tabular-nums;}
+  input[type=range]{width:100%; accent-color:var(--band); height:20px; margin:0;}
+  select{font:inherit; font-size:13px; padding:6px 8px; width:100%; color:var(--ink);
+         background:var(--surface); border:1px solid var(--line); border-radius:6px;}
+  button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--search); outline-offset:2px;}
+
+  .stats{display:flex; flex-wrap:wrap; gap:6px 16px; font-family:var(--mono); font-size:12px;
+         color:var(--ink-muted); font-variant-numeric:tabular-nums;}
+  .stats b{color:var(--ink);}
+
+  /* ---------- puzzle ---------- */
+  .puz{display:grid; grid-template-columns:repeat(3,minmax(0,46px)); gap:4px;}
+  .puz div{aspect-ratio:1; display:flex; align-items:center; justify-content:center; border-radius:6px;
+           font-family:var(--mono); font-weight:600; font-size:17px; background:var(--surface-3); color:var(--ink);}
+  .puz div.blank{background:transparent; border:1px dashed var(--line); color:transparent;}
+  .puz div.ok{background:var(--know-soft); color:var(--know);}
+  .boards{display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start;}
+  .boardbox{display:flex; flex-direction:column; gap:6px; align-items:center;}
+  .boardbox span{font-family:var(--mono); font-size:11px; color:var(--ink-muted); letter-spacing:.06em; text-transform:uppercase;}
+
+  /* ---------- tree / frontier ---------- */
+  canvas{width:100%; display:block; background:var(--surface-2); border:1px solid var(--line); border-radius:10px;}
+  .queue{display:flex; gap:5px; flex-wrap:wrap; min-height:32px; align-items:center;}
+  .chip{font-family:var(--mono); font-size:12px; font-weight:600; padding:4px 9px; border-radius:6px;
+        background:var(--surface-3); color:var(--ink); border:1px solid var(--line);}
+  .chip.next{background:var(--search); color:#fff; border-color:var(--search);}
+  .chip.done{opacity:.45;}
+  .log{border:1px solid var(--line); border-radius:8px; max-height:190px; overflow-y:auto; background:var(--surface-2); font-size:13px;}
+  .logline{display:grid; grid-template-columns:26px 1fr; gap:8px; padding:6px 10px; border-bottom:1px solid var(--line); color:var(--ink-muted); line-height:1.45;}
+  .logline:last-child{border-bottom:none;}
+  .logline .k{font-family:var(--mono); font-size:11px;}
+  .logline.now{background:var(--surface); color:var(--ink);}
+  .logline.empty{font-style:italic;}
+
+  /* ---------- bayes ---------- */
+  .dots{display:grid; grid-template-columns:repeat(40,1fr); gap:2px;}
+  .dots i{aspect-ratio:1; border-radius:2px; background:var(--surface-3);}
+  .dots i.tp{background:var(--danger);} .dots i.fp{background:var(--warn);}
+  .dots i.fn{background:var(--logic);}
+  .legend{display:flex; gap:6px 15px; flex-wrap:wrap; font-size:12px; color:var(--ink-muted); align-items:center;}
+  .legend span{display:inline-flex; align-items:center; gap:5px;}
+  .legend i{width:11px; height:11px; border-radius:3px; display:inline-block;}
+  .big{font-family:var(--mono); font-size:30px; font-weight:600; color:var(--ink); line-height:1.1;}
+
+  /* ---------- quiz ---------- */
+  .quiz{display:flex; flex-direction:column; gap:9px;}
+  .qopt{text-align:left; width:100%; font:inherit; font-size:13.5px; padding:9px 12px; border-radius:8px;
+        border:1px solid var(--line); background:var(--surface-2); color:var(--ink); cursor:pointer;}
+  .qopt:hover{border-color:var(--ink-muted);}
+  .qopt.right{background:var(--know-soft); border-color:var(--know); color:var(--know); font-weight:600;}
+  .qopt.wrong{background:var(--danger-soft); border-color:var(--danger); color:var(--danger);}
+  .qexp{font-size:13px; color:var(--ink-muted); background:var(--surface-2); border-radius:8px; padding:10px 12px;}
+
+  /* ---------- misc ---------- */
+  .steps{display:flex; flex-direction:column; gap:7px;}
+  .step{display:flex; gap:9px; align-items:flex-start;}
+  .step .n{flex:none; width:21px; height:21px; border-radius:50%; background:var(--accent,var(--band)); color:#fff;
+           font-family:var(--mono); font-weight:600; font-size:11px; display:flex; align-items:center; justify-content:center; margin-top:2px;}
+  .step p{font-size:14px;}
+  .kv{display:grid; grid-template-columns:auto 1fr; gap:4px 12px; font-size:13.5px; color:var(--ink-muted);}
+  .kv b{font-family:var(--mono); font-size:12px; color:var(--ink); white-space:nowrap;}
+  .foot{background:var(--band-deep); border-radius:14px; padding:20px 24px; text-align:center; color:var(--band-ink-muted); font-size:14.5px;}
+  .foot b{color:var(--band-ink); font-family:'Newsreader',serif; font-style:italic; font-size:17px; font-weight:600;}
+  .tag{font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:#fff;
+       background:var(--accent,var(--band)); padding:2px 7px; border-radius:5px; align-self:flex-start;}
+  .theme{position:fixed; right:14px; bottom:14px; z-index:50; border-radius:99px; padding:8px 14px;
+         border:1px solid var(--line); background:var(--surface); color:var(--ink); font:inherit; font-size:12.5px; font-weight:600; cursor:pointer; box-shadow:0 3px 14px rgba(0,0,0,.14);}
+
+  @media (max-width:900px){
+    .lab,.lab.flip,.grid3,.halves{grid-template-columns:1fr;}
+    .hero{padding:24px 20px;}
+  }
+  @media (max-width:640px){
+    .grid2{grid-template-columns:1fr;}
+    body{font-size:15px;}
+    .dots{grid-template-columns:repeat(25,1fr);}
+  }
+  @media (prefers-reduced-motion: reduce){*{transition:none!important; animation:none!important;}}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ============================ HERO ============================ -->
+  <header class="hero">
+    <span class="eyebrow">CSE276 · Artificial Intelligence Foundations · Unit II</span>
+    <h1>Search &amp; Knowledge</h1>
+    <p>How a machine finds a path it was never shown — and how it stores what it knows so it can reason
+       about it instead of searching at all. Everything in this unit runs on the five-component problem
+       definition you built in Unit I.</p>
+    <div class="halves">
+      <div class="half">
+        <h4>Part A · Problem Solving using Search</h4>
+        <ul>
+          <li>Uninformed search: Breadth First and Depth First</li>
+          <li>Informed search: Best First, Hill Climbing and A*</li>
+          <li>Heuristic functions — and what makes one admissible</li>
+          <li>Comparison and applications of the search algorithms</li>
+        </ul>
+      </div>
+      <div class="half">
+        <h4>Part B · Knowledge Representation &amp; Reasoning</h4>
+        <ul>
+          <li>Semantic networks and frames</li>
+          <li>Production systems and expert systems</li>
+          <li>Propositional logic and first-order predicate logic</li>
+          <li>Reasoning under uncertainty with Bayes' theorem</li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <nav class="toc" id="toc">
+    <a href="#s1">1 · Uninformed</a>
+    <a href="#s2">2 · BFS vs DFS</a>
+    <a href="#s3">3 · The BFS condition</a>
+    <a href="#s4">4 · g, h and f</a>
+    <a href="#s5">5 · Three strategies</a>
+    <a href="#s6">6 · Hill-climbing traps</a>
+    <a href="#s7">7 · 8-Puzzle lab</a>
+    <a href="#s8">8 · Comparison</a>
+    <a href="#s9">9 · Why knowledge</a>
+    <a href="#s10">10 · Networks &amp; frames</a>
+    <a href="#s11">11 · Production systems</a>
+    <a href="#s12">12 · Logic</a>
+    <a href="#s13">13 · Bayes</a>
+    <a href="#s14">14 · Recap</a>
+    <a href="#s15">15 · Quick check</a>
+  </nav>
+
+  <div class="part"><span>Part A — Problem Solving using Search</span><i></i></div>
+
+  <!-- ============================ 1. UNINFORMED ============================ -->
+  <section class="band" id="s1">
+    <h2>1 · What "uninformed" actually means</h2>
+    <p>The algorithm knows the rules of the world but has no idea which direction the goal lies in.</p>
+  </section>
+
+  <div class="grid3">
+    <div class="card top a-search">
+      <h3>The input every search takes</h3>
+      <p>A search algorithm consumes exactly the five-component problem definition from Unit I. That is why
+         formulation came first — the algorithm is written once and works on <em>any</em> problem you can state this way.</p>
+      <div class="def">
+        initial state S₀<br>
+        actions A(s)<br>
+        transition model Result(s, a)<br>
+        goal test — a <em>predicate</em>, not a state<br>
+        path cost c(s, a, s′)
+      </div>
+      <p>A <strong>solution</strong> is a path from S₀ to a goal state. An <strong>optimal solution</strong> is the
+         cheapest such path.</p>
+    </div>
+
+    <div class="card top a-search">
+      <h3>The frontier</h3>
+      <p>Search keeps one list: the states it has generated but not yet expanded. This is the
+         <strong>frontier</strong> (or "open list"). The entire difference between search algorithms is
+         <em>which item you take out of the frontier next</em>.</p>
+      <div class="def">
+        Queue  → take the oldest   → <em>Breadth First</em><br>
+        Stack  → take the newest   → <em>Depth First</em><br>
+        by g(n) → cheapest so far  → <em>Uniform Cost</em><br>
+        by h(n) → looks closest    → <em>Best First</em><br>
+        by g+h  → best total guess → <em>A*</em>
+      </div>
+      <div class="note tint"><b class="lab">Remember this</b>One line of code — which end of the list you pop from —
+        changes completeness, optimality and memory.</div>
+    </div>
+
+    <div class="card top a-search">
+      <h3>What it may and may not use</h3>
+      <ul>
+        <li><strong>May use:</strong> the problem definition only — states, legal actions, the transition
+            model, the goal test, step costs.</li>
+        <li><strong>May not use:</strong> any estimate of how far the goal still is. That estimate is a
+            <strong>heuristic</strong>, and using one makes the search <em>informed</em>.</li>
+      </ul>
+      <p>The consequence is that uninformed search must explore systematically, and systematic exploration
+         becomes expensive extremely fast — <span class="mono">b<sup>d</sup></span> states at depth d.</p>
+      <div class="note"><b class="lab">Also called</b>Blind search.</div>
+    </div>
+  </div>
+
+  <!-- ============================ 2. BFS vs DFS ============================ -->
+  <section class="band" id="s2">
+    <h2>2 · Breadth First vs Depth First</h2>
+    <p>Same problem, same code, one difference: a queue or a stack. Step through both and watch the frontier.</p>
+  </section>
+
+  <div class="lab">
+    <div class="card top a-search">
+      <h3>Drive the search</h3>
+      <p>The tree below is a search tree with branching factor <span class="mono">b = 2</span>. The goal is the
+         shaded node. Press <strong>Step</strong> and watch which node is expanded next and what the frontier does.</p>
+      <div class="seg" id="segTree">
+        <button aria-pressed="true" data-m="bfs">Breadth First (queue)</button>
+        <button aria-pressed="false" data-m="dfs">Depth First (stack)</button>
+      </div>
+      <div class="row">
+        <button class="btn primary" id="treePlay">▶ Play</button>
+        <button class="btn" id="treeStep">Step</button>
+        <button class="btn" id="treeReset">Reset</button>
+      </div>
+      <div>
+        <p style="font-weight:600; color:var(--ink); font-size:13px; margin-bottom:5px;">Frontier
+           <span class="mono" id="frontierKind" style="color:var(--ink-muted); font-weight:500;">(queue — take from the front)</span></p>
+        <div class="queue" id="frontier"></div>
+      </div>
+      <div class="stats" id="treeStats"></div>
+      <div class="note tint" id="treeVerdict"></div>
+    </div>
+    <div class="card">
+      <canvas id="cvTree" height="330"></canvas>
+      <div class="legend">
+        <span><i style="background:var(--search)"></i>being expanded</span>
+        <span><i style="background:var(--surface-3)"></i>in the frontier</span>
+        <span><i style="background:var(--know)"></i>goal</span>
+        <span><i style="background:var(--line)"></i>not generated yet</span>
+      </div>
+      <div class="log" id="treeLog"></div>
+    </div>
+  </div>
+
+  <div class="card top a-search">
+    <h3>The comparison you are examined on</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th></th><th>Breadth First Search</th><th>Depth First Search</th></tr></thead>
+        <tbody>
+          <tr><td>Frontier structure</td><td>Queue — first in, first out</td><td>Stack — last in, first out</td></tr>
+          <tr><td>Explores</td><td>All nodes at depth d before any at depth d+1</td><td>One branch as deep as possible, then backtracks</td></tr>
+          <tr><td>Complete?</td><td class="good">Yes, when the branching factor is finite</td><td class="bad">No — it can descend an infinite branch forever</td></tr>
+          <tr><td>Optimal?</td><td>Yes, but <strong>only when every step costs the same</strong></td><td class="bad">No</td></tr>
+          <tr><td>Time complexity</td><td class="mono">O(b<sup>d</sup>)</td><td class="mono">O(b<sup>m</sup>)</td></tr>
+          <tr><td>Space complexity</td><td class="bad mono">O(b<sup>d</sup>) — stores the whole frontier</td><td class="good mono">O(b·m) — one branch only</td></tr>
+          <tr><td>Use it when</td><td>The shallowest solution is wanted and memory allows</td><td>Memory is tight and any solution will do</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note tint"><b class="lab">Why DFS uses so little memory</b>
+      DFS only ever stores the nodes on the current path plus their unexpanded siblings — that is b nodes per
+      level, m levels deep, so <span class="mono">b·m</span>. BFS must hold an entire level at once, and the
+      last level has <span class="mono">b<sup>d</sup></span> nodes. <strong>Space is usually what kills you
+      first, not time.</strong></div>
+  </div>
+
+  <!-- ============================ 3. BFS CONDITION ============================ -->
+  <section class="band" id="s3">
+    <h2>3 · "BFS is optimal" — the clause students forget</h2>
+    <p>BFS minimises the number of <em>edges</em>, not the cost. On a weighted map those are different things.</p>
+  </section>
+
+  <div class="grid2">
+    <div class="card top a-danger">
+      <h3>Where the claim breaks</h3>
+      <p>BFS has no notion of cost, so it treats every edge as costing 1 and returns the route with the fewest
+         hops. On a road network the route with the fewest junctions is frequently not the shortest in kilometres.</p>
+      <div class="def">
+Gate ──300── Library ──200── Canteen        2 edges, 500 m
+Gate ──450── Block32 ──260── Canteen        2 edges, 710 m
+Gate ────────── 900 ────────── Canteen      <em>1 edge</em>, 900 m  ← BFS picks this
+      </div>
+      <div class="note tint"><b class="lab">Write it precisely</b>
+        “BFS is optimal <strong>when all step costs are equal</strong>.” The clause <em>is</em> the answer.</div>
+    </div>
+    <div class="card top a-search">
+      <h3>The fix: Uniform Cost Search</h3>
+      <p>Expand the frontier node with the lowest <strong>path cost g(n)</strong> rather than the shallowest one.</p>
+      <div class="def">f(n) = g(n) &nbsp; <em>— cost already paid, nothing else</em></div>
+      <ul>
+        <li>Complete and optimal on any graph with non-negative step costs.</li>
+        <li>It reduces to BFS exactly when every step costs the same.</li>
+        <li>It is also what A* becomes when the heuristic is <span class="mono">h(n) = 0</span>.</li>
+      </ul>
+      <div class="note"><b class="lab">Exam-safe summary</b>
+        BFS: complete, optimal if step costs equal, O(b<sup>d</sup>) time <em>and</em> space.
+        DFS: incomplete in infinite spaces, not optimal, O(b·m) space.</div>
+    </div>
+  </div>
+
+  <!-- ============================ 4. g h f ============================ -->
+  <section class="band" id="s4">
+    <h2>4 · The three functions of informed search</h2>
+    <p>Uninformed search uses only g. Best First uses only h. A* uses both. That single sentence organises the whole half-unit.</p>
+  </section>
+
+  <div class="grid3">
+    <div class="card top a-search">
+      <h3>g(n) — the cost already paid</h3>
+      <div class="def">g(n) = actual path cost from the start to n</div>
+      <p>Known <strong>exactly</strong>, because you travelled it. Add up the step costs along the path you took.</p>
+    </div>
+    <div class="card top a-warn">
+      <h3>h(n) — the heuristic estimate</h3>
+      <div class="def">h(n) = <em>estimated</em> cost from n to the goal</div>
+      <p>A guess <strong>you supply</strong> using knowledge of the problem. Straight-line distance for route
+         planning; Manhattan distance for the 8-puzzle. <span class="mono">h(goal) = 0</span>.</p>
+    </div>
+    <div class="card top a-know">
+      <h3>f(n) — the evaluation function</h3>
+      <div class="def">f(n) = g(n) + h(n)</div>
+      <p>Estimated total cost of a path that goes <em>through</em> n. A* always expands the frontier node with
+         the smallest f.</p>
+    </div>
+  </div>
+
+  <div class="card top a-warn">
+    <h3>Admissibility — the condition for A* to be optimal</h3>
+    <div class="def">h(n) &nbsp;≤&nbsp; true cost from n to the goal, &nbsp;<em>for every n</em></div>
+    <p>The heuristic must <strong>never overestimate</strong>. An optimistic heuristic keeps A* optimal; an
+       overestimating one can push the genuinely best path down the queue so it is never expanded — A* still
+       returns a solution, just not necessarily the cheapest one.</p>
+    <div class="grid2">
+      <div class="note tint"><b class="lab">Dominance</b>
+        If h₂ and h₁ are both admissible and <span class="mono">h₂(n) ≥ h₁(n)</span> for every n, then
+        <strong>h₂ dominates h₁</strong>. A heuristic closer to the truth prunes more, so A* with h₂ never
+        expands more nodes than A* with h₁.</div>
+      <div class="note"><b class="lab">Careful</b>
+        Admissible allows <span class="mono">h(n) = true cost</span>. It must simply never go <em>above</em> it.
+        <span class="mono">h(n) = 0</span> is admissible too — and turns A* into Uniform Cost Search.</div>
+    </div>
+  </div>
+
+  <!-- ============================ 5. STRATEGIES ============================ -->
+  <section class="band" id="s5">
+    <h2>5 · Three informed strategies</h2>
+    <p>All three use a heuristic. They differ only in what else they take into account.</p>
+  </section>
+
+  <div class="grid3">
+    <div class="card top a-search">
+      <span class="tag">Strategy 1</span>
+      <h3>Best First Search <small>greedy</small></h3>
+      <div class="def">f(n) = h(n)</div>
+      <ul>
+        <li>Expands whichever node <em>looks</em> closest to the goal.</li>
+        <li>Fast, and often finds a solution quickly.</li>
+        <li><strong>Not optimal</strong> — it ignores the cost already paid.</li>
+        <li>Can be led badly astray by a misleading heuristic.</li>
+      </ul>
+    </div>
+    <div class="card top a-warn">
+      <span class="tag">Strategy 2</span>
+      <h3>Hill Climbing <small>local search</small></h3>
+      <div class="def">move to the neighbour with the best h; keep no frontier</div>
+      <ul>
+        <li>Constant memory — it stores only the state it is standing on.</li>
+        <li>Never looks back, never keeps alternatives.</li>
+        <li>Stops at a <strong>local optimum, plateau or ridge</strong>.</li>
+        <li>Fixes: random restarts, simulated annealing.</li>
+      </ul>
+    </div>
+    <div class="card top a-know">
+      <span class="tag">Strategy 3</span>
+      <h3>A* Search <small>the one to reach for</small></h3>
+      <div class="def">f(n) = g(n) + h(n)</div>
+      <ul>
+        <li><strong>Complete and optimal</strong> when h is admissible.</li>
+        <li><strong>Optimally efficient</strong> — no algorithm with the same heuristic expands fewer nodes.</li>
+        <li>Cost: it stores the frontier, so memory is the limit.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card top a-search">
+    <h3>The trade-off in one line</h3>
+    <div class="kv">
+      <b>A*</b><span>pays memory for a guarantee.</span>
+      <b>Hill Climbing</b><span>pays the guarantee for memory.</span>
+      <b>Best First</b><span>sits between the two — cheap and fast, no promises.</span>
+      <b>h(n) = 0</b><span>collapses A* into Uniform Cost Search.</span>
+    </div>
+  </div>
+
+  <!-- ============================ 6. HILL CLIMBING TRAPS ============================ -->
+  <section class="band" id="s6">
+    <h2>6 · Why Hill Climbing gets stuck</h2>
+    <p>Local optimum, plateau and ridge — the three shapes that stop it, and the two standard escapes.</p>
+  </section>
+
+  <div class="lab flip">
+    <div class="card">
+      <canvas id="cvHill" height="300"></canvas>
+      <div class="stats" id="hillStats"></div>
+      <div class="legend">
+        <span><i style="background:var(--warn)"></i>climber</span>
+        <span><i style="background:var(--danger)"></i>where it stopped</span>
+        <span><i style="background:var(--know)"></i>global optimum</span>
+      </div>
+    </div>
+    <div class="card top a-warn">
+      <h3>Run it yourself</h3>
+      <p>The curve is an objective we want to <strong>maximise</strong>. The climber only ever looks at its two
+         immediate neighbours and steps to a better one.</p>
+      <div class="seg" id="segHill">
+        <button aria-pressed="true" data-m="steep">Steepest ascent</button>
+        <button aria-pressed="false" data-m="restart">Random restarts</button>
+        <button aria-pressed="false" data-m="anneal">Simulated annealing</button>
+      </div>
+      <div class="field">
+        <label for="hillStart">Starting point <b id="hillStartOut">0.12</b></label>
+        <input type="range" id="hillStart" min="0.02" max="0.98" step="0.01" value="0.12">
+      </div>
+      <div class="row">
+        <button class="btn primary" id="hillRun">▶ Climb</button>
+        <button class="btn" id="hillReset">Reset</button>
+      </div>
+      <div class="note tint" id="hillVerdict"></div>
+      <div class="kv">
+        <b>Local optimum</b><span>every neighbour is worse, but you are nowhere near the goal. It stops anyway.</span>
+        <b>Plateau</b><span>a flat region — all neighbours are equal, so there is no signal about which way to go.</span>
+        <b>Ridge</b><span>a narrow rising path where every single-step move goes down, although progress is possible diagonally.</span>
+      </div>
+      <div class="note"><b class="lab">Fix 1 · Random restarts</b>When stuck, start again from a new random state and
+        keep the best result. Cheap, and surprisingly effective.</div>
+      <div class="note"><b class="lab">Fix 2 · Simulated annealing</b>Sometimes accept a <em>worse</em> move, with a
+        probability that decreases over time, so the search can escape a local optimum early on and settle later.</div>
+    </div>
+  </div>
+
+  <!-- ============================ 7. 8-PUZZLE LAB ============================ -->
+  <section class="band" id="s7">
+    <h2>7 · The 8-Puzzle lab</h2>
+    <p>The same board your Practical 2 solves. Run every algorithm on it and read the real numbers.</p>
+  </section>
+
+  <div class="lab">
+    <div class="card top a-search">
+      <h3>Set up the problem</h3>
+      <div class="boards">
+        <div class="boardbox"><span>Start</span><div class="puz" id="puzStart"></div></div>
+        <div class="boardbox"><span>Goal</span><div class="puz" id="puzGoal"></div></div>
+      </div>
+      <div class="field">
+        <label for="puzPick">Starting board</label>
+        <select id="puzPick">
+          <option value="136502478">Easy — 8 moves from the goal (the Practical 2 board)</option>
+          <option value="102453786">Very easy — 3 moves</option>
+          <option value="582173046">Medium — 12 moves</option>
+          <option value="870542163">Hard — 20 moves (the interesting one)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="puzH">Heuristic used by the informed searches</label>
+        <select id="puzH">
+          <option value="man">h₂ — Manhattan distance (better, dominates h₁)</option>
+          <option value="mis">h₁ — misplaced tiles</option>
+          <option value="zero">h = 0 (watch A* collapse into Uniform Cost)</option>
+        </select>
+      </div>
+      <div class="stats" id="puzH1H2"></div>
+      <div class="row">
+        <button class="btn primary" id="puzRun">Run all five searches</button>
+      </div>
+      <div class="note tint"><b class="lab">What to look for</b>
+        <strong>A* always returns the shortest solution; Best First does not</strong> — that is the headline.
+        Greedy search stops at the first goal it reaches, and because it ignores the moves already made, that
+        goal is usually deeper than necessary. Switching h₂ → h₁ makes A* explore <em>more</em> boards, because a
+        weaker admissible heuristic prunes less. Greedy is often the cheapest to run, but not reliably: on some
+        boards a misleading h drags it down a bad branch and it does more work than A*.</div>
+    </div>
+    <div class="card">
+      <div class="tablewrap">
+        <table id="puzTable" style="min-width:470px;">
+          <thead><tr><th>Algorithm</th><th>Uses</th><th>Explored</th><th>Moves</th><th>Optimal?</th></tr></thead>
+          <tbody><tr><td colspan="5" style="color:var(--ink-muted); font-weight:400;">Press <strong>Run</strong> to fill this table.</td></tr></tbody>
+        </table>
+      </div>
+      <div id="puzSolution"></div>
+      <div class="note" id="puzNote"></div>
+    </div>
+  </div>
+
+  <div class="card top a-know">
+    <h3>The textbook figures <small>8-puzzle, a board 18 moves from the goal</small></h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Method</th><th>States explored</th><th>Moves returned</th><th>Reading</th></tr></thead>
+        <tbody>
+          <tr><td>Breadth First (no heuristic)</td><td class="mono">13,001</td><td class="mono">18</td><td>Optimal here, because every step costs 1 — but it looks at everything.</td></tr>
+          <tr><td>Best First with h₂ only</td><td class="mono">72</td><td class="bad mono">26</td><td>Fastest, and the only one that is <strong>wrong</strong>. That is what dropping g buys you.</td></tr>
+          <tr><td>A* with h₁ (misplaced tiles)</td><td class="mono">1,610</td><td class="mono">18</td><td>h₁ gives real guidance, but it is a weak estimate.</td></tr>
+          <tr><td>A* with h₂ (Manhattan)</td><td class="good mono">444</td><td class="mono">18</td><td>Still optimal, roughly a 30-fold saving over BFS. <strong>h₂ dominates h₁.</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note tint">The 15-puzzle has about 10<sup>13</sup> states. Heuristics are not an optimisation there —
+      they are the only reason the problem is solvable at all.</div>
+  </div>
+
+  <!-- ============================ 8. COMPARISON ============================ -->
+  <section class="band" id="s8">
+    <h2>8 · Comparison and applications</h2>
+    <p>One table for revision. * if the branching factor is finite · ** if step costs are equal · *** if the heuristic is admissible.</p>
+  </section>
+
+  <div class="card top a-search">
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Algorithm</th><th>Uses</th><th>Complete</th><th>Optimal</th><th>Space</th><th>Typical application</th></tr></thead>
+        <tbody>
+          <tr><td>Breadth First</td><td class="mono">—</td><td>Yes*</td><td>Yes**</td><td class="mono">O(b<sup>d</sup>)</td><td>Shortest hop count; small state spaces</td></tr>
+          <tr><td>Depth First</td><td class="mono">—</td><td class="bad">No</td><td class="bad">No</td><td class="good mono">O(b·m)</td><td>Memory-limited search; puzzle solving</td></tr>
+          <tr><td>Uniform Cost</td><td class="mono">g(n)</td><td>Yes*</td><td class="good">Yes</td><td class="mono">O(b<sup>d</sup>)</td><td>Weighted routing where costs differ</td></tr>
+          <tr><td>Best First</td><td class="mono">h(n)</td><td class="bad">No</td><td class="bad">No</td><td class="mono">O(b<sup>d</sup>)</td><td>Fast approximate answers</td></tr>
+          <tr><td>Hill Climbing</td><td class="mono">h(n)</td><td class="bad">No</td><td class="bad">No</td><td class="good mono">O(1)</td><td>Optimisation, scheduling, 8-queens</td></tr>
+          <tr><td>A*</td><td class="mono">g(n)+h(n)</td><td>Yes*</td><td class="good">Yes***</td><td class="mono">O(b<sup>d</sup>)</td><td>Route planning, robot path planning, games</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="part"><span>Part B — Knowledge Representation &amp; Reasoning</span><i></i></div>
+
+  <!-- ============================ 9. WHY KNOWLEDGE ============================ -->
+  <section class="band" id="s9">
+    <h2>9 · Why represent knowledge at all?</h2>
+    <p>Search finds a path, but it must explore. Knowledge lets a machine skip the exploring.</p>
+  </section>
+
+  <div class="grid3">
+    <div class="card top a-know">
+      <h3>Knowledge replaces search</h3>
+      <p>If you already know that a bishop stays on one colour, you never search the moves that break the rule.
+         Every fact you encode is a branch you never expand.</p>
+      <div class="note tint"><b class="lab">The historical turn</b>After the first AI winter the field's answer was
+        to stop searching harder and start encoding what experts know.</div>
+    </div>
+    <div class="card top a-know">
+      <h3>What a representation must do</h3>
+      <ul>
+        <li><strong>Expressive enough</strong> to say what you mean.</li>
+        <li><strong>Structured enough</strong> for a machine to reason over.</li>
+        <li>Ideally <strong>explainable</strong> — you can show why a conclusion follows.</li>
+      </ul>
+      <p>Those three pull against each other, which is why several representations exist rather than one.</p>
+    </div>
+    <div class="card top a-know">
+      <h3>The four you must know</h3>
+      <div class="kv">
+        <b>Semantic networks</b><span>concepts as nodes, relations as labelled edges.</span>
+        <b>Frames</b><span>one record of slots and values per concept.</span>
+        <b>Production systems</b><span>IF–THEN rules plus an engine that fires them.</span>
+        <b>Logic</b><span>propositional and first-order predicate logic.</span>
+      </div>
+      <div class="note">They are <strong>not rivals</strong>. Real systems combine them, and each makes different
+        things easy.</div>
+    </div>
+  </div>
+
+  <!-- ============================ 10. NETWORKS & FRAMES ============================ -->
+  <section class="band" id="s10">
+    <h2>10 · Semantic networks and frames</h2>
+    <p>Both give you inheritance. One is built from edges, the other from records.</p>
+  </section>
+
+  <div class="lab">
+    <div class="card top a-know">
+      <h3>Semantic network <small>click a concept</small></h3>
+      <p>Nodes are concepts; labelled directed edges are relationships. The two relations you must name are
+         <span class="mono">is-a</span> (class membership) and <span class="mono">has-a</span> (properties).</p>
+      <p><strong>Inheritance:</strong> a property stated at a general node is inherited by everything below it —
+         state it once, and every descendant gets it.</p>
+      <div class="row" id="netPick"></div>
+      <div class="note tint" id="netOut"></div>
+      <div class="kv">
+        <b>Good for</b><span>taxonomies, class hierarchies, anything where relationships dominate.</span>
+        <b>Weak for</b><span>procedures, exceptions, and quantified statements.</span>
+      </div>
+    </div>
+    <div class="card">
+      <svg viewBox="0 0 460 330" style="width:100%; height:auto;" id="netSvg" aria-label="Semantic network of Animal, Bird, Penguin, Tweety"></svg>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card top a-know">
+      <h3>Frames</h3>
+      <p>A <strong>frame</strong> is a record-like structure holding the properties of a single concept in named
+         <strong>slots</strong>. This is where object-oriented programming came from.</p>
+      <div class="def">
+FRAME: Penguin<br>
+&nbsp;&nbsp;is-a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: Bird<br>
+&nbsp;&nbsp;can-fly&nbsp;&nbsp;: <span style="color:var(--danger)">false</span> &nbsp;<em>← overrides the default</em><br>
+&nbsp;&nbsp;habitat&nbsp;&nbsp;: Antarctica<br>
+&nbsp;&nbsp;colour&nbsp;&nbsp;&nbsp;: black and white<br>
+&nbsp;&nbsp;covering : feathers &nbsp;<em>← inherited from Bird</em>
+      </div>
+      <ul>
+        <li><strong>Defaults:</strong> a slot can carry a default value that a more specific frame overrides.</li>
+        <li><strong>Inheritance:</strong> frames link to parent frames, so unfilled slots fall back.</li>
+        <li><strong>Good for</strong> structured objects with typical values.</li>
+        <li><strong>Weak for</strong> arbitrary relations between objects, and reasoning that is not slot lookup.</li>
+      </ul>
+    </div>
+    <div class="card top a-know">
+      <h3>Network or frame? <small>how to decide in an exam</small></h3>
+      <div class="tablewrap">
+        <table style="min-width:0;">
+          <thead><tr><th></th><th>Semantic network</th><th>Frame</th></tr></thead>
+          <tbody>
+            <tr><td>Built from</td><td>Nodes + labelled edges (a graph)</td><td>Slots + values (a record)</td></tr>
+            <tr><td>Inheritance via</td><td>is-a links</td><td>parent frame pointer</td></tr>
+            <tr><td>Exceptions</td><td>Awkward</td><td class="good">Natural — override the slot</td></tr>
+            <tr><td>Best at</td><td>Relations between many concepts</td><td>Everything known about one concept</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note tint"><b class="lab">Classic exam line</b>
+        “Which representation lets you state <em>every student has a roll number</em> once rather than repeating
+        it for each student?” — a semantic network with inheritance, or first-order logic with ∀. Propositional
+        logic has no quantifiers, so it needs one statement per student.</div>
+    </div>
+  </div>
+
+  <!-- ============================ 11. PRODUCTION SYSTEMS ============================ -->
+  <section class="band" id="s11">
+    <h2>11 · Production systems and expert systems</h2>
+    <p>IF–THEN rules plus an engine that fires them — and the two directions that engine can run in.</p>
+  </section>
+
+  <div class="grid3">
+    <div class="card top a-logic">
+      <h3>A production rule</h3>
+      <div class="def">IF &lt;conditions&gt; THEN &lt;action or conclusion&gt;</div>
+      <p>The conditions are matched against the facts currently known. If they all hold, the rule may fire and
+         its conclusion is added to what is known.</p>
+    </div>
+    <div class="card top a-logic">
+      <h3>The three components</h3>
+      <div class="kv">
+        <b>Knowledge base</b><span>the rules — long-term, written by an expert.</span>
+        <b>Working memory</b><span>the facts known right now — short-term, changes as the system runs.</span>
+        <b>Inference engine</b><span>decides which rule fires next and applies it.</span>
+      </div>
+      <div class="note tint"><b class="lab">Conflict resolution</b>When several rules match at once, the engine must
+        choose one — by specificity, recency, or an explicit priority.</div>
+    </div>
+    <div class="card top a-logic">
+      <h3>Expert systems</h3>
+      <ul>
+        <li><strong>Explanation facility:</strong> because reasoning is a chain of named rules, the system can show
+            <em>why</em> it concluded something. This is why expert systems survive in medicine and law.</li>
+        <li><strong>Limit 1 — brittleness:</strong> outside the rule set, behaviour is undefined.</li>
+        <li><strong>Limit 2 — the knowledge acquisition bottleneck:</strong> every rule must be extracted from a
+            human by hand. Together these two caused the second AI winter.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="lab">
+    <div class="card top a-logic">
+      <h3>Forward vs backward chaining</h3>
+      <p>Same rule base, same facts, two directions. Step through both and watch what the engine does.</p>
+      <div class="def" id="ruleBase"></div>
+      <div class="seg" id="segChain">
+        <button aria-pressed="true" data-m="fwd">Forward chaining <span style="font-weight:400">· data-driven</span></button>
+        <button aria-pressed="false" data-m="bwd">Backward chaining <span style="font-weight:400">· goal-driven</span></button>
+      </div>
+      <div class="row">
+        <button class="btn primary" id="chainStep">Step</button>
+        <button class="btn" id="chainRun">Run to the end</button>
+        <button class="btn" id="chainReset">Reset</button>
+      </div>
+      <div class="note tint" id="chainVerdict"></div>
+    </div>
+    <div class="card">
+      <p style="font-size:13px; font-weight:600; color:var(--ink);" id="chainLabel">Working memory</p>
+      <div class="queue" id="chainMem"></div>
+      <div class="log" id="chainLog"></div>
+      <div class="kv">
+        <b>Forward</b><span>start from the facts, fire every rule whose conditions hold, add conclusions, repeat
+          until nothing new appears. Best when you have data and want to know what follows.</span>
+        <b>Backward</b><span>start from a hypothesis and work backwards, asking what would have to be true. The
+          natural choice for <strong>diagnosis</strong>.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ 12. LOGIC ============================ -->
+  <section class="band" id="s12">
+    <h2>12 · Propositional vs first-order predicate logic</h2>
+    <p>Quantifiers are the whole difference: the ability to say "for all" instead of listing every case.</p>
+  </section>
+
+  <div class="grid2">
+    <div class="card top a-logic">
+      <h3>Side by side</h3>
+      <div class="tablewrap">
+        <table style="min-width:0;">
+          <thead><tr><th></th><th>Propositional logic</th><th>First-order predicate logic</th></tr></thead>
+          <tbody>
+            <tr><td>Basic unit</td><td>A whole statement that is true or false</td><td>Objects, predicates over them, and relations</td></tr>
+            <tr><td>Example</td><td class="mono">RainingToday = True</td><td class="mono">∀x Human(x) → Mortal(x)</td></tr>
+            <tr><td>Generalises?</td><td class="bad">No — state every case separately</td><td class="good">Yes — one rule covers all objects</td></tr>
+            <tr><td>Quantifiers</td><td>None</td><td class="mono">∀ (for all), ∃ (there exists)</td></tr>
+            <tr><td>Expressive power</td><td>Limited — n objects need n statements</td><td>High — one statement covers a domain</td></tr>
+            <tr><td>Decidable?</td><td class="good">Yes — truth tables always terminate</td><td>Semi-decidable — proofs may not terminate</td></tr>
+            <tr><td>Use it for</td><td>Small fixed sets of conditions, circuits, simple rules</td><td>Domains with many objects and general laws</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card top a-logic">
+      <h3>What the quantifiers actually claim</h3>
+      <div class="def">
+∀x Student(x) → HasRollNo(x)<br>
+<em>“every object that is a student has a roll number”</em><br><br>
+∃x Student(x) ∧ Topper(x)<br>
+<em>“at least one student is a topper” — it says nothing about how many</em>
+      </div>
+      <div class="note tint"><b class="lab">The pairing rule</b>
+        ∀ almost always pairs with <strong>→</strong> (implication); ∃ almost always pairs with
+        <strong>∧</strong> (conjunction). Writing <span class="mono">∀x Student(x) ∧ HasRollNo(x)</span> claims
+        <em>everything in the universe is a student</em> — a standard exam trap.</div>
+      <div class="note"><b class="lab">Why FOL costs more</b>
+        Propositional logic is decidable: build the truth table and you always get an answer. FOL is only
+        semi-decidable — if a sentence follows, a proof exists and will eventually be found; if it does not, the
+        search may run forever.</div>
+    </div>
+  </div>
+
+  <!-- ============================ 13. BAYES ============================ -->
+  <section class="band" id="s13">
+    <h2>13 · Reasoning under uncertainty — Bayes' theorem</h2>
+    <p>Logic handles what is certainly true. Bayes handles what is probably true.</p>
+  </section>
+
+  <div class="lab flip">
+    <div class="card">
+      <div class="row" style="align-items:flex-end; justify-content:space-between;">
+        <div>
+          <p style="font-size:12.5px; color:var(--ink-muted);">P(disease | positive test)</p>
+          <p class="big" id="bayesOut">—</p>
+        </div>
+        <div class="stats" id="bayesStats"></div>
+      </div>
+      <div class="dots" id="bayesDots" aria-hidden="true"></div>
+      <div class="legend">
+        <span><i style="background:var(--danger)"></i>has the disease &amp; tests positive</span>
+        <span><i style="background:var(--warn)"></i>healthy but tests positive</span>
+        <span><i style="background:var(--logic)"></i>has the disease, test missed it</span>
+        <span><i style="background:var(--surface-3)"></i>healthy, negative</span>
+      </div>
+      <div class="note tint" id="bayesNote"></div>
+    </div>
+    <div class="card top a-warn">
+      <h3>The theorem</h3>
+      <div class="def">
+P(H | E) &nbsp;=&nbsp; [ P(E | H) · P(H) ] &nbsp;/&nbsp; P(E)<br><br>
+posterior &nbsp;=&nbsp; ( likelihood × prior ) / evidence
+      </div>
+      <div class="kv">
+        <b>P(H)</b><span>the <strong>prior</strong> — how common the hypothesis is before any evidence.</span>
+        <b>P(E|H)</b><span>the <strong>likelihood</strong> — how expected the evidence is if H holds.</span>
+        <b>P(H|E)</b><span>the <strong>posterior</strong> — the updated belief.</span>
+        <b>P(E)</b><span>the <strong>evidence</strong> — total probability of seeing E at all.</span>
+      </div>
+      <div class="def">P(E) = P(E|H)·P(H) + P(E|¬H)·P(¬H) &nbsp;<em>← how you actually compute it</em></div>
+      <p style="font-weight:600; color:var(--ink); font-size:13.5px;">Move the sliders and watch the base rate win.</p>
+      <div class="field"><label for="bPrior">Prior — how common the disease is &nbsp;<b id="bPriorOut">1.0%</b></label>
+        <input type="range" id="bPrior" min="0.1" max="50" step="0.1" value="1"></div>
+      <div class="field"><label for="bSens">Sensitivity — P(+ | disease) <b id="bSensOut">90%</b></label>
+        <input type="range" id="bSens" min="50" max="100" step="1" value="90"></div>
+      <div class="field"><label for="bFpr">False positive rate — P(+ | no disease) <b id="bFprOut">5%</b></label>
+        <input type="range" id="bFpr" min="0" max="40" step="1" value="5"></div>
+      <div class="row"><button class="btn" id="bayesSlide">Load the lecture example</button></div>
+    </div>
+  </div>
+
+  <div class="card top a-warn">
+    <h3>The worked example you must be able to reproduce</h3>
+    <div class="grid2">
+      <div>
+        <div class="steps">
+          <div class="step"><div class="n">1</div><p><strong>Write down what you know.</strong>
+            <span class="mono">P(D)=0.01, P(¬D)=0.99, P(+|D)=0.90, P(+|¬D)=0.05</span></p></div>
+          <div class="step"><div class="n">2</div><p><strong>Numerator.</strong>
+            <span class="mono">P(+|D)·P(D) = 0.90 × 0.01 = 0.0090</span></p></div>
+          <div class="step"><div class="n">3</div><p><strong>The other contribution.</strong>
+            <span class="mono">P(+|¬D)·P(¬D) = 0.05 × 0.99 = 0.0495</span></p></div>
+          <div class="step"><div class="n">4</div><p><strong>Total probability of a positive test.</strong>
+            <span class="mono">P(+) = 0.0090 + 0.0495 = 0.0585</span></p></div>
+          <div class="step"><div class="n">5</div><p><strong>Apply Bayes.</strong>
+            <span class="mono">P(D|+) = 0.0090 / 0.0585 = 0.1538</span></p></div>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:11px;">
+        <div class="note tint"><b class="lab">The answer</b>
+          About <strong>15%</strong> — despite a positive result from a 90%-sensitive test.</div>
+        <div class="note"><b class="lab">Why so low — the base rate fallacy</b>
+          The disease is rare. There are far more healthy people, so 5% of a large healthy group produces more
+          false positives than 90% of a tiny sick group produces true positives. Most people guess around 90%;
+          this is the most common error in probabilistic reasoning, and it is why screening programmes retest
+          before diagnosing.</div>
+        <div class="note"><b class="lab">Where it appears</b>
+          Medical diagnosis, spam filtering, sensor fusion, fault detection — anywhere a system must act on
+          evidence that is suggestive rather than certain.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ 14. RECAP ============================ -->
+  <section class="band" id="s14">
+    <h2>14 · The eight ideas worth remembering</h2>
+    <p>If you revise nothing else the night before, revise these.</p>
+  </section>
+
+  <div class="grid2">
+    <div class="card top a-search">
+      <h3>Part A — search</h3>
+      <div class="steps">
+        <div class="step"><div class="n">1</div><p><strong>Uninformed search knows the rules but not the direction.</strong>
+          BFS and DFS use only the problem definition — no estimate of how far the goal is.</p></div>
+        <div class="step"><div class="n">2</div><p><strong>BFS and DFS differ by one line.</strong>
+          A queue gives breadth-first; a stack gives depth-first. That single choice changes completeness,
+          optimality and memory.</p></div>
+        <div class="step"><div class="n">3</div><p><strong>BFS is optimal only when step costs are equal.</strong>
+          It minimises edges, not cost. Weighted graphs need Uniform Cost Search or A*.</p></div>
+        <div class="step"><div class="n">4</div><p><strong>A heuristic must never overestimate.</strong>
+          Admissibility is the condition for A* to be optimal; an overestimate can lose the best path.</p></div>
+        <div class="step"><div class="n">5</div><p><strong>A* uses f(n) = g(n) + h(n).</strong>
+          Cost already paid plus estimated cost remaining. With h = 0 it becomes Uniform Cost Search.</p></div>
+        <div class="step"><div class="n">6</div><p><strong>Hill Climbing trades the guarantee for memory.</strong>
+          Constant memory, but it stops at local optima, plateaus and ridges. Random restarts and annealing are
+          the standard fixes.</p></div>
+      </div>
+    </div>
+    <div class="card top a-know">
+      <h3>Part B — knowledge</h3>
+      <div class="steps">
+        <div class="step" style="--accent:var(--know)"><div class="n">7</div><p><strong>Knowledge representation
+          was the answer to the first winter.</strong> Semantic networks, frames, production systems and logic all
+          encode what an expert knows so the machine need not search for it.</p></div>
+        <div class="step" style="--accent:var(--know)"><div class="n">8</div><p><strong>Bayes' theorem handles
+          uncertainty.</strong> Posterior = likelihood × prior / evidence. A positive test for a rare disease still
+          leaves the disease unlikely.</p></div>
+      </div>
+      <h3 style="margin-top:6px;">Four pitfalls that cost marks</h3>
+      <div class="kv">
+        <b>1</b><span>Saying “BFS is optimal” without the equal-cost clause.</span>
+        <b>2</b><span>Confusing <em>complete</em> with <em>optimal</em> — they are different properties.</span>
+        <b>3</b><span>Saying an admissible heuristic must <em>under</em>estimate. It must never <em>over</em>estimate;
+          equalling the true cost is allowed.</span>
+        <b>4</b><span>Answering “90%” to the Bayes medical-test question.</span>
+      </div>
+      <div class="note tint"><b class="lab">Next up</b>Unit III — Intelligent Agents: agent architecture, the PEAS
+        framework, agent environments, the five agent types and multi-agent systems.</div>
+    </div>
+  </div>
+
+  <!-- ============================ 15. QUIZ ============================ -->
+  <section class="band" id="s15">
+    <h2>15 · Quick check</h2>
+    <p>Six questions in the style of the unit's Quick Check slides. Pick an answer to see the reasoning.</p>
+  </section>
+
+  <div class="grid2" id="quiz"></div>
+
+  <div class="foot">
+    <b>Two halves, one unit.</b>
+    <span> — Search explores a world you were given; knowledge lets you skip the exploring.
+      BFS and DFS use the rules alone, A* adds a guess that never overestimates, and when the state space is
+      hopeless you stop searching and start encoding what an expert already knows.</span>
+  </div>
+</div>
+
+<button class="theme" id="themeBtn" type="button">◐ Theme</button>
+
+<script>
+(function(){
+  'use strict';
+  const $ = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const redraws = [];
+
+  /* ---------------- theme toggle ---------------- */
+  $('#themeBtn').addEventListener('click', () => {
+    const cur = document.documentElement.getAttribute('data-theme');
+    const dark = cur ? cur === 'dark'
+      : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
+    redraws.forEach(f => f());
+  });
+
+  /* ---------------- sticky nav highlight ---------------- */
+  const links = $$('nav.toc a');
+  const secs = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => {
+      es.forEach(e => {
+        if (e.isIntersecting) {
+          links.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + e.target.id));
+        }
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    secs.forEach(s => io.observe(s));
+  }
+
+  function seg(id, fn) {
+    const el = $('#' + id);
+    el.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+      el.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+      fn(b.dataset.m);
+    }));
+  }
+  function prep(cv, h) {
+    const dpr = window.devicePixelRatio || 1, w = cv.clientWidth || 400;
+    if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) {
+      cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); cv.style.height = h + 'px';
+    }
+    const ctx = cv.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
+    return { ctx, w, h };
+  }
+
+  /* ================= 2. BFS / DFS TREE ================= */
+  (function(){
+    const N = 15;                      // complete binary tree, nodes 0..14
+    const GOAL = 12;
+    const cv = $('#cvTree'), H = 330;
+    let mode = 'bfs', frontier = [0], visited = [], current = null, steps = [], t = -1, timer = null;
+
+    function build() {
+      // pre-compute the whole run so Step/Play just replay it
+      steps = []; const f = [0], seen = [];
+      while (f.length) {
+        const n = mode === 'bfs' ? f.shift() : f.pop();
+        seen.push(n);
+        steps.push({ node: n, frontier: f.slice(), visited: seen.slice(), goal: n === GOAL });
+        if (n === GOAL) break;
+        const kids = [2 * n + 1, 2 * n + 2].filter(k => k < N);
+        if (mode === 'bfs') kids.forEach(k => f.push(k));
+        else kids.slice().reverse().forEach(k => f.push(k));
+      }
+      t = -1; render();
+    }
+    function pos(i, w) {
+      const d = Math.floor(Math.log2(i + 1));
+      const idx = i - (Math.pow(2, d) - 1), count = Math.pow(2, d);
+      return { x: w * (idx + 0.5) / count, y: 42 + d * 84 };
+    }
+    function render() {
+      const { ctx, w } = prep(cv, H);
+      const s = t >= 0 ? steps[t] : { node: null, frontier: [0], visited: [] };
+      const inF = new Set(s.frontier), seen = new Set(s.visited);
+      ctx.strokeStyle = css('--line'); ctx.lineWidth = 1.4;
+      for (let i = 1; i < N; i++) {
+        const p = pos(Math.floor((i - 1) / 2), w), c = pos(i, w);
+        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(c.x, c.y); ctx.stroke();
+      }
+      for (let i = 0; i < N; i++) {
+        const p = pos(i, w);
+        let fill = css('--surface'), stroke = css('--line'), ink = css('--ink-muted');
+        if (seen.has(i)) { fill = css('--surface-3'); ink = css('--ink'); }
+        if (inF.has(i)) { fill = css('--surface-2'); stroke = css('--search'); ink = css('--ink'); }
+        if (i === GOAL) { stroke = css('--know'); ink = css('--know'); }
+        if (i === s.node) { fill = css('--search'); stroke = css('--search'); ink = '#fff'; }
+        ctx.beginPath(); ctx.arc(p.x, p.y, 17, 0, Math.PI * 2);
+        ctx.fillStyle = fill; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = stroke; ctx.stroke();
+        ctx.fillStyle = ink; ctx.font = '600 13px ' + css('--mono'); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(String(i), p.x, p.y);
+      }
+      // frontier chips
+      $('#frontier').innerHTML = s.frontier.length
+        ? s.frontier.map((n, i) => {
+            const isNext = mode === 'bfs' ? i === 0 : i === s.frontier.length - 1;
+            return `<span class="chip${isNext ? ' next' : ''}">${n}</span>`;
+          }).join('')
+        : '<span class="chip done">empty</span>';
+      $('#frontierKind').textContent = mode === 'bfs' ? '(queue — take from the front)' : '(stack — take from the back)';
+      $('#treeStats').innerHTML = `<span>step <b>${t + 1} / ${steps.length}</b></span>
+        <span>expanded <b>${s.visited.length}</b></span>
+        <span>frontier size <b>${s.frontier.length}</b></span>`;
+      // log
+      let html = t < 0
+        ? '<div class="logline empty"><span class="k">—</span><span>Press Step. Each line is one node being expanded.</span></div>'
+        : '';
+      if (t >= 0) for (let i = 0; i <= t; i++) {
+        const st = steps[i];
+        html += `<div class="logline${i === t ? ' now' : ''}"><span class="k">${i + 1}</span><span>` +
+          (st.goal ? `Expand node <b>${st.node}</b> — <strong>goal found</strong>.`
+                   : `Expand node <b>${st.node}</b>, push its children onto the ${mode === 'bfs' ? 'queue' : 'stack'}.`) +
+          `</span></div>`;
+      }
+      const log = $('#treeLog'); log.innerHTML = html; log.scrollTop = log.scrollHeight;
+      const v = $('#treeVerdict');
+      if (t < 0) v.innerHTML = mode === 'bfs'
+        ? '<b class="lab">Breadth First</b>Takes the <strong>oldest</strong> item, so it finishes an entire level before going deeper. It will reach node 12 having expanded every shallower node.'
+        : '<b class="lab">Depth First</b>Takes the <strong>newest</strong> item, so it dives down the left branch first. It reaches the goal after touching far fewer nodes here — but on a different tree it could dive the wrong way forever.';
+      else if (steps[t].goal) v.innerHTML = `<b class="lab">Found</b>${mode === 'bfs' ? 'BFS' : 'DFS'} expanded <strong>${steps[t].visited.length}</strong> nodes to reach the goal. ` +
+        (mode === 'bfs' ? 'It is guaranteed to have found the <strong>shallowest</strong> goal.' : 'There is <strong>no guarantee</strong> this is the shallowest goal — DFS simply returns the first one it falls into.');
+      $('#treeStep').disabled = t >= steps.length - 1;
+    }
+    function step() { if (t < steps.length - 1) { t++; render(); } if (t >= steps.length - 1) stop(); }
+    function stop() { if (timer) { clearInterval(timer); timer = null; } $('#treePlay').textContent = '▶ Play'; }
+    $('#treePlay').addEventListener('click', () => {
+      if (timer) { stop(); return; }
+      if (t >= steps.length - 1) t = -1;
+      timer = setInterval(step, 700); $('#treePlay').textContent = '❚❚ Pause'; step();
+    });
+    $('#treeStep').addEventListener('click', () => { stop(); step(); });
+    $('#treeReset').addEventListener('click', () => { stop(); t = -1; render(); });
+    seg('segTree', m => { stop(); mode = m; build(); });
+    redraws.push(render); build();
+    window.addEventListener('resize', render);
+  })();
+
+  /* ================= 6. HILL CLIMBING ================= */
+  (function(){
+    const cv = $('#cvHill'), H = 300;
+    // landscape: local max ~0.22, plateau 0.42-0.55, ridge, global max ~0.82
+    function f(x) {
+      let y = 0.55 * Math.exp(-Math.pow((x - 0.22) / 0.10, 2))      // local hill
+            + 1.00 * Math.exp(-Math.pow((x - 0.82) / 0.13, 2))      // global hill
+            + 0.42 * Math.exp(-Math.pow((x - 0.49) / 0.12, 2));     // plateau shoulder
+      if (x > 0.42 && x < 0.56) y = 0.42 + 0.001 * Math.sin(x * 40); // near-flat plateau
+      return y;
+    }
+    let mode = 'steep', start = 0.12, trail = [], stopped = null, best = null;
+    const STEP = 0.012;
+
+    function climb(from) {
+      let x = from, path = [x];
+      for (let i = 0; i < 400; i++) {
+        const l = x - STEP, r = x + STEP;
+        const cands = [[l, f(l)], [r, f(r)]].filter(c => c[0] > 0 && c[0] < 1);
+        let bestC = null;
+        cands.forEach(c => { if (c[1] > f(x) + 1e-6 && (!bestC || c[1] > bestC[1])) bestC = c; });
+        if (!bestC) break;
+        x = bestC[0]; path.push(x);
+      }
+      return path;
+    }
+    function anneal(from) {
+      let x = from, path = [x], T = 0.35;
+      for (let i = 0; i < 600; i++) {
+        T *= 0.992;
+        const nx = Math.min(0.99, Math.max(0.01, x + (Math.random() - 0.5) * 0.08));
+        const d = f(nx) - f(x);
+        if (d > 0 || Math.random() < Math.exp(d / Math.max(T, 1e-4))) { x = nx; path.push(x); }
+      }
+      return path;
+    }
+    function run() {
+      if (mode === 'steep') { trail = climb(start); }
+      else if (mode === 'anneal') { trail = anneal(start); }
+      else {
+        let bestPath = null;
+        for (let k = 0; k < 6; k++) {
+          const s = k === 0 ? start : Math.random();
+          const p = climb(s);
+          if (!bestPath || f(p[p.length - 1]) > f(bestPath[bestPath.length - 1])) bestPath = p;
+        }
+        trail = bestPath;
+      }
+      stopped = trail[trail.length - 1];
+      draw();
+    }
+    function draw() {
+      const { ctx, w, h } = prep(cv, H), P = 26;
+      const X = x => P + x * (w - 2 * P), Y = y => h - P - y * (h - 2 * P);
+      ctx.strokeStyle = css('--line'); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(P, h - P); ctx.lineTo(w - P, h - P); ctx.stroke();
+      // curve
+      ctx.beginPath();
+      for (let i = 0; i <= 300; i++) { const x = i / 300; const px = X(x), py = Y(f(x)); i ? ctx.lineTo(px, py) : ctx.moveTo(px, py); }
+      ctx.strokeStyle = css('--ink-muted'); ctx.lineWidth = 2; ctx.stroke();
+      // global optimum
+      let gx = 0, gy = -1; for (let i = 0; i <= 300; i++) { const x = i / 300; if (f(x) > gy) { gy = f(x); gx = x; } }
+      ctx.beginPath(); ctx.arc(X(gx), Y(gy), 6, 0, Math.PI * 2); ctx.fillStyle = css('--know'); ctx.fill();
+      // labels
+      ctx.font = '11px ' + css('--mono'); ctx.fillStyle = css('--ink-muted'); ctx.textAlign = 'center';
+      ctx.fillText('local optimum', X(0.22), Y(f(0.22)) - 12);
+      ctx.fillText('plateau', X(0.49), Y(f(0.49)) - 12);
+      ctx.fillText('global optimum', X(gx), Y(gy) - 14);
+      // trail
+      if (trail.length) {
+        ctx.strokeStyle = css('--warn'); ctx.lineWidth = 2.4; ctx.beginPath();
+        trail.forEach((x, i) => { const px = X(x), py = Y(f(x)); i ? ctx.lineTo(px, py) : ctx.moveTo(px, py); });
+        ctx.stroke();
+        ctx.beginPath(); ctx.arc(X(trail[0]), Y(f(trail[0])), 5, 0, Math.PI * 2);
+        ctx.fillStyle = css('--warn'); ctx.fill();
+      }
+      if (stopped !== null) {
+        ctx.beginPath(); ctx.arc(X(stopped), Y(f(stopped)), 7, 0, Math.PI * 2);
+        ctx.fillStyle = css('--danger'); ctx.fill();
+        ctx.strokeStyle = css('--surface'); ctx.lineWidth = 2; ctx.stroke();
+      }
+      // start marker
+      ctx.beginPath(); ctx.arc(X(start), Y(f(start)), 4, 0, Math.PI * 2);
+      ctx.fillStyle = css('--ink'); ctx.fill();
+
+      const reached = stopped === null ? null : (f(stopped) > gy - 0.02);
+      $('#hillStats').innerHTML = stopped === null
+        ? `<span>start x = <b>${start.toFixed(2)}</b></span><span>h(start) = <b>${f(start).toFixed(3)}</b></span>`
+        : `<span>start <b>${start.toFixed(2)}</b></span><span>stopped at <b>${stopped.toFixed(2)}</b></span>
+           <span>value <b>${f(stopped).toFixed(3)}</b></span><span>best possible <b>${gy.toFixed(3)}</b></span>
+           <span>moves <b>${trail.length - 1}</b></span>`;
+      const v = $('#hillVerdict');
+      if (stopped === null) v.innerHTML = '<b class="lab">Ready</b>Choose a starting point and press Climb.';
+      else if (reached) v.innerHTML = `<b class="lab">Reached the global optimum</b>` + (
+        mode === 'steep' ? 'From this start the greedy path happens to lead all the way up. Try starting at 0.12 to see it fail.'
+        : mode === 'restart' ? 'Random restarts tried several starting points and kept the best — a bad start is unlucky, being unlucky six times in a row is not.'
+        : 'Annealing accepted some worse moves early, which let it cross the dip and settle on the true peak.');
+      else v.innerHTML = `<b class="lab">Stuck</b>The climber stopped at a value of <strong>${f(stopped).toFixed(3)}</strong> when
+        <strong>${gy.toFixed(3)}</strong> was available. Every neighbour was worse (or equal, on the plateau), so it had nowhere to go —
+        this is exactly the <strong>${Math.abs(stopped - 0.49) < 0.09 ? 'plateau' : 'local optimum'}</strong> case.
+        Switch the strategy above and run it again.`;
+    }
+    $('#hillRun').addEventListener('click', run);
+    $('#hillReset').addEventListener('click', () => { trail = []; stopped = null; draw(); });
+    $('#hillStart').addEventListener('input', e => {
+      start = +e.target.value; $('#hillStartOut').textContent = start.toFixed(2);
+      trail = []; stopped = null; draw();
+    });
+    seg('segHill', m => { mode = m; trail = []; stopped = null; draw(); });
+    redraws.push(draw); draw();
+    window.addEventListener('resize', draw);
+  })();
+
+  /* ================= 7. 8-PUZZLE LAB ================= */
+  (function(){
+    const GOAL = '123456780';
+    let START = '136502478', hName = 'man';
+
+    const GPOS = {}; for (let i = 0; i < 9; i++) GPOS[GOAL[i]] = i;
+    const hMis = s => { let c = 0; for (let i = 0; i < 9; i++) if (s[i] !== '0' && s[i] !== GOAL[i]) c++; return c; };
+    const hMan = s => {
+      let t = 0;
+      for (let i = 0; i < 9; i++) {
+        if (s[i] === '0') continue;
+        const g = GPOS[s[i]];
+        t += Math.abs(Math.floor(i / 3) - Math.floor(g / 3)) + Math.abs(i % 3 - g % 3);
+      }
+      return t;
+    };
+    const hZero = () => 0;
+    const heuristics = { man: hMan, mis: hMis, zero: hZero };
+    const hLabel = { man: 'h₂ Manhattan', mis: 'h₁ misplaced', zero: 'h = 0' };
+
+    function moves(s) {
+      const b = s.indexOf('0'), r = Math.floor(b / 3), c = b % 3, out = [];
+      [[-1,0],[1,0],[0,-1],[0,1]].forEach(([dr, dc]) => {
+        const nr = r + dr, nc = c + dc;
+        if (nr < 0 || nr > 2 || nc < 0 || nc > 2) return;
+        const t = nr * 3 + nc, a = s.split('');
+        a[b] = a[t]; a[t] = '0'; out.push(a.join(''));
+      });
+      return out;
+    }
+    const CAP = 200000;
+
+    // --- a small binary heap so the informed searches stay fast ---
+    function Heap() { this.a = []; }
+    Heap.prototype.push = function (item) {            // item = [key, tiebreak, ...]
+      const a = this.a; a.push(item);
+      let i = a.length - 1;
+      while (i > 0) {
+        const p = (i - 1) >> 1;
+        if (a[p][0] < a[i][0] || (a[p][0] === a[i][0] && a[p][1] <= a[i][1])) break;
+        [a[p], a[i]] = [a[i], a[p]]; i = p;
+      }
+    };
+    Heap.prototype.pop = function () {
+      const a = this.a, top = a[0], last = a.pop();
+      if (a.length) {
+        a[0] = last; let i = 0;
+        for (;;) {
+          const l = 2 * i + 1, r = l + 1; let m = i;
+          if (l < a.length && (a[l][0] < a[m][0] || (a[l][0] === a[m][0] && a[l][1] < a[m][1]))) m = l;
+          if (r < a.length && (a[r][0] < a[m][0] || (a[r][0] === a[m][0] && a[r][1] < a[m][1]))) m = r;
+          if (m === i) break;
+          [a[m], a[i]] = [a[i], a[m]]; i = m;
+        }
+      }
+      return top;
+    };
+    Object.defineProperty(Heap.prototype, 'size', { get() { return this.a.length; } });
+
+    function bfs(start) {
+      const q = [start], prev = new Map([[start, null]]); let head = 0, n = 0;
+      while (head < q.length) {
+        const cur = q[head++]; n++;
+        if (cur === GOAL) return { explored: n, path: rebuild(prev, cur) };
+        if (n > CAP) return { explored: n, path: null, capped: true };
+        for (const nx of moves(cur)) if (!prev.has(nx)) { prev.set(nx, cur); q.push(nx); }
+      }
+      return { explored: n, path: null };
+    }
+    function dfs(start) {                    // depth-limited, so it stays finite and honest
+      const LIMIT = 30, DCAP = 60000;
+      const stack = [start], prev = new Map([[start, null]]), depth = new Map([[start, 0]]);
+      const seen = new Set(); let n = 0;
+      while (stack.length) {
+        const cur = stack.pop();
+        if (seen.has(cur)) continue;
+        seen.add(cur); n++;
+        if (cur === GOAL) return { explored: n, path: rebuild(prev, cur) };
+        if (n > DCAP) return { explored: n, path: null, capped: true };
+        if (depth.get(cur) >= LIMIT) continue;
+        for (const nx of moves(cur)) if (!seen.has(nx)) {
+          if (!prev.has(nx)) { prev.set(nx, cur); depth.set(nx, depth.get(cur) + 1); }
+          stack.push(nx);
+        }
+      }
+      return { explored: n, path: null, limited: true };
+    }
+    function bestFirst(start, h) {
+      // carries the path explicitly, exactly as Practical 2 does
+      const pq = new Heap(); pq.push([h(start), 0, start, [start]]);
+      const seen = new Set(); let n = 0, tie = 0;
+      while (pq.size) {
+        const item = pq.pop(), cur = item[2], path = item[3];
+        if (seen.has(cur)) continue;
+        seen.add(cur); n++;
+        if (cur === GOAL) return { explored: n, path };
+        if (n > CAP) return { explored: n, path: null, capped: true };
+        for (const nx of moves(cur)) if (!seen.has(nx)) pq.push([h(nx), ++tie, nx, path.concat([nx])]);
+      }
+      return { explored: n, path: null };
+    }
+    function astar(start, h) {
+      const pq = new Heap(); pq.push([h(start), 0, start, 0]);
+      const g = new Map([[start, 0]]), prev = new Map([[start, null]]), seen = new Set();
+      let n = 0, tie = 0;
+      while (pq.size) {
+        const item = pq.pop(), cur = item[2], gc = item[3];
+        if (seen.has(cur)) continue;
+        seen.add(cur); n++;
+        if (cur === GOAL) return { explored: n, path: rebuild(prev, cur) };
+        if (n > CAP) return { explored: n, path: null, capped: true };
+        for (const nx of moves(cur)) {
+          if (seen.has(nx)) continue;
+          const ng = gc + 1;
+          if (!g.has(nx) || ng < g.get(nx)) { g.set(nx, ng); prev.set(nx, cur); }
+          pq.push([ng + h(nx), ++tie, nx, ng]);
+        }
+      }
+      return { explored: n, path: null };
+    }
+    function hill(start, h) {
+      let cur = start, path = [cur], n = 1;
+      while (cur !== GOAL) {
+        let best = null, bv = h(cur);
+        for (const nx of moves(cur)) { const v = h(nx); if (v < bv) { bv = v; best = nx; } }
+        if (!best) return { explored: n, path: null, stuck: true, at: cur };
+        cur = best; path.push(cur); n++;
+      }
+      return { explored: n, path };
+    }
+    function rebuild(prev, cur) { const p = []; while (cur) { p.unshift(cur); cur = prev.get(cur); } return p; }
+
+    function drawBoard(el, s) {
+      el.innerHTML = '';
+      for (let i = 0; i < 9; i++) {
+        const d = document.createElement('div');
+        if (s[i] === '0') { d.className = 'blank'; d.textContent = '0'; }
+        else { d.textContent = s[i]; if (s[i] === GOAL[i]) d.className = 'ok'; }
+        el.appendChild(d);
+      }
+    }
+    function refresh() {
+      drawBoard($('#puzStart'), START); drawBoard($('#puzGoal'), GOAL);
+      $('#puzH1H2').innerHTML = `<span>h₁ misplaced = <b>${hMis(START)}</b></span>
+        <span>h₂ Manhattan = <b>${hMan(START)}</b></span>
+        <span>h₂ ≥ h₁ always — <b>h₂ dominates</b></span>`;
+      $('#puzTable').querySelector('tbody').innerHTML =
+        '<tr><td colspan="5" style="color:var(--ink-muted); font-weight:400;">Press <strong>Run</strong> to fill this table.</td></tr>';
+      $('#puzSolution').innerHTML = ''; $('#puzNote').innerHTML = '';
+    }
+    $('#puzPick').addEventListener('change', e => { START = e.target.value; refresh(); });
+    $('#puzH').addEventListener('change', e => { hName = e.target.value; refresh(); });
+
+    $('#puzRun').addEventListener('click', () => {
+      const h = heuristics[hName];
+      const btn = $('#puzRun'); btn.disabled = true; btn.textContent = 'Running…';
+      setTimeout(() => {
+        const runs = [
+          ['Breadth First', '—', bfs(START), true],
+          ['Depth First <small>depth limit 30</small>', '—', dfs(START), false],
+          ['Hill Climbing', hLabel[hName], hill(START, h), false],
+          ['Best First (greedy)', hLabel[hName], bestFirst(START, h), false],
+          ['A*', 'g + ' + hLabel[hName], astar(START, h), true]
+        ];
+        const opt = runs[0][2].path ? runs[0][2].path.length - 1 : null;
+        const rows = runs.map(([name, uses, r]) => {
+          let moves, ok;
+          if (r.stuck) { moves = '<span style="color:var(--danger)">stuck</span>'; ok = '<span class="bad">n/a</span>'; }
+          else if (!r.path) { moves = r.capped ? '<span style="color:var(--warn)">gave up</span>' : 'none found'; ok = '—'; }
+          else {
+            const m = r.path.length - 1;
+            moves = String(m);
+            ok = (opt !== null && m === opt)
+              ? '<span style="color:var(--know); font-weight:600">yes</span>'
+              : `<span style="color:var(--danger); font-weight:600">no (+${m - opt})</span>`;
+          }
+          return `<tr><td>${name}</td><td class="mono">${uses}</td><td class="mono">${r.explored.toLocaleString()}</td><td class="mono">${moves}</td><td>${ok}</td></tr>`;
+        }).join('');
+        $('#puzTable').querySelector('tbody').innerHTML = rows;
+
+        const a = runs[4][2], bf = runs[3][2], b = runs[0][2], df = runs[1][2], hc = runs[2][2];
+        let note = '', tail = '';
+        if (df.capped) tail += ` <strong>Depth First</strong> was still wandering after
+          ${df.explored.toLocaleString()} boards and was cut off — it is not complete here.`;
+        else if (df.path) tail += ` <strong>Depth First</strong> did reach the goal, but after
+          ${df.explored.toLocaleString()} boards and by a <strong>${df.path.length - 1}-move</strong> route: it returns
+          the first goal it falls into, not the best one.`;
+        if (hc.stuck) tail += ` <strong>Hill Climbing</strong> stopped after ${hc.explored} boards because every
+          neighbour had a <em>worse</em> h — a <strong>local minimum</strong>.`;
+        if (a.path && b.path) {
+          note += `<b class="lab">Reading the table</b>A* found the same <strong>${a.path.length - 1}-move</strong> answer as
+            Breadth First while exploring <strong>${a.explored.toLocaleString()}</strong> boards instead of
+            <strong>${b.explored.toLocaleString()}</strong> — that saving is what the heuristic bought. `;
+          if (bf.path) {
+            const bm = bf.path.length - 1, am = a.path.length - 1;
+            note += `Best First explored ${bf.explored.toLocaleString()} boards and returned <strong>${bm} moves</strong>` +
+              (bm > am ? ` — ${bm - am} more than necessary, because it stops at the first goal it reaches and never counts the moves already made. ` : ' — optimal here by luck, not by guarantee. ');
+            if (bf.explored > a.explored) note += `Note that it also explored <em>more</em> boards than A* on this
+              board: a greedy search that is led astray does extra work, not less. `;
+          }
+          if (hName === 'zero') note += `With <strong>h = 0</strong> A* has no guidance at all and degenerates into Uniform Cost Search — which on equal step costs is simply BFS.`;
+          if (hName === 'mis') note += `Switch the heuristic to h₂ (Manhattan) and watch A*'s explored count fall: the dominant heuristic prunes more.`;
+        }
+        $('#puzNote').innerHTML = note + tail;
+
+        if (a.path) {
+          const show = a.path.slice(0, 7);
+          $('#puzSolution').innerHTML = `<p style="font-size:13px; font-weight:600; color:var(--ink); margin:10px 0 6px;">
+            The optimal solution A* found${a.path.length > 7 ? ' (first 6 moves)' : ''}</p>
+            <div class="boards">` + show.map((s, i) => `<div class="boardbox">
+              <span>${i === 0 ? 'start' : 'move ' + i}</span>
+              <div class="puz">${[...s].map((c, k) => c === '0'
+                ? '<div class="blank">0</div>'
+                : `<div class="${c === GOAL[k] ? 'ok' : ''}">${c}</div>`).join('')}</div></div>`).join('') + '</div>';
+        }
+        btn.disabled = false; btn.textContent = 'Run all five searches';
+      }, 30);
+    });
+    refresh();
+  })();
+
+  /* ================= 10. SEMANTIC NETWORK ================= */
+  (function(){
+    const nodes = {
+      Animal:  { x: 230, y: 40,  props: { 'has-a': 'skin', 'can': 'breathe, move' }, parent: null },
+      Bird:    { x: 230, y: 130, props: { 'has-a': 'feathers, wings', 'can': 'fly (default)' }, parent: 'Animal' },
+      Fish:    { x: 400, y: 130, props: { 'has-a': 'gills, fins', 'can': 'swim' }, parent: 'Animal' },
+      Penguin: { x: 120, y: 225, props: { 'can-fly': 'FALSE (exception)', 'habitat': 'Antarctica' }, parent: 'Bird' },
+      Tweety:  { x: 300, y: 225, props: { 'colour': 'yellow' }, parent: 'Bird' }
+    };
+    const svg = $('#netSvg');
+    function render(sel) {
+      const chain = [];
+      let n = sel; while (n) { chain.push(n); n = nodes[n].parent; }
+      let s = `<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+               <path d="M0 0L10 5L0 10z" fill="${css('--ink-muted')}"/></marker></defs>`;
+      Object.entries(nodes).forEach(([k, v]) => {
+        if (!v.parent) return;
+        const p = nodes[v.parent], on = chain.includes(k) && chain.includes(v.parent);
+        s += `<line x1="${v.x}" y1="${v.y - 18}" x2="${p.x}" y2="${p.y + 18}"
+               stroke="${on ? css('--know') : css('--line')}" stroke-width="${on ? 2.6 : 1.6}" marker-end="url(#ar)"/>
+              <text x="${(v.x + p.x) / 2 + 6}" y="${(v.y + p.y) / 2}" font-size="10" font-family="${css('--mono')}"
+               fill="${on ? css('--know') : css('--ink-muted')}">is-a</text>`;
+      });
+      Object.entries(nodes).forEach(([k, v]) => {
+        const on = k === sel, inChain = chain.includes(k);
+        s += `<g style="cursor:pointer" data-n="${k}">
+          <rect x="${v.x - 52}" y="${v.y - 18}" width="104" height="36" rx="9"
+            fill="${on ? css('--know') : inChain ? css('--know-soft') : css('--surface-2')}"
+            stroke="${inChain ? css('--know') : css('--line')}" stroke-width="${on ? 0 : 1.6}"/>
+          <text x="${v.x}" y="${v.y + 5}" text-anchor="middle" font-size="14" font-weight="600"
+            font-family="Karla, sans-serif" fill="${on ? '#fff' : inChain ? css('--know') : css('--ink')}">${k}</text></g>`;
+      });
+      svg.innerHTML = s;
+      svg.querySelectorAll('g[data-n]').forEach(g =>
+        g.addEventListener('click', () => pick(g.dataset.n)));
+
+      // inherited property list
+      const own = nodes[sel].props, inherited = [];
+      let p = nodes[sel].parent;
+      while (p) { Object.entries(nodes[p].props).forEach(([k, v]) => inherited.push([p, k, v])); p = nodes[p].parent; }
+      const ownHtml = Object.entries(own).map(([k, v]) =>
+        `<div><span class="mono" style="color:var(--know)">${k}</span> : ${v}</div>`).join('');
+      const inhHtml = inherited.map(([from, k, v]) =>
+        `<div><span class="mono">${k}</span> : ${v} <em style="opacity:.75">(from ${from})</em></div>`).join('');
+      $('#netOut').innerHTML = `<b class="lab">${sel}</b>
+        <div style="margin-bottom:6px;"><strong>Stated on this node</strong>${ownHtml || ' — none'}</div>
+        <div><strong>Inherited through is-a links</strong>${inhHtml || ' — none'}</div>` +
+        (sel === 'Penguin' ? `<div style="margin-top:7px;"><strong>Note the exception:</strong> Penguin overrides
+          the inherited <span class="mono">can: fly</span>. Handling exceptions like this is exactly what plain
+          semantic networks are weak at — and what frames handle naturally with a slot override.</div>` : '');
+    }
+    function pick(n) {
+      $$('#netPick .btn').forEach(b => b.classList.toggle('primary', b.dataset.n === n));
+      render(n);
+    }
+    $('#netPick').innerHTML = Object.keys(nodes).map(k =>
+      `<button class="btn${k === 'Penguin' ? ' primary' : ''}" data-n="${k}">${k}</button>`).join('');
+    $$('#netPick .btn').forEach(b => b.addEventListener('click', () => pick(b.dataset.n)));
+    redraws.push(() => render($('#netPick .primary').dataset.n));
+    render('Penguin');
+  })();
+
+  /* ================= 11. FORWARD / BACKWARD CHAINING ================= */
+  (function(){
+    const RULES = [
+      { id: 'R1', if: ['fever', 'cough'],        then: 'flu' },
+      { id: 'R2', if: ['flu', 'body-ache'],      then: 'viral-infection' },
+      { id: 'R3', if: ['viral-infection'],       then: 'prescribe-rest' },
+      { id: 'R4', if: ['rash'],                  then: 'allergy' }
+    ];
+    const FACTS = ['fever', 'cough', 'body-ache'];
+    const GOAL = 'prescribe-rest';
+    let mode = 'fwd', steps = [], t = -1, timer = null;
+
+    $('#ruleBase').innerHTML =
+      RULES.map(r => `R${r.id.slice(1)}: IF ${r.if.join(' AND ')} THEN <strong>${r.then}</strong>`).join('<br>') +
+      `<br><br><em>Known facts: ${FACTS.join(', ')}</em><br><em>Question: should we ${GOAL.replace('-', ' ')}?</em>`;
+
+    function buildForward() {
+      const wm = FACTS.slice(), out = [];
+      out.push({ mem: wm.slice(), msg: `Working memory starts with the known facts: <b>${FACTS.join(', ')}</b>.` });
+      let changed = true;
+      while (changed) {
+        changed = false;
+        for (const r of RULES) {
+          if (wm.includes(r.then)) continue;
+          if (r.if.every(c => wm.includes(c))) {
+            wm.push(r.then); changed = true;
+            out.push({ mem: wm.slice(), msg: `<b>${r.id}</b> fires: all of <b>${r.if.join(', ')}</b> are known, so <strong>${r.then}</strong> is added.` });
+          }
+        }
+      }
+      out.push({ mem: wm.slice(), done: true,
+        msg: wm.includes(GOAL)
+          ? `No rule adds anything new. <strong>${GOAL}</strong> is in working memory — the answer is <strong>yes</strong>.`
+          : `No rule adds anything new, and <strong>${GOAL}</strong> was never derived.` });
+      return out;
+    }
+    function buildBackward() {
+      const out = [], stack = [GOAL], proved = [];
+      out.push({ mem: [GOAL], msg: `Goal stack starts with the hypothesis <b>${GOAL}</b>. We work backwards.` });
+      const prove = (g, depth) => {
+        if (FACTS.includes(g)) { proved.push(g); out.push({ mem: stack.slice(), msg: `<b>${g}</b> is a known fact ✓` }); return true; }
+        const r = RULES.find(r => r.then === g);
+        if (!r) { out.push({ mem: stack.slice(), msg: `No rule concludes <b>${g}</b> and it is not a fact ✗` }); return false; }
+        out.push({ mem: stack.concat(r.if).slice(), msg: `To prove <b>${g}</b> we need rule <b>${r.id}</b>, so now we must prove <b>${r.if.join(' and ')}</b>.` });
+        stack.push(...r.if);
+        const ok = r.if.every(c => prove(c, depth + 1));
+        if (ok) { proved.push(g); out.push({ mem: stack.slice(), msg: `All conditions of <b>${r.id}</b> hold, so <strong>${g}</strong> is proved ✓` }); }
+        return ok;
+      };
+      const ok = prove(GOAL, 0);
+      out.push({ mem: proved.slice(), done: true,
+        msg: ok ? `Everything the hypothesis rested on is a known fact — the answer is <strong>yes</strong>, and we only touched the rules that mattered.`
+                : `The hypothesis could not be supported by the facts.` });
+      return out;
+    }
+    function build() { steps = mode === 'fwd' ? buildForward() : buildBackward(); t = -1; render(); }
+    function render() {
+      const s = t >= 0 ? steps[t] : { mem: mode === 'fwd' ? FACTS : [GOAL] };
+      $('#chainLabel').textContent = mode === 'fwd' ? 'Working memory (facts known so far)' : 'Goal stack (what still needs proving)';
+      $('#chainMem').innerHTML = s.mem.map(m =>
+        `<span class="chip${FACTS.includes(m) ? '' : ' next'}">${m}</span>`).join('') || '<span class="chip done">empty</span>';
+      let html = t < 0
+        ? '<div class="logline empty"><span class="k">—</span><span>Press Step to run the inference engine one action at a time.</span></div>' : '';
+      for (let i = 0; i <= t; i++) html += `<div class="logline${i === t ? ' now' : ''}"><span class="k">${i + 1}</span><span>${steps[i].msg}</span></div>`;
+      const log = $('#chainLog'); log.innerHTML = html; log.scrollTop = log.scrollHeight;
+      $('#chainVerdict').innerHTML = mode === 'fwd'
+        ? '<b class="lab">Forward · data-driven</b>Fires whatever the facts allow and keeps adding conclusions. It will happily derive things you never asked about (note that R4 never fires here only because <em>rash</em> is not a known fact). Best when you have data and want to know what follows from it.'
+        : '<b class="lab">Backward · goal-driven</b>Starts from the hypothesis and only ever looks at rules that could establish it. Nothing irrelevant is derived — which is why <strong>diagnosis</strong> uses backward chaining.';
+      $('#chainStep').disabled = t >= steps.length - 1;
+    }
+    function step() { if (t < steps.length - 1) { t++; render(); } }
+    $('#chainStep').addEventListener('click', step);
+    $('#chainRun').addEventListener('click', () => { t = steps.length - 1; render(); });
+    $('#chainReset').addEventListener('click', () => { t = -1; render(); });
+    seg('segChain', m => { mode = m; build(); });
+    build();
+  })();
+
+  /* ================= 13. BAYES ================= */
+  (function(){
+    const N = 1000;
+    const el = { p: $('#bPrior'), s: $('#bSens'), f: $('#bFpr') };
+    function draw() {
+      const prior = +el.p.value / 100, sens = +el.s.value / 100, fpr = +el.f.value / 100;
+      $('#bPriorOut').textContent = (+el.p.value).toFixed(1) + '%';
+      $('#bSensOut').textContent = el.s.value + '%';
+      $('#bFprOut').textContent = el.f.value + '%';
+
+      const pe = sens * prior + fpr * (1 - prior);
+      const post = pe > 0 ? (sens * prior) / pe : 0;
+
+      const sick = Math.round(N * prior);
+      const tp = Math.round(sick * sens), fn = sick - tp;
+      const fp = Math.round((N - sick) * fpr);
+
+      $('#bayesOut').textContent = (post * 100).toFixed(1) + '%';
+      $('#bayesStats').innerHTML =
+        `<span>prior P(D) <b>${(prior * 100).toFixed(1)}%</b></span>
+         <span>P(+) <b>${(pe * 100).toFixed(1)}%</b></span>
+         <span>per 1000 people: <b>${tp}</b> true positives, <b>${fp}</b> false positives</span>`;
+
+      let html = '';
+      for (let i = 0; i < N; i++) {
+        const cls = i < tp ? 'tp' : i < tp + fp ? 'fp' : i < tp + fp + fn ? 'fn' : '';
+        html += `<i class="${cls}"></i>`;
+      }
+      $('#bayesDots').innerHTML = html;
+
+      const note = $('#bayesNote');
+      if (tp + fp === 0) note.innerHTML = '<b class="lab">No positives</b>Nobody tests positive at these settings.';
+      else note.innerHTML = `<b class="lab">Read it as counts</b>Out of 1000 people, <strong>${tp + fp}</strong> test positive —
+        <strong>${tp}</strong> of them actually have the disease and <strong>${fp}</strong> do not. So a positive result means
+        <strong>${tp}/${tp + fp} = ${(post * 100).toFixed(1)}%</strong>.
+        ${prior < 0.05 ? 'Because the disease is <strong>rare</strong>, the healthy group is so much larger that its false positives swamp the true ones — the <strong>base rate fallacy</strong>.'
+                       : 'As the prior rises the posterior climbs quickly: the same test is far more informative in a high-risk population.'}`;
+    }
+    ['p', 's', 'f'].forEach(k => el[k].addEventListener('input', draw));
+    $('#bayesSlide').addEventListener('click', () => {
+      el.p.value = 1; el.s.value = 90; el.f.value = 5; draw();
+    });
+    draw();
+  })();
+
+  /* ================= 15. QUIZ ================= */
+  (function(){
+    const Q = [
+      { q: 'A* uses a heuristic that sometimes <strong>overestimates</strong> the remaining cost. What is the consequence?',
+        o: ['A* becomes incomplete and may never terminate',
+            'A* still terminates but may return a sub-optimal path',
+            'A* becomes faster with no downside at all',
+            'A* degenerates into Breadth First Search'], a: 1,
+        e: 'Admissibility — never overestimating — is the condition for optimality. An overestimate can make A* discard the truly best path because it looks too expensive. It still finds a solution, just not necessarily the cheapest.' },
+      { q: 'Which representation lets you state “every student has a roll number” <strong>once</strong>, rather than repeating it for each student?',
+        o: ['Propositional logic',
+            'A semantic network with inheritance, or first-order logic with ∀',
+            'A production rule for each student',
+            'A frame with no parent'], a: 1,
+        e: 'Both a semantic network and first-order logic can state a property at the general level and have it apply to every instance — by inheritance down an is-a link, or by the universal quantifier. Propositional logic has no quantifiers, so it needs one statement per student.' },
+      { q: 'Depth First Search on a tree of branching factor b and maximum depth m needs how much memory?',
+        o: ['O(b<sup>m</sup>) — it stores the whole frontier',
+            'O(b · m) — one branch plus its siblings',
+            'O(m²)',
+            'O(1) — it stores nothing'], a: 1,
+        e: 'DFS holds only the nodes on the current path together with their unexpanded siblings: b nodes per level over m levels. That linear memory is its chief advantage over BFS, which must store an entire level — O(b^d).' },
+      { q: 'A route planner returns the path with the fewest junctions, not the shortest distance. Which algorithm was used, and what is the fix?',
+        o: ['A*; supply a better heuristic',
+            'BFS; switch to Uniform Cost Search or A*',
+            'Hill Climbing; add random restarts',
+            'DFS; increase the depth limit'], a: 1,
+        e: 'BFS minimises the number of edges, not the cost, because it has no notion of g(n). On a weighted graph you need Uniform Cost Search (order by g) or A* (order by g + h).' },
+      { q: 'Hill Climbing stops on a flat region where every neighbour has exactly the same value. What is this called?',
+        o: ['A local optimum', 'A plateau', 'A ridge', 'A global optimum'], a: 1,
+        e: 'On a plateau all neighbours are equal, so there is no gradient to follow and no signal about which way to move. A local optimum has strictly worse neighbours; a ridge is a narrow rise where every single-step move goes down.' },
+      { q: 'A disease affects 1% of people. A test is 90% sensitive with a 5% false-positive rate. A patient tests positive. Roughly how likely is it they have the disease?',
+        o: ['About 90%', 'About 50%', 'About 15%', 'About 1%'], a: 2,
+        e: 'P(+) = 0.90×0.01 + 0.05×0.99 = 0.0585, so P(D|+) = 0.0090 / 0.0585 ≈ 0.154. The disease is rare, so 5% of the large healthy group produces more false positives than 90% of the tiny sick group produces true positives — the base rate fallacy.' }
+    ];
+    $('#quiz').innerHTML = Q.map((q, i) => `
+      <div class="card top ${i % 2 ? 'a-know' : 'a-search'}">
+        <span class="tag">Q${i + 1}</span>
+        <p style="color:var(--ink); font-weight:600; font-size:14.5px;">${q.q}</p>
+        <div class="quiz" data-q="${i}">
+          ${q.o.map((o, k) => `<button class="qopt" data-k="${k}">${String.fromCharCode(65 + k)}. ${o}</button>`).join('')}
+        </div>
+        <div class="qexp" data-exp="${i}" hidden></div>
+      </div>`).join('');
+    $$('.qopt').forEach(btn => btn.addEventListener('click', () => {
+      const wrap = btn.closest('.quiz'), qi = +wrap.dataset.q, k = +btn.dataset.k, correct = Q[qi].a;
+      wrap.querySelectorAll('.qopt').forEach(b => {
+        const bk = +b.dataset.k;
+        b.classList.toggle('right', bk === correct);
+        b.classList.toggle('wrong', bk === k && k !== correct);
+        b.disabled = true;
+      });
+      const exp = document.querySelector(`[data-exp="${qi}"]`);
+      exp.hidden = false;
+      exp.innerHTML = (k === correct ? '<strong style="color:var(--know)">Correct. </strong>' : '<strong style="color:var(--danger)">Not quite. </strong>') + Q[qi].e;
+    }));
+  })();
+})();
+</script>
+</body>
+</html>
