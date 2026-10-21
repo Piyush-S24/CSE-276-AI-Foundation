@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSE276 &middot; Artificial Intelligence Foundations Unit IV &mdash; Evolution of Modern Artificial Intelligence &mdash; Visual Walkthrough</title>
+<style>
+:root{--navy:#182B49;--navy2:#253E64;--cyan:#0096C7;--ice:#7EC5E2;--purple:#5C2D91;
+      --orange:#ED771F;--green:#107C41;--red:#B42318;--grey:#586476;--rule:#D8DFE8;
+      --bg:#F6F9FC;--card:#fff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--navy);
+     font:15px/1.65 "Segoe UI",system-ui,-apple-system,Arial,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+header{background:var(--navy);color:#fff;padding:28px 0 24px;border-bottom:4px solid var(--cyan)}
+header .eyebrow{color:var(--ice);font-size:12.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+header h1{margin:7px 0 6px;font-size:32px;font-weight:600;line-height:1.2}
+header p{margin:0;color:#C9D8E6;font-size:15.5px;max-width:860px}
+nav{background:var(--navy2);position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(24,43,73,.2)}
+nav ul{display:flex;flex-wrap:wrap;gap:2px;list-style:none;margin:0;padding:0}
+nav a{display:block;padding:11px 14px;color:#D8E6F2;text-decoration:none;font-size:13.5px;font-weight:600}
+nav a:hover{background:rgba(255,255,255,.13);color:#fff}
+section{padding:34px 0 12px;border-bottom:1px solid var(--rule)}
+h2{font-size:24px;margin:0 0 6px;font-weight:600}
+h2 .num{display:inline-block;background:var(--cyan);color:#fff;font-size:13px;
+        padding:3px 9px;border-radius:4px;margin-right:10px;vertical-align:3px}
+h3{font-size:17.5px;margin:24px 0 8px;font-weight:600;color:var(--navy)}
+.lede{color:var(--grey);font-size:15.5px;margin:0 0 16px;max-width:920px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.ex{border:1.5px solid #BFD9CB;border-left:5px solid var(--green);border-radius:9px;
+    background:#FBFEFC;margin:18px 0;padding:14px 18px 16px}
+.exhd{font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;
+      color:var(--green);margin-bottom:9px}
+.exgiven{font-size:14.5px;background:#fff;border:1px solid #DCE9E1;border-radius:6px;
+         padding:9px 13px;margin-bottom:12px}
+.exsteps{list-style:none;counter-reset:exs;margin:0;padding:0}
+.exsteps li{counter-increment:exs;display:grid;grid-template-columns:26px 1fr;gap:11px;
+            padding:7px 0;border-top:1px solid #E7F0EA;align-items:baseline}
+.exsteps li:first-child{border-top:0}
+.exsteps li::before{content:counter(exs);display:block;width:21px;height:21px;
+                    border-radius:50%;background:var(--green);color:#fff;font-size:11.5px;
+                    font-weight:700;text-align:center;line-height:21px}
+.exb{min-width:0}
+.exl{font-size:13.5px;color:var(--grey);display:block;margin-bottom:3px}
+.exw{font-size:15.5px;color:var(--navy);font-family:"Cambria Math",Cambria,Georgia,serif;
+     display:block;line-height:1.8}
+.exans{margin-top:12px;background:#E4F6EB;border-radius:6px;padding:10px 14px;
+       font-size:15px;color:var(--navy);font-weight:600}
+.exans b{color:var(--green)}
+@media(max-width:700px){.exsteps li{grid-template-columns:22px 1fr;gap:8px}}
+.why{border:1.5px solid #CBD9E6;border-radius:9px;margin:18px 0;overflow:hidden;
+     background:linear-gradient(180deg,#F4F9FD 0,#fff 54px)}
+.whyhd{font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;
+       color:var(--navy);padding:13px 18px 0}
+.whygrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#E3EAF1;
+         margin-top:12px;border-top:1px solid #E3EAF1}
+.wq{background:var(--card);padding:14px 17px 16px}
+.wq h5{margin:0 0 7px;font-size:12px;font-weight:700;letter-spacing:.03em}
+.wq p{margin:0;font-size:14px;line-height:1.62}
+.wq.w1 h5{color:var(--cyan)}
+.wq.w2 h5{color:var(--purple)}
+.wq.w3 h5{color:var(--orange)}
+.wq.w3{background:#FFFBF7}
+@media(max-width:900px){.whygrid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:15px 17px}
+.card h4{margin:0 0 7px;font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--cyan)}
+.card p{margin:0;font-size:14.5px}
+.take{background:#E4F6EB;border-left:5px solid var(--green);border-radius:6px;padding:12px 16px;margin:14px 0}
+.take b.hd{color:var(--green);text-transform:uppercase;font-size:12.5px;letter-spacing:.05em}
+.take b{color:var(--navy)}
+.warn{background:#FDEEEC;border-left:5px solid var(--orange);border-radius:6px;padding:12px 16px;margin:14px 0}
+.warn b.hd{color:var(--orange);text-transform:uppercase;font-size:12.5px;letter-spacing:.05em}
+.warn b{color:var(--navy)}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0}
+th,td{border:1px solid var(--rule);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:var(--navy);color:#fff;font-weight:600;font-size:13px}
+tbody tr:nth-child(even){background:#F2F7FB}
+td.hi{background:#FFF3E0;font-weight:700}
+code{background:#EEF3F8;padding:1px 5px;border-radius:4px;font-size:13.5px}
+footer{background:var(--navy);color:#9FB4CA;padding:22px 0;font-size:13.5px}
+
+/* ---------------- formula block ---------------- */
+.formula{background:#F3EEFB;border-left:5px solid var(--purple);border-radius:6px;
+         padding:14px 18px;margin:14px 0;overflow-x:auto}
+.formula .flabel{display:block;font-size:11.5px;font-weight:700;letter-spacing:.05em;
+                 text-transform:uppercase;color:var(--purple);margin-bottom:9px}
+.formula small{display:block;font:13.5px/1.55 "Segoe UI",sans-serif;color:var(--grey);margin-top:10px}
+
+/* ---------------- real maths ---------------- */
+.math{font-family:"Cambria Math",Cambria,"Times New Roman",Georgia,serif;
+      font-size:20px;line-height:2.1;color:var(--navy);white-space:nowrap}
+.math i,.math .var{font-style:italic;font-family:inherit}
+.math .op{font-style:normal;padding:0 .22em}
+.math b.vecb{font-weight:700;font-style:normal}
+.math sub{font-size:.62em;vertical-align:-.3em}
+.math sup{font-size:.62em;vertical-align:.45em}
+.cases{display:inline-flex;align-items:center;vertical-align:middle;margin:0 .2em}
+.cases .cb{font-size:2.5em;font-weight:300;line-height:.86;margin-right:.14em}
+.cases table{border-collapse:collapse;margin:0;width:auto;box-shadow:none;font-size:.86em}
+.cases tbody tr,.cases tbody tr:nth-child(even){border:0;background:none}
+.cases td{border:0;padding:.14em .2em;background:none;white-space:nowrap;
+          line-height:1.5;vertical-align:middle}
+.cases td.cc{font-size:.8em;font-style:normal;color:var(--grey);padding-left:1.5em;
+             font-family:"Segoe UI",system-ui,sans-serif}
+.frac{display:inline-block;vertical-align:-.52em;text-align:center;margin:0 .26em}
+.frac .num{display:block;padding:0 .4em .12em;border-bottom:1.7px solid currentColor;line-height:1.22}
+.frac .den{display:block;padding:.12em .4em 0;line-height:1.22}
+.sqrt{display:inline-block;position:relative;margin:0 .15em}
+.sqrt .rad{font-size:1.12em;vertical-align:-.06em}
+.sqrt .rand{border-top:1.6px solid currentColor;padding:.1em .22em 0 .12em;margin-left:-.12em}
+.bigop{display:inline-block;text-align:center;vertical-align:-.5em;margin:0 .2em;line-height:1}
+.bigop .glyph{display:block;font-size:1.5em;line-height:.88}
+.bigop.int .glyph{font-size:1.75em}
+.bigop .lim{display:block;font-size:.5em;line-height:1.25;font-style:italic}
+.paren{font-size:1.18em;padding:0 .06em}
+.paren.big{font-size:1.5em;vertical-align:-.16em}
+.bar{padding:0 .09em}
+.hat{position:relative;display:inline-block;font-style:italic}
+.hat::after{content:"\0302";position:absolute;left:0;right:0;top:-.46em;
+            text-align:center;font-size:.72em;font-style:normal;line-height:1;
+            font-family:"Cambria Math",Cambria,serif}
+.matrix{display:inline-block;vertical-align:middle;margin:0 .18em}
+.matrix .mb{display:inline-block;font-size:2.1em;vertical-align:middle;font-weight:300}
+.matrix table{display:inline-table;width:auto;border:0;margin:0 .1em;vertical-align:middle}
+.matrix td{border:0;padding:.08em .38em;text-align:center;font-size:.86em;background:none}
+
+/* ---------------- visualisation ---------------- */
+.viz{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:14px;margin:16px 0}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+button{font:600 13.5px "Segoe UI",sans-serif;padding:8px 14px;border-radius:6px;
+       border:1px solid var(--cyan);background:var(--cyan);color:#fff;cursor:pointer}
+button:hover{filter:brightness(1.08)}
+button.ghost{background:#fff;color:var(--cyan)}
+button:disabled{opacity:.45;cursor:not-allowed}
+select{font:14px "Segoe UI";padding:7px 9px;border-radius:6px;border:1px solid var(--rule);background:#fff}
+svg{width:100%;height:auto;display:block;background:#fff;border-radius:6px;max-width:1040px;margin:0 auto}
+.status{font-size:15.5px;line-height:1.6;background:#EAF4FA;border-left:4px solid var(--cyan);
+        border-radius:6px;padding:12px 16px;margin-top:12px;min-height:48px;color:var(--navy)}
+.status b{color:var(--cyan)}
+.stepcount{font-size:12.5px;font-weight:700;color:var(--grey);letter-spacing:.03em;
+           margin-left:auto;padding-right:4px;white-space:nowrap}
+.stepcount em{font-style:normal;color:var(--cyan);font-size:14.5px}
+.viz.done .stepcount em{color:var(--green)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--grey);margin-top:9px;justify-content:center}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="eyebrow">CSE276 &middot; Artificial Intelligence Foundations &middot; Unit IV</div>
+  <h1>Evolution of Modern Artificial Intelligence &mdash; Visual Walkthrough</h1>
+  <p>How AI got from hand-written rules to foundation models, and why each shift happened. Step through the XOR network that broke the perceptron and see where the modern paradigm's economics come from.</p>
+</div></header>
+<nav><div class="wrap"><ul><li><a href="#symstat">1 &middot; Symbolic vs statistical</a></li><li><a href="#mltypes">2 &middot; Types of ML</a></li><li><a href="#deep">3 &middot; Deep learning</a></li><li><a href="#dltypes">4 &middot; Architectures</a></li><li><a href="#foundation">5 &middot; Foundation models</a></li><li><a href="#edge">6 &middot; Edge &amp; Tiny AI</a></li></ul></div></nav>
+<section id="symstat"><div class="wrap"><h2><span class="num">1</span>Symbolic and statistical AI</h2><p class="lede">For roughly thirty years AI meant writing down what you know as rules. Then it meant letting the machine work it out from examples. Understanding why the first approach stalled is the key to understanding everything that followed.</p><div class="why"><div class="whyhd">Why this, and why not something else</div><div class="whygrid"><div class="wq w1"><h5>Why we do this</h5><p>This is not history for its own sake. Nearly everything that puzzles people about modern AI &mdash; why it is so good at recognising a cat and so bad at arithmetic, why it cannot explain itself, why it needs so much data &mdash; follows directly from the fact that the field <b>switched from writing rules to learning from examples</b>. Knowing which approach you are looking at tells you what to expect from it.</p></div><div class="wq w2"><h5>Why not just do the simpler thing?</h5><p><b>“Why not just write the rules? It would be exact and we could check it.”</b> For some problems you absolutely should &mdash; tax calculation and chess legality are rules, not statistics. But try writing the rules for <i>recognising a cat</i>. Every rule you write (pointed ears, whiskers, fur) has endless exceptions, and the exceptions have exceptions. For perception the rule set never converges, which is precisely where the symbolic era stalled.</p></div><div class="wq w3"><h5>What goes wrong if you skip it</h5><p>You pick the wrong tool and lose months. Using machine learning for something with clear rules means collecting data to learn what you already knew, and getting a worse, unverifiable answer. Using rules for perception means writing them forever and never shipping.</p></div></div></div><table><thead><tr><th></th><th>Symbolic AI</th><th>Statistical AI</th></tr></thead><tbody><tr><td><b>Knowledge comes from</b></td><td>a human writing rules and facts</td><td>data the system is shown</td></tr><tr><td><b>Reasoning</b></td><td>logical inference over symbols</td><td>estimating probabilities from patterns</td></tr><tr><td><b>Strengths</b></td><td>transparent, verifiable, needs no data; correct by construction when the rules are right</td><td>handles noise, ambiguity and cases nobody wrote down</td></tr><tr><td><b>Weaknesses</b></td><td>brittle; the rule set explodes; cannot handle an unanticipated case</td><td>needs a lot of data; hard to interpret; learns the biases in that data</td></tr><tr><td><b>Typical of</b></td><td>expert systems, theorem provers, planners</td><td>modern machine learning and deep learning</td></tr></tbody></table><h3>The same problem, both ways</h3><div class="viz" id="wrap-symstat"><svg id="svg-symstat" viewBox="0 0 560 290"></svg><div class="status" id="st-symstat"></div></div><div class="take"><b class="hd">Why symbolic AI stalled, and why it is not dead</b><br>Writing rules works until the world provides a case you did not anticipate &mdash; and for perception the exceptions are effectively infinite. Nobody can write the rules for recognising a cat. But symbolic methods never went away: planners, constraint solvers, SAT solvers and knowledge graphs are symbolic, and much current work is <b>neuro-symbolic</b>, using a learned model for perception and a symbolic layer for the reasoning that has to be checkable.</div><div class="ex"><div class="exhd">Worked example &mdash; the same task, attempted both ways</div><div class="exgiven">Decide whether an email is spam. A symbolic system is given rules; a statistical one is given labelled examples. Watch what happens when a new trick arrives.</div><ol class="exsteps"><li><div class="exb"><span class="exl">Symbolic: write the rule</span><span class="exw">IF subject contains “FREE” AND sender not in contacts THEN spam</span></div></li><li><div class="exb"><span class="exl">Test it on “FREE money now”</span><span class="exw">rule fires &#8594; <b>spam</b> &nbsp;&#10003; and you can point at the exact rule that decided it</span></div></li><li><div class="exb"><span class="exl">Now the spammer writes “F R E E money now”</span><span class="exw">the substring “FREE” is absent &#8594; rule does not fire &#8594; <b>delivered</b> &nbsp;&#10007;</span></div></li><li><div class="exb"><span class="exl">Patch it</span><span class="exw">add a rule for spaced letters&hellip; then for “FR33”, “F.R.E.E”, “&#402;ree” &mdash; the exceptions never end</span></div></li><li><div class="exb"><span class="exl">Statistical: show it 50 000 labelled emails instead</span><span class="exw">the model learns that unusual character spacing <i>itself</i> correlates with spam, across every variant at once &#8594; <b>spam</b> &nbsp;&#10003;</span></div></li><li><div class="exb"><span class="exl">But now ask why</span><span class="exw">the answer is a weighted sum over thousands of features &mdash; <b>no single rule to point at</b></span></div></li></ol><div class="exans">The symbolic system is <b>auditable but brittle</b>; the statistical one is <b>robust but opaque</b>. Neither property is optional in a real filter, which is why production systems combine them.</div></div></div></section>
+<section id="mltypes"><div class="wrap"><h2><span class="num">2</span>Machine learning and its three types</h2><p class="lede">What distinguishes them is not the algorithm &mdash; it is what feedback the system gets.</p><div class="why"><div class="whyhd">Why this, and why not something else</div><div class="whygrid"><div class="wq w1"><h5>Why we do this</h5><p>Which of the three you are doing determines <b>everything else</b> &mdash; what data you must collect, what it will cost, which algorithms are even available, and how you will know whether it worked. It is the first decision on any project, and it is decided by <i>what feedback you can get</i>, not by which algorithm sounds best.</p></div><div class="wq w2"><h5>Why not just do the simpler thing?</h5><p><b>“Why not just use supervised learning for everything? It performs best.”</b> It does &mdash; when you have labels. The catch is that labels are expensive and often impossible: labelling a million customers by “segment” requires someone to first decide what the segments <i>are</i>, which is the very thing you were trying to find out. And for a drone learning to land, nobody can write down the correct motor command for every situation, so there is nothing to supervise with.</p></div><div class="wq w3"><h5>What goes wrong if you skip it</h5><p>You spend three months and a labelling budget on a problem that needed no labels at all — or, worse, you invent the labels yourself, the model learns your assumptions back, and you mistake that for a discovery.</p></div></div></div><div class="grid"><div class="card"><h4>Supervised</h4><p>Every example comes with the right answer. The system learns the mapping from input to answer. <i>Spam or not, price of a house, which digit is this.</i></p></div><div class="card"><h4>Unsupervised</h4><p>No answers at all. The system is asked what structure exists. <i>Customer segments, topics in documents, which transactions look unusual.</i></p></div><div class="card"><h4>Reinforcement</h4><p>No answers, but a reward after acting. The system learns a policy by trying things. <i>Game playing, robot control, scheduling.</i></p></div></div><h3>Which type is this problem?</h3><p class="lede">Click a scenario to see which kind of learning it needs, and why.</p><div class="viz" id="wrap-mlq"><svg id="svg-mlq" viewBox="0 0 560 300"></svg><div class="controls" style="margin:10px 0 0;justify-content:center;flex-wrap:wrap;gap:6px"><button class="ghost" data-ml="0">Flagging fraud, 10k labelled cases</button><button class="ghost" data-ml="1">Grouping 2M customers</button><button class="ghost" data-ml="2">Teaching a drone to land</button><button class="ghost" data-ml="3">Predicting tomorrow's demand</button></div><div class="status" id="st-mlq"></div></div><div class="warn"><b class="hd">Semi-supervised and self-supervised</b><br>Real projects are rarely pure. <b>Semi-supervised</b> learning uses a small labelled set alongside a large unlabelled one. <b>Self-supervised</b> learning invents the labels from the data itself &mdash; hide a word and predict it, hide part of an image and reconstruct it. That last idea is how every large language model is trained, and it is why they can use text that nobody ever annotated.</div><div class="ex"><div class="exhd">Worked example &mdash; reading the task type off the data</div><div class="exgiven">Four projects. In each case, decide the learning type from what feedback is available &mdash; and note the cost that follows from it.</div><ol class="exsteps"><li><div class="exb"><span class="exl">10 000 past fraud cases, each confirmed or cleared</span><span class="exw">the answer is attached to every row &#8594; <b>supervised</b>. Cost: the labelling already happened, so it is free here</span></div></li><li><div class="exb"><span class="exl">2 million customers, nothing annotated</span><span class="exw">no answer exists, and nobody can define the “correct” segment &#8594; <b>unsupervised</b></span></div></li><li><div class="exb"><span class="exl">A drone that must learn to land on a moving platform</span><span class="exw">no correct motor command is known for each state, but each attempt can be scored &#8594; <b>reinforcement</b></span></div></li><li><div class="exb"><span class="exl">Tomorrow's electricity demand</span><span class="exw">yesterday's demand was recorded, so every past day is a labelled example &#8594; <b>supervised regression</b>, not clustering</span></div></li><li><div class="exb"><span class="exl">The trap in case 4</span><span class="exw">it <i>looks</i> like time-series pattern finding, but it has labels &mdash; so treating it as unsupervised would discard the very information that makes it easy</span></div></li><li><div class="exb"><span class="exl">The one-line test</span><span class="exw"><i>for one training example, do I have the answer?</i> Yes &#8594; supervised. No, but I can score an action &#8594; reinforcement. Neither &#8594; unsupervised</span></div></li></ol><div class="exans">Case 4 is the instructive one: <b>having labels and not using them</b> is as much a mistake as needing labels you do not have.</div></div></div></section>
+<section id="deep"><div class="wrap"><h2><span class="num">3</span>Introduction to deep learning</h2><p class="lede">A neural network is a stack of simple units. The reason depth matters is that a single layer provably cannot represent some very simple functions.</p><div class="why"><div class="whyhd">Why this, and why not something else</div><div class="whygrid"><div class="wq w1"><h5>Why we do this</h5><p>Depth is not a performance tweak &mdash; it changes <b>what the network can represent at all</b>. A single layer can only separate classes with a straight line, and the XOR example below is a four-point problem that it <i>provably</i> cannot solve. One hidden layer fixes it, by building new features and solving the problem in terms of those instead of the raw inputs.</p></div><div class="wq w2"><h5>Why not just do the simpler thing?</h5><p><b>“Why not just use a wider single layer, or a simpler model?”</b> Width does not help: no number of neurons in one layer creates a curved boundary, so XOR stays unsolvable however wide you make it. Only <i>depth</i> adds that. But the reverse is also true &mdash; <b>deep learning is not the default answer</b>. On tabular data of a few thousand rows, logistic regression or gradient boosting usually beats a neural network, trains in seconds, and can be explained to a stakeholder.</p></div><div class="wq w3"><h5>What goes wrong if you skip it</h5><p>Two symmetric failures. Reach for a single layer or a linear model on a problem that is not linearly separable and it will never work, no matter how long you train it or how much data you add — the limit is mathematical, not practical. Reach for deep learning on a small tabular dataset and you get a slower, less accurate, unexplainable model than the thirty-line alternative.</p></div></div></div><div class="formula"><span class="flabel">A single neuron</span><div class="math"><i>z</i> = <span class="bigop"><span class="lim"><i>n</i></span><span class="glyph">&#8721;</span><span class="lim"><i>i</i>=1</span></span>&nbsp;<i>w</i><sub><i>i</i></sub><i>x</i><sub><i>i</i></sub> + <i>b</i>,&nbsp;&nbsp;&nbsp;&nbsp;<i>a</i> = <i>&#963;</i><span class="paren">(</span><i>z</i><span class="paren">)</span> = <span class="frac"><span class="num">1</span><span class="den">1 + <i>e</i><sup>&#8722;<i>z</i></sup></span></span></div><small>One unit: a weighted sum of its inputs, a bias, and a non-linear squashing function. Everything else is copies of this.</small></div><h3>XOR &mdash; the function that killed the perceptron</h3><p class="lede">XOR is 1 when exactly one input is 1. No straight line separates the two classes, so no single neuron can compute it &mdash; a result that stalled neural network research for years. Add <b>one hidden layer</b> and it becomes easy.</p><div class="viz" id="wrap-xor"><div class="controls"><button class="ghost" data-act="back" data-viz="xor">&#9664; Back</button><button data-act="step" data-viz="xor">Step &#9654;</button><button class="ghost" data-act="auto" data-viz="xor">Auto-play</button><button class="ghost" data-act="reset" data-viz="xor">Reset</button><span class="stepcount" id="sc-xor">step <em>0</em> of 0</span></div><svg id="svg-xor" viewBox="0 0 560 340"></svg><div class="status" id="st-xor"></div></div><h3>And how the weights get found in the first place</h3><p class="lede">Nobody sets those weights by hand. Gradient descent does it: measure how wrong you are, work out which direction reduces the error, take a small step that way, repeat. Below, a single weight <i>w</i> is learned from one training example.</p><div class="viz" id="wrap-gd"><div class="controls"><button class="ghost" data-act="back" data-viz="gd">&#9664; Back</button><button data-act="step" data-viz="gd">Step &#9654;</button><button class="ghost" data-act="auto" data-viz="gd">Auto-play</button><button class="ghost" data-act="reset" data-viz="gd">Reset</button><span class="stepcount" id="sc-gd">step <em>0</em> of 0</span></div><svg id="svg-gd" viewBox="0 0 560 330"></svg><div class="status" id="st-gd"></div></div><div class="formula"><span class="flabel">Why one neuron cannot do it</span><div class="math"><span class="op">no</span> <i>w</i><sub>1</sub>, <i>w</i><sub>2</sub>, <i>b</i> <span class="op">satisfy</span>:&nbsp;&nbsp;<i>b</i> &#8804; 0,&nbsp;&nbsp;<i>w</i><sub>1</sub> + <i>b</i> &gt; 0,&nbsp;&nbsp;<i>w</i><sub>2</sub> + <i>b</i> &gt; 0,&nbsp;&nbsp;<i>w</i><sub>1</sub> + <i>w</i><sub>2</sub> + <i>b</i> &#8804; 0</div><small><b>The proof.</b> Adding the two middle inequalities gives <i>w</i><sub>1</sub> + <i>w</i><sub>2</sub> + 2<i>b</i> &gt; 0. Combined with the last one, that forces <i>b</i> &gt; 0, contradicting the first. The system is inconsistent, so no single neuron exists.</small></div><div class="take"><b class="hd">What depth actually buys</b><br>The hidden layer builds <b>new features</b> &mdash; here, an OR-like unit and an AND-like unit &mdash; and the output layer solves the problem in terms of those instead of the raw inputs. That is the whole idea of deep learning: each layer re-represents the data so the next layer's job is easier. Enough layers and the features stop being hand-designed altogether.</div><div class="ex"><div class="exhd">Worked example &mdash; the XOR network, computed input by input</div><div class="exgiven">A 2&ndash;2&ndash;1 network. Hidden units <i>h</i><sub>1</sub> = <i>&#963;</i>(6<i>x</i><sub>1</sub> + 6<i>x</i><sub>2</sub> &#8722; 3) and <i>h</i><sub>2</sub> = <i>&#963;</i>(6<i>x</i><sub>1</sub> + 6<i>x</i><sub>2</sub> &#8722; 9); output <i>y</i> = <i>&#963;</i>(8<i>h</i><sub>1</sub> &#8722; 8<i>h</i><sub>2</sub> &#8722; 4).</div><ol class="exsteps"><li><div class="exb"><span class="exl">Input (0, 0)</span><span class="exw"><i>z</i><sub>1</sub> = &#8722;3 &#8594; <i>h</i><sub>1</sub> = 0.047; &nbsp;<i>z</i><sub>2</sub> = &#8722;9 &#8594; <i>h</i><sub>2</sub> = 0.000; &nbsp;<i>z</i> = &#8722;3.62 &#8594; <i>y</i> = <b>0.026</b> &#8594; 0 &nbsp;&#10003;</span></div></li><li><div class="exb"><span class="exl">Input (0, 1)</span><span class="exw"><i>z</i><sub>1</sub> = +3 &#8594; 0.953; &nbsp;<i>z</i><sub>2</sub> = &#8722;3 &#8594; 0.047; &nbsp;<i>z</i> = 8(0.953) &#8722; 8(0.047) &#8722; 4 = +3.24 &#8594; <i>y</i> = <b>0.962</b> &#8594; 1 &nbsp;&#10003;</span></div></li><li><div class="exb"><span class="exl">Input (1, 0)</span><span class="exw">identical by symmetry &#8594; <b>0.962</b> &#8594; 1 &nbsp;&#10003;</span></div></li><li><div class="exb"><span class="exl">Input (1, 1)</span><span class="exw"><i>z</i><sub>1</sub> = +9 &#8594; 1.000; &nbsp;<i>z</i><sub>2</sub> = +3 &#8594; 0.953; &nbsp;<i>z</i> = 8(1.000) &#8722; 8(0.953) &#8722; 4 = &#8722;3.62 &#8594; <b>0.026</b> &#8594; 0 &nbsp;&#10003;</span></div></li><li><div class="exb"><span class="exl">Now read what the hidden layer learned</span><span class="exw"><i>h</i><sub>1</sub> fires whenever <b>at least one</b> input is 1 &mdash; it is an OR unit. <i>h</i><sub>2</sub> fires only when <b>both</b> are &mdash; an AND unit</span></div></li><li><div class="exb"><span class="exl">And what the output does with them</span><span class="exw"><i>y</i> = <i>h</i><sub>1</sub> AND NOT <i>h</i><sub>2</sub> &mdash; which is exactly XOR</span></div></li></ol><div class="exans">All four correct. In terms of the two <b>new features</b> the hidden layer invented, the problem became linearly separable &mdash; and inventing such features is the entire purpose of depth.</div></div></div></section>
+<section id="dltypes"><div class="wrap"><h2><span class="num">4</span>Types and applications of deep learning</h2><p class="lede">Different data has different structure, and each architecture is a bet about what that structure is.</p><div class="why"><div class="whyhd">Why this, and why not something else</div><div class="whygrid"><div class="wq w1"><h5>Why we do this</h5><p>Each architecture is a <b>built-in assumption about the shape of your data</b>, and a correct assumption is worth an enormous amount of training data. A CNN already “knows” that a pattern means the same thing wherever it appears in an image; a plain network would have to learn that separately for every position, from examples. Choosing the right architecture means choosing what the model gets for free.</p></div><div class="wq w2"><h5>Why not just do the simpler thing?</h5><p><b>“Why not use one general network for everything, since they are universal approximators?”</b> They are &mdash; in theory, given unlimited data. In practice a fully connected network on a 224&times;224 image needs about 50 000 weights <i>per neuron</i> in the first layer alone and must learn translation invariance from scratch. A CNN encodes it structurally and uses a few hundred weights. “Can represent” and “can learn from the data you actually have” are completely different claims.</p></div><div class="wq w3"><h5>What goes wrong if you skip it</h5><p>The model trains, the loss goes down, and it needs ten to a hundred times more data to reach the same accuracy — or never reaches it. Nothing will error. It will simply be quietly, expensively worse than the right architecture would have been.</p></div></div></div><table><thead><tr><th>Architecture</th><th>The assumption it encodes</th><th>Used for</th></tr></thead><tbody><tr><td><b>CNN</b></td><td>nearby values are related, and a pattern means the same thing wherever it appears</td><td>images, video, spectrograms, medical scans</td></tr><tr><td><b>RNN / LSTM</b></td><td>the data is a sequence and order carries meaning</td><td>time series, speech, older translation systems</td></tr><tr><td><b>Transformer</b></td><td>any element may depend on any other, so learn which</td><td>language, code, increasingly vision and audio too</td></tr><tr><td><b>Autoencoder</b></td><td>the data lies on a lower-dimensional manifold</td><td>compression, denoising, anomaly detection</td></tr><tr><td><b>GAN / Diffusion</b></td><td>the data has a distribution worth sampling from</td><td>image and audio generation, synthetic data</td></tr><tr><td><b>GNN</b></td><td>the data is a graph and structure matters</td><td>molecules, social networks, recommendation</td></tr></tbody></table><h3>Why the Transformer displaced the RNN</h3><div class="viz" id="wrap-rnnvt"><svg id="svg-rnnvt" viewBox="0 0 560 270"></svg><div class="status" id="st-rnnvt"></div></div><div class="take"><b class="hd">One architecture, many modalities</b><br>The Transformer's assumption &mdash; <i>learn which elements relate to which</i> &mdash; turns out to be weak enough to fit almost any data you can turn into a sequence of tokens. That generality, more than any single benchmark, is why the same architecture now underpins text, images, audio and protein structure, and why foundation models became possible at all.</div><div class="ex"><div class="exhd">Worked example &mdash; why a CNN needs so many fewer parameters</div><div class="exgiven">A 224&times;224 RGB image, and a first layer of 64 units. Compare a fully connected layer with a convolutional one.</div><ol class="exsteps"><li><div class="exb"><span class="exl">Count the inputs</span><span class="exw">224 &#215; 224 &#215; 3 = <b>150 528</b> numbers per image</span></div></li><li><div class="exb"><span class="exl">Fully connected: each neuron sees every input</span><span class="exw">one neuron needs <b>150 528</b> weights</span></div></li><li><div class="exb"><span class="exl">For 64 such neurons</span><span class="exw">64 &#215; 150 528 = <b>9 633 792</b> parameters, in the first layer alone</span></div></li><li><div class="exb"><span class="exl">Convolutional: each filter is a 3&times;3 patch across 3 channels</span><span class="exw">3 &#215; 3 &#215; 3 = 27 weights + 1 bias = <b>28</b> per filter</span></div></li><li><div class="exb"><span class="exl">For 64 filters</span><span class="exw">64 &#215; 28 = <b>1 792</b> parameters &mdash; for the whole layer</span></div></li><li><div class="exb"><span class="exl">Compute the ratio</span><span class="exw"><span class="frac"><span class="num">9 633 792</span><span class="den">1 792</span></span> &#8776; <b>5 376&#215; fewer</b></span></div></li></ol><div class="exans">And the saving is not merely arithmetic. The dense layer would have to <b>learn separately</b> that a cat in the top-left is still a cat; the CNN gets that for free because the same 28 weights are applied everywhere. <b>Fewer parameters and a better assumption</b> &mdash; which is what choosing an architecture buys you.</div></div></div></section>
+<section id="foundation"><div class="wrap"><h2><span class="num">5</span>Foundation models and modern paradigms</h2><p class="lede">The change was not a better architecture. It was a change in <b>what you train</b> and <b>how often</b>.</p><div class="why"><div class="whyhd">Why this, and why not something else</div><div class="whygrid"><div class="wq w1"><h5>Why we do this</h5><p>Pre-training is enormously expensive and happens <b>once</b>; adapting that model to a new task is cheap and happens constantly. That single shift in where the cost sits is why a student can now build something in an afternoon that would have needed a research team and a labelled dataset ten years ago. It is an economic change, not an algorithmic one.</p></div><div class="wq w2"><h5>Why not just do the simpler thing?</h5><p><b>“Why not train our own model on our own data? It would fit us better.”</b> Occasionally true and usually not worth it: you would need a comparable corpus, comparable compute, and the expertise to use both. Start by <b>prompting</b> an existing model, then add <b>retrieval</b>, then <b>fine-tune</b> only if you can say precisely what the cheaper options failed at. Going straight to training from scratch is the most common way to spend a year and lose.</p></div><div class="wq w3"><h5>What goes wrong if you skip it</h5><p>You rebuild something that already exists, badly. Months of GPU time and data collection to reach a model worse than what a well-written prompt would have given you on day one — and you only discover it at the end, when you finally compare against the baseline you skipped.</p></div></div></div><h3>The old way and the new way</h3><div class="viz" id="wrap-found"><svg id="svg-found" viewBox="0 0 560 300"></svg><div class="status" id="st-found"></div></div><div class="formula"><span class="flabel">The economics</span><div class="math"><span class="op">pre-train once</span>&nbsp;&#8594;&nbsp;<span class="op">adapt many times</span>:&nbsp;&nbsp;<span class="op">cost</span> = <i>C</i><sub><span class="op">pre</span></sub> + <i>k</i> &#183; <i>C</i><sub><span class="op">adapt</span></sub>,&nbsp;&nbsp;&nbsp;<i>C</i><sub><span class="op">adapt</span></sub> &#8810; <i>C</i><sub><span class="op">pre</span></sub></div><small>Pre-training is enormously expensive and happens once. Adapting to a new task is cheap, so the more tasks <i>k</i> you have, the better the economics look &mdash; which is exactly why this paradigm took over.</small></div><table><thead><tr><th>Adaptation method</th><th>What changes</th><th>Cost</th></tr></thead><tbody><tr><td><b>Prompting</b></td><td>nothing &mdash; you just ask well</td><td>near zero</td></tr><tr><td><b>Few-shot prompting</b></td><td>nothing; examples go in the prompt</td><td>near zero</td></tr><tr><td><b>RAG</b></td><td>nothing; relevant documents go in the prompt</td><td>low, plus an index to maintain</td></tr><tr><td><b>LoRA / adapters</b></td><td>a small number of added weights</td><td>modest</td></tr><tr><td><b>Full fine-tuning</b></td><td>all weights</td><td>high; needs real data and real compute</td></tr></tbody></table><div class="grid"><div class="card"><h4>Multimodal AI</h4><p>One model handling text, images and audio together, because they are all encoded as tokens in a shared space. Lets you ask a question <i>about</i> a picture.</p></div><div class="card"><h4>Agentic AI</h4><p>The model does not just answer &mdash; it plans, calls tools, observes the result and decides what to do next. The hard parts are reliability over long chains and knowing when to stop.</p></div><div class="card"><h4>Edge AI</h4><p>Inference on the device. Chosen for latency, privacy and working without a network, not for accuracy.</p></div><div class="card"><h4>Tiny AI (TinyML)</h4><p>Models small enough for a microcontroller &mdash; kilobytes of memory, running on a battery for months. Keyword spotting and vibration monitoring live here.</p></div></div><div class="ex"><div class="exhd">Worked example &mdash; when does pre-training actually pay off?</div><div class="exgiven">Training a model from scratch costs about &#8377;40 000 of compute and data work per task. Pre-training one foundation model costs &#8377;10 lakh, after which adapting it to a task costs about &#8377;500.</div><ol class="exsteps"><li><div class="exb"><span class="exl">The old way, for <i>k</i> tasks</span><span class="exw">cost = 40 000 <i>k</i></span></div></li><li><div class="exb"><span class="exl">The foundation-model way</span><span class="exw">cost = 10 00 000 + 500<i>k</i></span></div></li><li><div class="exb"><span class="exl">For a single task</span><span class="exw">scratch &#8377;40 000 versus foundation &#8377;10 00 500 &#8594; <b>scratch wins by far</b></span></div></li><li><div class="exb"><span class="exl">For 5 tasks</span><span class="exw">&#8377;2 00 000 versus &#8377;10 02 500 &#8594; scratch still wins</span></div></li><li><div class="exb"><span class="exl">Find the break-even point</span><span class="exw">40 000<i>k</i> = 10 00 000 + 500<i>k</i> &#8594; 39 500<i>k</i> = 10 00 000 &#8594; <i>k</i> &#8776; <b>25 tasks</b></span></div></li><li><div class="exb"><span class="exl">For 100 tasks</span><span class="exw">&#8377;40 00 000 versus &#8377;10 50 000 &#8594; <b>foundation wins almost 4-fold</b></span></div></li></ol><div class="exans">The paradigm is not better algorithms &mdash; it is <b>amortisation</b>. Below about 25 tasks it does not pay; above it, it pays enormously. That is why it took over in organisations with many tasks and not in single-purpose projects.</div></div></div></section>
+<section id="edge"><div class="wrap"><h2><span class="num">6</span>From cloud to microcontroller</h2><p class="lede">The same task can run in four very different places, and the trade-off is rarely about accuracy.</p><div class="why"><div class="whyhd">Why this, and why not something else</div><div class="whygrid"><div class="wq w1"><h5>Why we do this</h5><p>Some decisions have a <b>deadline measured in milliseconds</b>. A robot deciding whether to brake, a hearing aid suppressing noise, a sensor in a basement with no network &mdash; none of these can wait for a round trip to a data centre. Running the model on the device itself is what makes those applications possible at all.</p></div><div class="wq w2"><h5>Why not just do the simpler thing?</h5><p><b>“Why not always use the biggest, most accurate model in the cloud?”</b> Because accuracy is not the binding constraint here &mdash; <b>time</b> is. A 98% model that answers in 260&nbsp;ms is <i>useless</i> for a 20&nbsp;ms control loop, while a 79% model answering in 4&nbsp;ms is usable. There are also two constraints accuracy cannot address at all: data that must not leave the device for privacy reasons, and devices with no reliable connection.</p></div><div class="wq w3"><h5>What goes wrong if you skip it</h5><p>The robot hits the obstacle. It correctly identified it — 180&nbsp;ms after it needed to. This is the case where a <b>worse model is the right engineering decision</b>, and it is genuinely counter-intuitive until you have seen the latency budget written down.</p></div></div></div><div class="viz" id="wrap-edge"><svg id="svg-edge" viewBox="0 0 560 320"></svg><div class="status" id="st-edge"></div></div><div class="take"><b class="hd">Latency is a correctness requirement, not a nicety</b><br>A model that must decide whether to brake cannot wait 200&nbsp;ms for a network round trip, and a device in a factory basement may have no network at all. In those settings a smaller, less accurate model that answers in 10&nbsp;ms on the device beats a better one in the cloud &mdash; which is why quantisation, pruning and distillation are engineering disciplines in their own right.</div><div class="ex"><div class="exhd">Worked example &mdash; does the model fit inside the control loop?</div><div class="exgiven">A robot moving at 1.5 m/s runs its control loop at 50 Hz and must stop for obstacles. Cloud model: 98% accurate, 260 ms round trip. On-device model: 88% accurate, 18 ms.</div><ol class="exsteps"><li><div class="exb"><span class="exl">Time available per cycle</span><span class="exw"><span class="frac"><span class="num">1</span><span class="den">50</span></span> s = <b>20 ms</b> for sense, decide and act together</span></div></li><li><div class="exb"><span class="exl">Cloud model against that budget</span><span class="exw">260 ms &#8594; misses <span class="frac"><span class="num">260</span><span class="den">20</span></span> = <b>13 consecutive cycles</b></span></div></li><li><div class="exb"><span class="exl">Convert to distance travelled while blind</span><span class="exw">1.5 m/s &#215; 0.260 s = <b>0.39 m</b></span></div></li><li><div class="exb"><span class="exl">On-device model</span><span class="exw">18 ms &lt; 20 ms &#8594; fits, with 2 ms spare</span></div></li><li><div class="exb"><span class="exl">Its blind distance</span><span class="exw">1.5 &#215; 0.018 = <b>0.027 m</b> &mdash; under 3 cm</span></div></li><li><div class="exb"><span class="exl">Weigh the two failures</span><span class="exw">the 88% model mis-classifies 12 obstacles in 100; the 98% model mis-classifies 2 &mdash; but is <b>39 cm late</b> on all of them</span></div></li></ol><div class="exans"><b>39 cm versus 3 cm.</b> The less accurate model is the correct choice, because latency here is a <i>correctness</i> constraint and accuracy is only a quality one. This single calculation is the whole argument for edge and tiny AI.</div></div></div></section>
+<footer><div class="wrap">CSE276 &middot; Artificial Intelligence Foundations &middot; Unit IV &mdash; Evolution of Modern Artificial Intelligence &mdash; Visual Walkthrough &middot;
+School of Computer Science &amp; Engineering &middot; Session 2026&ndash;27</div></footer>
+<script>
+
+"use strict";
+var NS="http://www.w3.org/2000/svg";
+var C={navy:"#182B49",cyan:"#0096C7",purple:"#5C2D91",orange:"#ED771F",
+       green:"#107C41",red:"#B42318",grey:"#9AA7B5",rule:"#D8DFE8",ice:"#7EC5E2"};
+function el(p,n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);
+  p.appendChild(e);return e;}
+function clr(s){while(s.firstChild)s.removeChild(s.firstChild);}
+function line(s,A,B,col,w,dash){var l=el(s,"line",{x1:A.x,y1:A.y,x2:B.x,y2:B.y,
+  stroke:col,"stroke-width":w,"stroke-linecap":"round"});
+  if(dash)l.setAttribute("stroke-dasharray",dash);return l;}
+function dot(s,p,r,fill){return el(s,"circle",{cx:p.x,cy:p.y,r:r,fill:fill});}
+function nodeC(s,p,label,fill,r){r=r||17;
+  el(s,"circle",{cx:p.x,cy:p.y,r:r,fill:fill,stroke:"#fff","stroke-width":2.5});
+  var t=el(s,"text",{x:p.x,y:p.y+5,"text-anchor":"middle",fill:"#fff","font-size":"14",
+    "font-weight":"600","font-family":"Segoe UI,sans-serif"});t.textContent=label;}
+function txt(s,x,y,str,col,size,anchor,weight){
+  var t=el(s,"text",{x:x,y:y,"text-anchor":anchor||"middle",fill:col||C.navy,
+    "font-size":size||12,"font-weight":weight||"600","font-family":"Segoe UI,sans-serif"});
+  t.textContent=str;return t;}
+function box(s,x,y,w,h,fill,stroke,rx){return el(s,"rect",{x:x,y:y,width:w,height:h,
+  rx:rx===undefined?6:rx,fill:fill,stroke:stroke||"none","stroke-width":1.6});}
+function badge(s,A,B,str){var mx=(A.x+B.x)/2,my=(A.y+B.y)/2;
+  el(s,"circle",{cx:mx,cy:my,r:11,fill:"#fff",stroke:C.rule});
+  txt(s,mx,my+4,str,C.navy,12);}
+function arrow(s,A,B,col,w){
+  var dx=B.x-A.x,dy=B.y-A.y,L=Math.sqrt(dx*dx+dy*dy);if(!L)return;
+  var ux=dx/L,uy=dy/L,ex=B.x-ux*20,ey=B.y-uy*20;
+  el(s,"line",{x1:A.x+ux*20,y1:A.y+uy*20,x2:ex,y2:ey,stroke:col,"stroke-width":w||2.6,
+    "stroke-linecap":"round"});
+  var a=8;
+  el(s,"polygon",{points:[ex+","+ey,(ex-ux*a-uy*a*0.6)+","+(ey-uy*a+ux*a*0.6),
+    (ex-ux*a+uy*a*0.6)+","+(ey-uy*a-ux*a*0.6)].join(" "),fill:col});}
+
+/* ---- generic step player, wired to data-viz buttons ---- */
+var VIZ={};
+function register(id,build,render){
+  VIZ[id]={build:build,render:render,steps:[],i:0,timer:null};
+  resetViz(id);
+}
+function resetViz(id){var m=VIZ[id];if(!m)return;
+  m.steps=m.build();m.i=0;stopViz(id);drawViz(id);}
+function drawViz(id){var m=VIZ[id];
+  m.render(document.getElementById("svg-"+id),m.steps[m.i],m.i,m.steps);
+  var st=document.getElementById("st-"+id);
+  if(st)st.innerHTML=m.steps[m.i].msg||"";
+  syncViz(id);}
+/* keep the counter and the buttons honest about where we are */
+function syncViz(id){var m=VIZ[id],last=m.steps.length-1;
+  function btn(a){return document.querySelector(
+    'button[data-act="'+a+'"][data-viz="'+id+'"]');}
+  var b;
+  if((b=btn("step")))b.disabled=m.i>=last;
+  if((b=btn("back")))b.disabled=m.i<=0;
+  var sc=document.getElementById("sc-"+id);
+  if(sc)sc.innerHTML="step <em>"+m.i+"</em> of "+last;
+  var wrap=document.getElementById("wrap-"+id);
+  if(wrap){if(m.i>=last&&last>0)wrap.classList.add("done");
+           else wrap.classList.remove("done");}}
+function stepViz(id){var m=VIZ[id];
+  if(m.i<m.steps.length-1){m.i++;drawViz(id);}
+  if(m.i>=m.steps.length-1)stopViz(id);}
+/* step backwards, so a student can flip between before and after */
+function stepBackViz(id){var m=VIZ[id];
+  if(m.i>0){stopViz(id);m.i--;drawViz(id);}}
+function stopViz(id){var m=VIZ[id];if(m.timer){clearInterval(m.timer);m.timer=null;}
+  var b=document.querySelector('button[data-act="auto"][data-viz="'+id+'"]');
+  if(b)b.textContent="Auto-play";}
+document.addEventListener("click",function(e){
+  var b=e.target.closest?e.target.closest("button[data-viz]"):null;if(!b)return;
+  var id=b.getAttribute("data-viz"),act=b.getAttribute("data-act"),m=VIZ[id];if(!m)return;
+  if(act==="step")stepViz(id);
+  else if(act==="back")stepBackViz(id);
+  else if(act==="reset")resetViz(id);
+  else if(act==="auto"){
+    if(m.timer){stopViz(id);return;}
+    if(m.i>=m.steps.length-1)resetViz(id);
+    b.textContent="Pause";
+    m.timer=setInterval(function(){if(m.i>=m.steps.length-1)stopViz(id);else stepViz(id);},950);
+  }});
+
+
+/* ---------- symbolic vs statistical ---------- */
+(function(){
+  var svg=document.getElementById("svg-symstat"),st=document.getElementById("st-symstat");
+  var W=560;
+  txt(svg,W/2,22,"task: decide whether an email is spam",C.navy,12.5);
+  box(svg,28,40,248,196,"#F3EEFB",C.purple,7);
+  txt(svg,152,62,"SYMBOLIC — you write the rules",C.purple,11);
+  var rules=["IF subject contains “FREE”","   AND sender not in contacts","THEN spam",
+             "IF body has > 5 links","THEN spam","IF … (and 400 more rules)"];
+  rules.forEach(function(r,i){
+    txt(svg,44,84+i*20,r,i===5?C.red:C.navy,10.5,"start",i===5?"700":"500");});
+  txt(svg,152,222,"breaks on “F R E E”",C.red,10.5);
+  box(svg,284,40,248,196,"#E6F3FA",C.cyan,7);
+  txt(svg,408,62,"STATISTICAL — you show examples",C.cyan,11);
+  var ex=[["“FREE money now”","spam",1],["“meeting at 4”","ok",0],
+          ["“F R E E offer”","spam",1],["“invoice attached”","ok",0],
+          ["… 50 000 more","",2]];
+  ex.forEach(function(e,i){
+    var y=80+i*21;
+    txt(svg,298,y,e[0],e[2]===2?C.grey:C.navy,10.5,"start",e[2]===2?"400":"500");
+    if(e[1])box(svg,470,y-11,50,16,e[2]?"#FBE9E7":"#E4F6EB",null,8);
+    if(e[1])txt(svg,495,y,e[1],e[2]?C.red:C.green,9.5);});
+  txt(svg,408,222,"generalises to unseen tricks",C.green,10.5);
+  st.innerHTML="The symbolic system is <b>auditable</b> — you can point at the exact rule "+
+    "that fired and argue about it. The statistical one is <b>robust</b> — it handles the "+
+    "spacing trick nobody wrote a rule for. Neither property is optional in a real system, "+
+    "which is why modern practice mixes them.";
+})();
+/* ---------- which ML type ---------- */
+(function(){
+  var svg=document.getElementById("svg-mlq"),st=document.getElementById("st-mlq");
+  var Q=[{t:"Flagging fraud from 10 000 labelled past cases",
+          a:"Supervised",c:C.cyan,
+          w:"Every historical case already carries the answer — fraudulent or not. The task is to learn the mapping from transaction to label.",
+          watch:"The classes are wildly imbalanced, so accuracy is useless here — judge it on precision and recall."},
+         {t:"Grouping 2 million customers for marketing",
+          a:"Unsupervised",c:C.purple,
+          w:"Nobody has labelled anyone. You are asking what natural groups exist, which is clustering.",
+          watch:"The algorithm will always return groups. Whether they mean anything is a separate judgement."},
+         {t:"Teaching a drone to land on a moving platform",
+          a:"Reinforcement",c:C.orange,
+          w:"There is no dataset of correct control inputs. The drone acts, observes the outcome and is rewarded for landing well.",
+          watch:"Train in simulation first — exploration on real hardware destroys hardware."},
+         {t:"Predicting tomorrow's electricity demand",
+          a:"Supervised",c:C.cyan,
+          w:"Yesterday's demand is recorded, so every past day is a labelled example. This is regression, not classification.",
+          watch:"Never shuffle the split — train on the past, test on the future, or you leak."}];
+  var cur=0;
+  function draw(){
+    var q=Q[cur];clr(svg);var W=560;
+    box(svg,34,30,W-68,58,"#F7FAFC",C.rule,7);
+    txt(svg,W/2,56,"scenario",C.grey,10.5);
+    txt(svg,W/2,76,q.t,C.navy,12.5);
+    box(svg,180,104,200,46,q.c,null,8);
+    txt(svg,280,133,q.a.toUpperCase(),"#fff",15);
+    txt(svg,W/2,174,"why",C.grey,10.5);
+    wrap(q.w,W/2,194,C.navy,11.5,66);
+    txt(svg,W/2,244,"watch out",C.orange,10.5);
+    wrap(q.watch,W/2,264,C.grey,11,70);
+    st.innerHTML="<b>"+q.a+".</b> "+q.w;}
+  function wrap(s,cx,y,col,size,per){
+    var words=s.split(" "),line="",ln=0;
+    words.forEach(function(w){
+      if((line+" "+w).length>per){txt(svg,cx,y+ln*17,line,col,size,"middle","500");line=w;ln++;}
+      else line=line?line+" "+w:w;});
+    if(line)txt(svg,cx,y+ln*17,line,col,size,"middle","500");}
+  document.querySelectorAll("button[data-ml]").forEach(function(b){
+    b.addEventListener("click",function(){cur=+b.getAttribute("data-ml");
+      document.querySelectorAll("button[data-ml]").forEach(function(o){o.className="ghost";});
+      b.className="";draw();});});
+  draw();
+})();
+/* ---------- XOR network ---------- */
+(function(){
+  function sig(z){return 1/(1+Math.exp(-z));}
+  var IN=[[0,0],[0,1],[1,0],[1,1]];
+  function fwd(x){
+    var h1=sig(6*x[0]+6*x[1]-3),h2=sig(6*x[0]+6*x[1]-9),y=sig(8*h1-8*h2-4);
+    return{h1:h1,h2:h2,y:y};}
+  function build(){
+    var out=[{k:-1,msg:"A 2–2–1 network. h₁ = σ(6x₁ + 6x₂ − 3) behaves like OR; h₂ = σ(6x₁ + 6x₂ − 9) behaves like AND; the output computes h₁ AND NOT h₂. Step through all four inputs."}];
+    IN.forEach(function(x,k){
+      var r=fwd(x),want=x[0]^x[1];
+      out.push({k:k,r:r,
+        msg:"<b>x = ("+x[0]+", "+x[1]+")</b> → z₁ = "+(6*x[0]+6*x[1]-3)+
+          ", h₁ = <b>"+r.h1.toFixed(4)+"</b>; z₂ = "+(6*x[0]+6*x[1]-9)+
+          ", h₂ = <b>"+r.h2.toFixed(4)+"</b>; then z = 8("+r.h1.toFixed(3)+") − 8("+
+          r.h2.toFixed(3)+") − 4 = "+(8*r.h1-8*r.h2-4).toFixed(3)+" → y = <b>"+
+          r.y.toFixed(4)+"</b>, which rounds to "+(r.y>0.5?1:0)+". XOR says "+want+". ✓"});});
+    out.push({k:9,done:1,
+      msg:"<b>All four correct.</b> Look at the hidden layer: h₁ fires for “at least one input” and h₂ fires for “both inputs”. In terms of those two <i>new</i> features the problem is linearly separable — and building such features is exactly what a hidden layer is for."});
+    return out;}
+  function render(svg,s){
+    clr(svg);var W=560;
+    /* the four points, showing non-separability */
+    var px=44,ps=108,py=48;
+    box(svg,px,py,ps,ps,"#FAFCFE",C.rule,5);
+    txt(svg,px+ps/2,py-10,"XOR is not separable",C.grey,10.5);
+    IN.forEach(function(x,k){
+      var cx=px+14+x[0]*(ps-28),cy=py+ps-14-x[1]*(ps-28),on=x[0]^x[1];
+      dot(svg,{x:cx,y:cy},8,on?C.green:C.red);
+      if(s.k===k)el(svg,"circle",{cx:cx,cy:cy,r:13,fill:"none",stroke:C.navy,"stroke-width":2});});
+    line(svg,{x:px+6,y:py+ps-34},{x:px+ps-6,y:py+34},"#D8DFE8",2,"4 3");
+    txt(svg,px+ps/2,py+ps+16,"no line works",C.red,10,"middle","600");
+    /* network */
+    var nx=[232,352,474],ny=[92,160];
+    var vals=s.r||{};
+    function unit(x,y,lbl,val,col){
+      el(svg,"circle",{cx:x,cy:y,r:25,fill:val===undefined?"#F2F5F9":
+        ("rgba("+(col===C.cyan?"0,150,199":col===C.purple?"92,45,145":"237,119,31")+","+
+         (0.15+0.6*val).toFixed(3)+")"),stroke:col,"stroke-width":2.4});
+      txt(svg,x,y-3,lbl,C.navy,11.5);
+      if(val!==undefined)txt(svg,x,y+12,val.toFixed(3),C.navy,10);}
+    var xin=s.k>=0&&s.k<4?IN[s.k]:null;
+    [[nx[0],ny[0],"x₁"],[nx[0],ny[1],"x₂"]].forEach(function(u,i){
+      unit(u[0],u[1],u[2],xin?xin[i]:undefined,C.cyan);});
+    unit(nx[1],ny[0],"h₁",vals.h1,C.purple);
+    unit(nx[1],ny[1],"h₂",vals.h2,C.purple);
+    unit(nx[2],126,"y",vals.y,C.orange);
+    [[0,0],[0,1],[1,0],[1,1]].forEach(function(e){
+      line(svg,{x:nx[0]+25,y:ny[e[0]]},{x:nx[1]-25,y:ny[e[1]]},"#DDE4EC",1.8);});
+    line(svg,{x:nx[1]+25,y:ny[0]},{x:nx[2]-25,y:126},"#DDE4EC",1.8);
+    line(svg,{x:nx[1]+25,y:ny[1]},{x:nx[2]-25,y:126},"#DDE4EC",1.8);
+    txt(svg,nx[0],ny[1]+48,"input",C.grey,10,"middle","600");
+    txt(svg,nx[1],ny[1]+48,"hidden",C.grey,10,"middle","600");
+    txt(svg,nx[2],ny[1]+48,"output",C.grey,10,"middle","600");
+    txt(svg,nx[1],ny[0]-40,"OR-like",C.purple,9.5,"middle","600");
+    txt(svg,nx[1],ny[1]+34,"AND-like",C.purple,9.5,"middle","600");
+    /* truth table */
+    var tx=150,ty=222,cw=66;
+    ["x₁","x₂","h₁","h₂","y","XOR"].forEach(function(h,i){
+      txt(svg,tx+i*cw,ty,h,C.grey,10.5);});
+    IN.forEach(function(x,k){
+      var r=fwd(x),shown=s.k>=k||s.done,yy=ty+20+k*18;
+      var cells=[x[0],x[1],r.h1.toFixed(3),r.h2.toFixed(3),r.y.toFixed(3),x[0]^x[1]];
+      cells.forEach(function(c,i){
+        txt(svg,tx+i*cw,yy,shown?c:"·",
+            !shown?"#C8D2DC":(i===4?(r.y>0.5?C.green:C.red):(s.k===k?C.navy:C.grey)),
+            10.5,"middle",s.k===k?"700":"500");});});}
+  register("xor",build,render);
+})();
+/* ---------- gradient descent on one weight ---------- */
+(function(){
+  var X=3,Y=6,ETA=0.05;
+  function loss(w){var e=w*X-Y;return e*e;}
+  function grad(w){return 2*(w*X-Y)*X;}
+  function build(){
+    var w=1.0,out=[{w:w,hist:[w],
+      msg:"One training example: input x = 3, correct answer y = 6. The weight starts at <b>w = 1</b>, so the model predicts 1&times;3 = <b>3</b> when it should say 6. Loss = (3 &minus; 6)² = <b>9</b>."}];
+    var hist=[w];
+    for(var k=1;k<=6;k++){
+      var g=grad(w),L=loss(w),nw=w-ETA*g;
+      hist=hist.concat([nw]);
+      out.push({w:nw,hist:hist.slice(),g:g,prev:w,k:k,
+        msg:"<b>Step "+k+".</b> Gradient = 2(w&middot;3 &minus; 6)&middot;3 = <b>"+
+          g.toFixed(4)+"</b>. It is negative, so the loss falls if w <i>increases</i>. "+
+          "Move against the gradient: w ← "+w.toFixed(4)+" − 0.05("+g.toFixed(4)+
+          ") = <b>"+nw.toFixed(4)+"</b>, and the loss drops "+L.toFixed(5)+" → <b>"+
+          loss(nw).toFixed(5)+"</b>."});
+      w=nw;}
+    out.push({w:w,hist:hist.slice(),done:1,
+      msg:"<b>Converged.</b> w = "+w.toFixed(5)+", essentially the optimum of 2 — at which the model predicts 2&times;3 = 6 exactly. Notice the steps got <b>smaller automatically</b>: the gradient shrinks as the minimum nears, so no extra logic was needed to slow down."});
+    return out;}
+  function render(svg,s){
+    clr(svg);var W=560,L0=60,R=W-150,T0=28,B=238;
+    function PX(w){return L0+(w-0.5)/3.0*(R-L0);}
+    function PY(l){return B-Math.min(l,10)/10*(B-T0);}
+    /* the loss curve */
+    var d="";
+    for(var w=0.5;w<=3.5;w+=0.02){
+      var l=loss(w); if(l>10)continue;
+      d+=(d?"L":"M")+PX(w).toFixed(1)+","+PY(l).toFixed(1);}
+    el(svg,"path",{d:d,fill:"none",stroke:C.rule,"stroke-width":3});
+    line(svg,{x:L0,y:B},{x:R,y:B},C.rule,1.6);
+    line(svg,{x:PX(2),y:T0},{x:PX(2),y:B},"#CFE8D8",1.6,"4 3");
+    txt(svg,PX(2),B+16,"w = 2 (optimum)",C.green,10.5,"middle","600");
+    [1,2,3].forEach(function(t){txt(svg,PX(t),B+16,t===2?"":String(t),C.grey,10,"middle","400");});
+    /* the path taken */
+    (s.hist||[]).forEach(function(w2,i){
+      if(i)line(svg,{x:PX(s.hist[i-1]),y:PY(loss(s.hist[i-1]))},
+                    {x:PX(w2),y:PY(loss(w2))},"#F2D7C4",2);
+      dot(svg,{x:PX(w2),y:PY(loss(w2))},4,"#E8C3A0");});
+    /* the gradient arrow at the previous position */
+    if(s.prev!==undefined){
+      var px=PX(s.prev),py=PY(loss(s.prev));
+      arrow(svg,{x:px,y:py-26},{x:PX(s.w),y:py-26},C.orange,2.6);
+      txt(svg,(px+PX(s.w))/2,py-34,"step",C.orange,10);}
+    dot(svg,{x:PX(s.w),y:PY(loss(s.w))},9,s.done?C.green:C.orange);
+    txt(svg,PX(s.w),PY(loss(s.w))-16,"w = "+s.w.toFixed(3),
+        s.done?C.green:C.orange,11.5);
+    txt(svg,(L0+R)/2,B+36,"horizontal: the weight     vertical: the loss",
+        C.grey,10.5,"middle","400");
+    var bx=R+18;
+    txt(svg,bx,T0+14,"prediction",C.grey,10.5,"start","600");
+    txt(svg,bx,T0+34,"w × 3 = "+(s.w*3).toFixed(3),C.navy,13,"start","700");
+    txt(svg,bx,T0+62,"target",C.grey,10.5,"start","600");
+    txt(svg,bx,T0+82,"6",C.green,13,"start","700");
+    txt(svg,bx,T0+112,"loss",C.grey,10.5,"start","600");
+    txt(svg,bx,T0+132,loss(s.w).toFixed(5),
+        loss(s.w)<0.01?C.green:C.orange,14,"start","700");
+    if(s.g!==undefined){
+      txt(svg,bx,T0+162,"gradient",C.grey,10.5,"start","600");
+      txt(svg,bx,T0+182,s.g.toFixed(4),C.purple,13,"start","700");}}
+  register("gd",build,render);
+})();
+/* ---------- RNN vs Transformer ---------- */
+(function(){
+  var svg=document.getElementById("svg-rnnvt"),st=document.getElementById("st-rnnvt");
+  var W=560,wds=["The","cat","that","sat","…","was","hungry"];
+  txt(svg,W/2,20,"linking “cat” to “was” across the sentence",C.navy,12);
+  /* RNN row */
+  txt(svg,28,56,"RNN",C.orange,11.5,"start","700");
+  var x0=86,sp=66;
+  wds.forEach(function(w,i){
+    var x=x0+i*sp;
+    box(svg,x-27,46,54,24,i===1||i===5?"#FDEBD9":"#F7FAFC",C.rule,4);
+    txt(svg,x,63,w,C.navy,10.5);
+    if(i)arrow(svg,{x:x0+(i-1)*sp+27,y:58},{x:x-27,y:58},C.orange,1.8);});
+  txt(svg,W/2,88,"information must pass through every step — 6 hops, and it fades",
+      C.orange,10.5,"middle","500");
+  /* Transformer row */
+  txt(svg,28,146,"Transformer",C.purple,11.5,"start","700");
+  wds.forEach(function(w,i){
+    var x=x0+i*sp;
+    box(svg,x-27,136,54,24,i===1||i===5?"#F3EEFB":"#F7FAFC",C.rule,4);
+    txt(svg,x,153,w,C.navy,10.5);});
+  var a=x0+1*sp,b=x0+5*sp;
+  el(svg,"path",{d:"M"+a+",136 Q"+((a+b)/2)+",92 "+b+",136",fill:"none",
+    stroke:C.purple,"stroke-width":2.6});
+  wds.forEach(function(_,i){ if(i!==1&&i!==5){
+    var x=x0+i*sp;
+    el(svg,"path",{d:"M"+b+",136 Q"+((b+x)/2)+",114 "+x+",136",fill:"none",
+      stroke:"#DCD0EE","stroke-width":1.4});}});
+  txt(svg,W/2,180,"every token attends to every other — 1 hop, whatever the distance",
+      C.purple,10.5,"middle","500");
+  var rows=[["path length","O(n)","O(1)"],
+            ["parallel over the sequence?","no — step t needs step t−1","yes"],
+            ["cost per layer","O(n)","O(n²)"]];
+  rows.forEach(function(r,i){
+    var y=212+i*20;
+    txt(svg,208,y,r[0],C.grey,10.5,"end","600");
+    txt(svg,274,y,r[1],C.orange,10.5,"middle","700");
+    txt(svg,430,y,r[2],C.purple,10.5,"middle","700");});
+  st.innerHTML="The RNN's weakness is <b>distance</b>: a dependency n words apart has to "+
+    "survive n sequential updates, and gradients vanish along the way. Attention makes every "+
+    "pair one hop apart. The price is <b>O(n²)</b> work per layer — which is why long "+
+    "context windows are expensive, and why so much research goes into making attention cheaper.";
+})();
+/* ---------- foundation model economics ---------- */
+(function(){
+  var svg=document.getElementById("svg-found"),st=document.getElementById("st-found");
+  var W=560;
+  txt(svg,146,22,"the old way",C.orange,12);
+  txt(svg,418,22,"the foundation-model way",C.purple,12);
+  for(var i=0;i<3;i++){
+    var y=46+i*72;
+    box(svg,34,y,96,54,"#FDEBD9",C.orange,5);
+    txt(svg,82,y+22,"train from",C.navy,10);
+    txt(svg,82,y+38,"scratch",C.navy,10);
+    arrow(svg,{x:134,y:y+27},{x:170,y:y+27},C.orange,2);
+    box(svg,174,y+8,88,38,"#fff",C.rule,5);
+    txt(svg,218,y+32,"task "+(i+1),C.navy,11);
+    txt(svg,290,y+32,"₹₹₹",C.red,13,"middle","700");}
+  box(svg,320,46,96,126,"#F3EEFB",C.purple,5);
+  txt(svg,368,100,"pre-train",C.navy,11);
+  txt(svg,368,118,"ONCE",C.purple,12);
+  txt(svg,368,140,"₹₹₹₹₹",C.red,12);
+  for(i=0;i<3;i++){
+    var y2=50+i*42;
+    arrow(svg,{x:420,y:109},{x:452,y:y2+16},"#C9B8E0",1.8);
+    box(svg,456,y2,74,32,"#fff",C.rule,5);
+    txt(svg,493,y2+20,"task "+(i+1),C.navy,10.5);
+    txt(svg,543,y2+20,"₹",C.green,12,"middle","700");}
+  txt(svg,146,268,"cost grows linearly with the number of tasks",C.orange,10.5,"middle","500");
+  txt(svg,418,268,"one big cost, then almost free per task",C.purple,10.5,"middle","500");
+  line(svg,{x:300,y:40},{x:300,y:250},C.rule,1.4,"4 4");
+  st.innerHTML="Nothing here is a better algorithm. The shift is <b>where the cost sits</b>: "+
+    "one enormous self-supervised pre-training run on unlabelled data, then cheap adaptation "+
+    "per task. It only pays off when you have many tasks — which is precisely the situation "+
+    "most organisations are in.";
+})();
+/* ---------- cloud to microcontroller ---------- */
+(function(){
+  var svg=document.getElementById("svg-edge"),st=document.getElementById("st-edge");
+  var T=[{n:"Cloud GPU",sz:"175 B params",lat:260,pw:"300 W",col:C.purple,acc:98},
+         {n:"On-prem server",sz:"7 B params",lat:90,pw:"70 W",col:C.navy,acc:94},
+         {n:"Edge device",sz:"50 M params",lat:18,pw:"5 W",col:C.cyan,acc:88},
+         {n:"Microcontroller",sz:"60 KB model",lat:4,pw:"0.05 W",col:C.green,acc:79}];
+  var W=560,x0=150,bw=300,maxL=280;
+  txt(svg,x0+bw/2,22,"round-trip latency (ms) — shorter is better",C.grey,11);
+  T.forEach(function(t,i){
+    var y=42+i*62;
+    txt(svg,x0-12,y+16,t.n,t.col,11.5,"end","700");
+    txt(svg,x0-12,y+31,t.sz,C.grey,9.5,"end","400");
+    box(svg,x0,y+4,Math.max(5,bw*t.lat/maxL),24,t.col,null,4);
+    txt(svg,x0+Math.max(5,bw*t.lat/maxL)+8,y+21,t.lat+" ms",t.col,11,"start","700");
+    txt(svg,x0+bw+70,y+21,t.pw,C.grey,10.5,"start","500");
+    txt(svg,x0+bw+70,y+34,"acc "+t.acc+"%",C.grey,9.5,"start","400");});
+  txt(svg,x0+bw+70,34,"power",C.grey,10,"start","600");
+  line(svg,{x:x0+bw*20/maxL,y:36},{x:x0+bw*20/maxL,y:292},C.red,1.6,"4 3");
+  txt(svg,x0+bw*20/maxL,304,"20 ms — roughly the budget for a control loop",
+      C.red,10,"middle","600");
+  st.innerHTML="Accuracy falls from 98% to 79% as you move down the list — but only the "+
+    "bottom two meet a 20&nbsp;ms control budget. For a machine that has to stop for an "+
+    "obstacle, the 79% model that answers in 4&nbsp;ms is the <b>correct engineering choice</b> "+
+    "and the 98% model is unusable. That is the whole argument for edge and tiny AI.";
+})();
+
+</script>
+</body>
+</html>
