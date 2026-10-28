@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSE276 &middot; Artificial Intelligence Foundations Unit IV &mdash; Evolution of Modern AI &mdash; Numericals</title>
+<style>
+:root{--navy:#182B49;--navy2:#253E64;--cyan:#0096C7;--ice:#7EC5E2;--purple:#5C2D91;
+      --orange:#ED771F;--green:#107C41;--red:#B42318;--grey:#586476;--rule:#D8DFE8;
+      --bg:#F6F9FC;--card:#fff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--navy);
+     font:15px/1.65 "Segoe UI",system-ui,-apple-system,Arial,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+header{background:var(--navy);color:#fff;padding:28px 0 24px;border-bottom:4px solid var(--cyan)}
+header .eyebrow{color:var(--ice);font-size:12.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+header h1{margin:7px 0 6px;font-size:32px;font-weight:600;line-height:1.2}
+header p{margin:0;color:#C9D8E6;font-size:15.5px;max-width:860px}
+nav{background:var(--navy2);position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(24,43,73,.2)}
+nav ul{display:flex;flex-wrap:wrap;gap:2px;list-style:none;margin:0;padding:0}
+nav a{display:block;padding:11px 14px;color:#D8E6F2;text-decoration:none;font-size:13.5px;font-weight:600}
+nav a:hover{background:rgba(255,255,255,.13);color:#fff}
+section{padding:34px 0 12px;border-bottom:1px solid var(--rule)}
+h2{font-size:24px;margin:0 0 6px;font-weight:600}
+h2 .num{display:inline-block;background:var(--cyan);color:#fff;font-size:13px;
+        padding:3px 9px;border-radius:4px;margin-right:10px;vertical-align:3px}
+h3{font-size:17.5px;margin:24px 0 8px;font-weight:600;color:var(--navy)}
+.lede{color:var(--grey);font-size:15.5px;margin:0 0 16px;max-width:920px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+/* ---- formula sheet ---- */
+.fsheet{border:1px solid var(--rule);border-top:3px solid var(--navy);border-radius:4px;
+        background:var(--card);margin:18px 0;padding:15px 20px 8px}
+.fshd{font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;
+      color:var(--navy);margin-bottom:8px}
+.fst{width:100%;border-collapse:collapse;margin:0;font-size:14px;box-shadow:none}
+.fst td{border:0;border-top:1px solid #E1EAF3;padding:9px 8px;vertical-align:middle;
+        background:none}
+.fst tr:first-child td{border-top:0}
+.fst tbody tr:nth-child(even){background:none}
+td.fsn{width:23%;font-weight:600;color:var(--navy);font-size:13.5px}
+td.fsf{width:42%}
+td.fsf .math{font-size:16.5px;line-height:1.9;white-space:normal}
+td.fsw{color:var(--grey);font-size:13px}
+/* ---- the method ---- */
+.meth{border:1px solid var(--rule);border-left:3px solid var(--navy);border-radius:4px;
+      background:var(--card);margin:18px 0;padding:15px 20px 16px}
+.methd{font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;
+       color:var(--navy);margin-bottom:9px}
+.meth ol{margin:0;padding-left:22px}
+.meth li{font-size:14.8px;line-height:1.68;padding:4px 0;color:var(--navy)}
+.meth li::marker{color:var(--grey);font-weight:700}
+/* ---- practice ---- */
+.prac{border:1px solid var(--rule);border-radius:4px;background:var(--card);
+      margin:18px 0;padding:15px 20px 16px}
+.prhd{font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;
+      color:var(--navy);margin-bottom:10px;display:flex;align-items:center;gap:12px}
+.pall{margin-left:auto;font-size:12px;padding:5px 11px}
+.prac ol{margin:0;padding-left:22px}
+.prac>ol>li{padding:11px 0;border-top:1px solid #EEF2F6}
+.prac>ol>li:first-child{border-top:0}
+.prac li::marker{color:var(--grey);font-weight:700}
+/* Numericals pages run quiet: panels are white with a thin rule, and colour is
+   reserved for meaning (a revealed answer, a caution) rather than decoration. */
+body.quiet .formula{background:var(--card);border:1px solid var(--rule);
+      border-left:3px solid var(--navy);border-radius:4px}
+body.quiet .formula .flabel{color:var(--navy)}
+body.quiet .ex{background:var(--card);border:1px solid var(--rule);
+      border-left:3px solid var(--green);border-radius:4px}
+body.quiet .exgiven{background:#F7FAFC;border-color:var(--rule)}
+body.quiet .why{background:var(--card)}
+body.quiet .whygrid{background:var(--rule)}
+body.quiet .wq.w3{background:var(--card)}
+body.quiet .take{background:var(--card);border:1px solid var(--rule);
+      border-left:3px solid var(--green);border-radius:4px}
+body.quiet .warn{background:var(--card);border:1px solid var(--rule);
+      border-left:3px solid var(--orange);border-radius:4px}
+.pq{font-size:14.8px;line-height:1.68;color:var(--navy);margin-bottom:7px}
+.pbtn{font-size:12px;padding:4px 10px}
+.pa{display:none;margin-top:9px;background:#E4F6EB;border-left:3px solid var(--green);
+    border-radius:5px;padding:9px 13px;font-size:14.5px;line-height:1.7;color:var(--navy)}
+.pa.on{display:block}
+.pa b{color:var(--green)}
+.ex{border:1.5px solid #BFD9CB;border-left:5px solid var(--green);border-radius:9px;
+    background:#FBFEFC;margin:18px 0;padding:14px 18px 16px}
+.exhd{font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;
+      color:var(--green);margin-bottom:9px}
+.exgiven{font-size:14.5px;background:#fff;border:1px solid #DCE9E1;border-radius:6px;
+         padding:9px 13px;margin-bottom:12px}
+.exsteps{list-style:none;counter-reset:exs;margin:0;padding:0}
+.exsteps li{counter-increment:exs;display:grid;grid-template-columns:26px 1fr;gap:11px;
+            padding:7px 0;border-top:1px solid #E7F0EA;align-items:baseline}
+.exsteps li:first-child{border-top:0}
+.exsteps li::before{content:counter(exs);display:block;width:21px;height:21px;
+                    border-radius:50%;background:var(--green);color:#fff;font-size:11.5px;
+                    font-weight:700;text-align:center;line-height:21px}
+.exb{min-width:0}
+.exl{font-size:13.5px;color:var(--grey);display:block;margin-bottom:3px}
+.exw{font-size:15.5px;color:var(--navy);font-family:"Cambria Math",Cambria,Georgia,serif;
+     display:block;line-height:1.8}
+.exans{margin-top:12px;background:#E4F6EB;border-radius:6px;padding:10px 14px;
+       font-size:15px;color:var(--navy);font-weight:600}
+.exans b{color:var(--green)}
+@media(max-width:700px){.exsteps li{grid-template-columns:22px 1fr;gap:8px}}
+.why{border:1.5px solid #CBD9E6;border-radius:9px;margin:18px 0;overflow:hidden;
+     background:linear-gradient(180deg,#F4F9FD 0,#fff 54px)}
+.whyhd{font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;
+       color:var(--navy);padding:13px 18px 0}
+.whygrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#E3EAF1;
+         margin-top:12px;border-top:1px solid #E3EAF1}
+.wq{background:var(--card);padding:14px 17px 16px}
+.wq h5{margin:0 0 7px;font-size:12px;font-weight:700;letter-spacing:.03em}
+.wq p{margin:0;font-size:14px;line-height:1.62}
+.wq.w1 h5{color:var(--cyan)}
+.wq.w2 h5{color:var(--purple)}
+.wq.w3 h5{color:var(--orange)}
+.wq.w3{background:#FFFBF7}
+@media(max-width:900px){.whygrid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:15px 17px}
+.card h4{margin:0 0 7px;font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--cyan)}
+.card p{margin:0;font-size:14.5px}
+.take{background:#E4F6EB;border-left:5px solid var(--green);border-radius:6px;padding:12px 16px;margin:14px 0}
+.take b.hd{color:var(--green);text-transform:uppercase;font-size:12.5px;letter-spacing:.05em}
+.take b{color:var(--navy)}
+.warn{background:#FDEEEC;border-left:5px solid var(--orange);border-radius:6px;padding:12px 16px;margin:14px 0}
+.warn b.hd{color:var(--orange);text-transform:uppercase;font-size:12.5px;letter-spacing:.05em}
+.warn b{color:var(--navy)}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0}
+th,td{border:1px solid var(--rule);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:var(--navy);color:#fff;font-weight:600;font-size:13px}
+tbody tr:nth-child(even){background:#F2F7FB}
+td.hi{background:#FFF3E0;font-weight:700}
+code{background:#EEF3F8;padding:1px 5px;border-radius:4px;font-size:13.5px}
+footer{background:var(--navy);color:#9FB4CA;padding:22px 0;font-size:13.5px}
+
+/* ---------------- formula block ---------------- */
+.formula{background:#F3EEFB;border-left:5px solid var(--purple);border-radius:6px;
+         padding:14px 18px;margin:14px 0;overflow-x:auto}
+.formula .flabel{display:block;font-size:11.5px;font-weight:700;letter-spacing:.05em;
+                 text-transform:uppercase;color:var(--purple);margin-bottom:9px}
+.formula small{display:block;font:13.5px/1.55 "Segoe UI",sans-serif;color:var(--grey);margin-top:10px}
+
+/* ---------------- real maths ---------------- */
+.math{font-family:"Cambria Math",Cambria,"Times New Roman",Georgia,serif;
+      font-size:20px;line-height:2.1;color:var(--navy);white-space:nowrap}
+.math i,.math .var{font-style:italic;font-family:inherit}
+.math .op{font-style:normal;padding:0 .22em}
+.math b.vecb{font-weight:700;font-style:normal}
+.math sub{font-size:.62em;vertical-align:-.3em}
+.math sup{font-size:.62em;vertical-align:.45em}
+.cases{display:inline-flex;align-items:center;vertical-align:middle;margin:0 .2em}
+.cases .cb{font-size:2.5em;font-weight:300;line-height:.86;margin-right:.14em}
+.cases table{border-collapse:collapse;margin:0;width:auto;box-shadow:none;font-size:.86em}
+.cases tbody tr,.cases tbody tr:nth-child(even){border:0;background:none}
+.cases td{border:0;padding:.14em .2em;background:none;white-space:nowrap;
+          line-height:1.5;vertical-align:middle}
+.cases td.cc{font-size:.8em;font-style:normal;color:var(--grey);padding-left:1.5em;
+             font-family:"Segoe UI",system-ui,sans-serif}
+.frac{display:inline-block;vertical-align:-.52em;text-align:center;margin:0 .26em}
+.frac .num{display:block;padding:0 .4em .12em;border-bottom:1.7px solid currentColor;line-height:1.22}
+.frac .den{display:block;padding:.12em .4em 0;line-height:1.22}
+.sqrt{display:inline-block;position:relative;margin:0 .15em}
+.sqrt .rad{font-size:1.12em;vertical-align:-.06em}
+.sqrt .rand{border-top:1.6px solid currentColor;padding:.1em .22em 0 .12em;margin-left:-.12em}
+.bigop{display:inline-block;text-align:center;vertical-align:-.5em;margin:0 .2em;line-height:1}
+.bigop .glyph{display:block;font-size:1.5em;line-height:.88}
+.bigop.int .glyph{font-size:1.75em}
+.bigop .lim{display:block;font-size:.5em;line-height:1.25;font-style:italic}
+.paren{font-size:1.18em;padding:0 .06em}
+.paren.big{font-size:1.5em;vertical-align:-.16em}
+.bar{padding:0 .09em}
+.hat{position:relative;display:inline-block;font-style:italic}
+.hat::after{content:"\0302";position:absolute;left:0;right:0;top:-.46em;
+            text-align:center;font-size:.72em;font-style:normal;line-height:1;
+            font-family:"Cambria Math",Cambria,serif}
+.matrix{display:inline-block;vertical-align:middle;margin:0 .18em}
+.matrix .mb{display:inline-block;font-size:2.1em;vertical-align:middle;font-weight:300}
+.matrix table{display:inline-table;width:auto;border:0;margin:0 .1em;vertical-align:middle}
+.matrix td{border:0;padding:.08em .38em;text-align:center;font-size:.86em;background:none}
+
+/* ---------------- visualisation ---------------- */
+.viz{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:14px;margin:16px 0}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+button{font:600 13.5px "Segoe UI",sans-serif;padding:8px 14px;border-radius:6px;
+       border:1px solid var(--cyan);background:var(--cyan);color:#fff;cursor:pointer}
+button:hover{filter:brightness(1.08)}
+button.ghost{background:#fff;color:var(--cyan)}
+button:disabled{opacity:.45;cursor:not-allowed}
+select{font:14px "Segoe UI";padding:7px 9px;border-radius:6px;border:1px solid var(--rule);background:#fff}
+svg{width:100%;height:auto;display:block;background:#fff;border-radius:6px;max-width:1040px;margin:0 auto}
+.status{font-size:15.5px;line-height:1.6;background:#EAF4FA;border-left:4px solid var(--cyan);
+        border-radius:6px;padding:12px 16px;margin-top:12px;min-height:48px;color:var(--navy)}
+.status b{color:var(--cyan)}
+.stepcount{font-size:12.5px;font-weight:700;color:var(--grey);letter-spacing:.03em;
+           margin-left:auto;padding-right:4px;white-space:nowrap}
+.stepcount em{font-style:normal;color:var(--cyan);font-size:14.5px}
+.viz.done .stepcount em{color:var(--green)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--grey);margin-top:9px;justify-content:center}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+</style>
+</head>
+<body class="quiet">
+<header><div class="wrap">
+  <div class="eyebrow">CSE276 &middot; Artificial Intelligence Foundations &middot; Unit IV</div>
+  <h1>Evolution of Modern AI &mdash; Numericals</h1>
+  <p>Every formula this unit needs, what to do with it, and a worked example with the full arithmetic. Work the practice questions before revealing the answers.</p>
+</div></header>
+<nav><div class="wrap"><ul><li><a href="#neuron">1 &middot; Neurons &amp; XOR</a></li><li><a href="#gd">2 &middot; Gradient descent</a></li><li><a href="#econ">3 &middot; Parameters, cost &amp; latency</a></li></ul></div></nav>
+<div class="fsheet"><div class="fshd">Formula sheet &mdash; everything this unit needs</div><table class="fst"><tr><td class="fsn">Neuron</td><td class="fsf"><span class="math"><i>z</i> = <span class="bigop"><span class="lim">&nbsp;</span><span class="glyph">&#8721;</span><span class="lim"><i>i</i></span></span>&nbsp;<i>w</i><sub><i>i</i></sub><i>x</i><sub><i>i</i></sub> + <i>b</i>,&nbsp; <i>a</i> = <i>&#963;</i><span class="paren">(</span><i>z</i><span class="paren">)</span></span></td><td class="fsw">weighted sum, bias, then a non-linearity</td></tr><tr><td class="fsn">Sigmoid</td><td class="fsf"><span class="math"><i>&#963;</i><span class="paren">(</span><i>z</i><span class="paren">)</span> = <span class="frac"><span class="num">1</span><span class="den">1 + <i>e</i><sup>&#8722;<i>z</i></sup></span></span></span></td><td class="fsw"><i>&#963;</i>(0) = 0.5; output always in (0, 1)</td></tr><tr><td class="fsn">Gradient descent</td><td class="fsf"><span class="math"><i>w</i> &#8594; <i>w</i> &#8722; &#945;<span class="frac"><span class="num">&part;<i>L</i></span><span class="den">&part;<i>w</i></span></span></span></td><td class="fsw">step against the slope</td></tr><tr><td class="fsn">Squared-error gradient</td><td class="fsf"><span class="math"><span class="frac"><span class="num">&part;</span><span class="den">&part;<i>w</i></span></span><span class="paren">(</span><i>w</i><i>x</i> &#8722; <i>y</i><span class="paren">)</span><sup>2</sup> = 2<span class="paren">(</span><i>w</i><i>x</i> &#8722; <i>y</i><span class="paren">)</span><i>x</i></span></td><td class="fsw">chain rule, outside then inside</td></tr><tr><td class="fsn">Dense layer params</td><td class="fsf"><span class="math"><span class="paren">(</span><i>n</i><sub><span class="op">in</span></sub> + 1<span class="paren">)</span> &#183; <i>n</i><sub><span class="op">out</span></sub></span></td><td class="fsw">the +1 is the bias per neuron</td></tr><tr><td class="fsn">Conv layer params</td><td class="fsf"><span class="math"><span class="paren">(</span><i>F</i>&#183;<i>F</i>&#183;<i>C</i><sub><span class="op">in</span></sub> + 1<span class="paren">)</span> &#183; <i>C</i><sub><span class="op">out</span></sub></span></td><td class="fsw">independent of the image size</td></tr><tr><td class="fsn">Break-even tasks</td><td class="fsf"><span class="math"><i>k</i> = <span class="frac"><span class="num"><i>C</i><sub><span class="op">pre</span></sub></span><span class="den"><i>C</i><sub><span class="op">scratch</span></sub> &#8722; <i>C</i><sub><span class="op">adapt</span></sub></span></span></span></td><td class="fsw">where pre-training starts to pay</td></tr><tr><td class="fsn">Latency budget</td><td class="fsf"><span class="math"><span class="frac"><span class="num">1</span><span class="den"><span class="op">loop rate</span></span></span></span></td><td class="fsw">a model slower than this cannot be used, whatever its accuracy</td></tr></table></div>
+<section id="neuron"><div class="wrap"><h2><span class="num">1</span>A neuron, and why one layer is not enough</h2><p class="lede">Weighted sum, bias, squash. Everything in deep learning is copies of this &mdash; but one copy provably cannot compute XOR.</p><div class="formula"><span class="flabel">One neuron</span><div class="math"><i>z</i> = <i>w</i><sub>1</sub><i>x</i><sub>1</sub> + <i>w</i><sub>2</sub><i>x</i><sub>2</sub> + <i>b</i>,&nbsp;&nbsp;&nbsp;<i>a</i> = <i>&#963;</i><span class="paren">(</span><i>z</i><span class="paren">)</span> = <span class="frac"><span class="num">1</span><span class="den">1 + <i>e</i><sup>&#8722;<i>z</i></sup></span></span></div><small>Compute <i>z</i> first, then squash. <i>&#963;</i>(0) = 0.5 exactly, so the decision boundary is wherever <i>z</i> = 0.</small></div><div class="meth"><div class="methd">The method &mdash; what to actually do</div><ol><li>Multiply each input by its weight and add the bias &#8594; <i>z</i>.</li><li>Apply the sigmoid: 1 / (1 + <i>e</i><sup>&#8722;<i>z</i></sup>).</li><li>Round at 0.5 if a class label is wanted.</li><li>For a multi-layer network, do this for <b>every hidden unit first</b>, then feed those outputs forward as the next layer's inputs.</li><li>Keep 4 decimals on the hidden activations &mdash; rounding them to 0 or 1 early changes the output.</li><li>Useful values: <i>&#963;</i>(&#8722;3) = 0.047, <i>&#963;</i>(0) = 0.5, <i>&#963;</i>(3) = 0.953, <i>&#963;</i>(9) &#8776; 1.000.</li></ol></div><div class="ex"><div class="exhd">Worked example &mdash; the XOR network, all four inputs</div><div class="exgiven">A 2&ndash;2&ndash;1 network. <i>h</i><sub>1</sub> = <i>&#963;</i>(6<i>x</i><sub>1</sub> + 6<i>x</i><sub>2</sub> &#8722; 3); <i>h</i><sub>2</sub> = <i>&#963;</i>(6<i>x</i><sub>1</sub> + 6<i>x</i><sub>2</sub> &#8722; 9); <i>y</i> = <i>&#963;</i>(8<i>h</i><sub>1</sub> &#8722; 8<i>h</i><sub>2</sub> &#8722; 4).</div><ol class="exsteps"><li><div class="exb"><span class="exl">Input (0, 0)</span><span class="exw"><i>z</i><sub>1</sub> = &#8722;3 &#8594; <i>h</i><sub>1</sub> = <b>0.0474</b>; <i>z</i><sub>2</sub> = &#8722;9 &#8594; <i>h</i><sub>2</sub> = <b>0.0001</b></span></div></li><li><div class="exb"><span class="exl">Its output</span><span class="exw"><i>z</i> = 8(0.0474) &#8722; 8(0.0001) &#8722; 4 = 0.379 &#8722; 0.001 &#8722; 4 = &#8722;3.622 &#8594; <i>y</i> = <b>0.0260</b> &#8594; <b>0</b> &#10003;</span></div></li><li><div class="exb"><span class="exl">Input (0, 1)</span><span class="exw"><i>z</i><sub>1</sub> = +3 &#8594; <b>0.9526</b>; <i>z</i><sub>2</sub> = &#8722;3 &#8594; <b>0.0474</b></span></div></li><li><div class="exb"><span class="exl">Its output</span><span class="exw"><i>z</i> = 8(0.9526) &#8722; 8(0.0474) &#8722; 4 = 7.621 &#8722; 0.379 &#8722; 4 = +3.241 &#8594; <b>0.9624</b> &#8594; <b>1</b> &#10003;</span></div></li><li><div class="exb"><span class="exl">Input (1, 0)</span><span class="exw">identical by symmetry &#8594; <b>0.9624</b> &#8594; <b>1</b> &#10003;</span></div></li><li><div class="exb"><span class="exl">Input (1, 1)</span><span class="exw"><i>z</i><sub>1</sub> = +9 &#8594; 0.9999; <i>z</i><sub>2</sub> = +3 &#8594; 0.9526 &#8594; <i>z</i> = &#8722;3.622 &#8594; <b>0.0260</b> &#8594; <b>0</b> &#10003;</span></div></li><li><div class="exb"><span class="exl">What the hidden layer invented</span><span class="exw"><i>h</i><sub>1</sub> fires when <b>at least one</b> input is 1 (an OR unit); <i>h</i><sub>2</sub> fires only when <b>both</b> are (an AND unit)</span></div></li></ol><div class="exans"><b>All four correct.</b> The output computes <i>h</i><sub>1</sub> AND NOT <i>h</i><sub>2</sub>, which is XOR. In terms of the two <b>new features</b> the hidden layer built, the problem became linearly separable &mdash; and building such features is the entire point of depth.</div></div><div class="prac"><div class="prhd">Practice<button class="ghost pall" data-all="pr4">Show all answers</button></div><ol><li><div class="pq">A neuron has <i>w</i> = (2, &#8722;3), <i>b</i> = 1. Compute its output for <i>x</i> = (2, 1).</div><button class="ghost pbtn" data-ans="pr4-1">Show answer</button><div class="pa" id="pr4-1"><i>z</i> = 2(2) + (&minus;3)(1) + 1 = 4 &minus; 3 + 1 = <b>2</b>. <i>&#963;</i>(2) = 1/(1 + <i>e</i><sup>&minus;2</sup>) = 1/(1 + 0.1353) = <b>0.8808</b> &#8594; class <b>1</b>.</div></li><li><div class="pq">Show that a single neuron cannot compute XOR.</div><button class="ghost pbtn" data-ans="pr4-2">Show answer</button><div class="pa" id="pr4-2">It would need <i>b</i> &#8804; 0 (for input 0,0 &#8594; 0), <i>w</i><sub>1</sub> + <i>b</i> &gt; 0 and <i>w</i><sub>2</sub> + <i>b</i> &gt; 0 (for 1,0 and 0,1 &#8594; 1), and <i>w</i><sub>1</sub> + <i>w</i><sub>2</sub> + <i>b</i> &#8804; 0 (for 1,1 &#8594; 0). Adding the two middle ones gives <i>w</i><sub>1</sub>+<i>w</i><sub>2</sub>+2<i>b</i> &gt; 0; with the last this forces <i>b</i> &gt; 0, <b>contradicting</b> the first. The system is inconsistent.</div></li><li><div class="pq">Why keep hidden activations to 4 decimals instead of rounding to 0 or 1?</div><button class="ghost pbtn" data-ans="pr4-3">Show answer</button><div class="pa" id="pr4-3">Because the output layer multiplies them by large weights. Rounding <i>h</i><sub>2</sub> = 0.0474 down to 0 changes <i>z</i> by 8(0.0474) = <b>0.379</b>, which shifts the sigmoid noticeably. With several layers these rounding errors compound.</div></li></ol></div></div></section>
+<section id="gd"><div class="wrap"><h2><span class="num">2</span>Gradient descent on one weight</h2><p class="lede">Measure the error, work out which direction reduces it, take a small step that way, repeat.</p><div class="formula"><span class="flabel">Loss and its slope</span><div class="math"><i>L</i><span class="paren">(</span><i>w</i><span class="paren">)</span> = <span class="paren">(</span><i>w</i><i>x</i> &#8722; <i>y</i><span class="paren">)</span><sup>2</sup>,&nbsp;&nbsp;&nbsp;<span class="frac"><span class="num">&part;<i>L</i></span><span class="den">&part;<i>w</i></span></span> = 2<span class="paren">(</span><i>w</i><i>x</i> &#8722; <i>y</i><span class="paren">)</span><i>x</i>,&nbsp;&nbsp;&nbsp;<i>w</i> &#8594; <i>w</i> &#8722; &#945;<span class="frac"><span class="num">&part;<i>L</i></span><span class="den">&part;<i>w</i></span></span></div><small>The gradient is the <b>outer</b> derivative times the <b>inner</b> one. Note the step subtracts: you move <i>against</i> the gradient.</small></div><div class="meth"><div class="methd">The method &mdash; what to actually do</div><ol><li>Compute the prediction <i>w</i><i>x</i> with the current weight.</li><li>Compute the error (prediction &#8722; target).</li><li>Loss = error<sup>2</sup>.</li><li>Gradient = 2 &#215; error &#215; <i>x</i>.</li><li>New <i>w</i> = old <i>w</i> &#8722; &#945; &#215; gradient.</li><li>Recompute the loss to confirm it fell. If it rose, &#945; is too large.</li><li>Notice the steps shrink automatically as the gradient flattens near the minimum &mdash; no extra logic is needed.</li></ol></div><div class="ex"><div class="exhd">Worked example &mdash; four steps to the optimum</div><div class="exgiven">One training example: <i>x</i> = 3, <i>y</i> = 6, so the optimum is <i>w</i> = 2. Start at <i>w</i> = 1 with &#945; = 0.05.</div><ol class="exsteps"><li><div class="exb"><span class="exl">Step 0 &mdash; current state</span><span class="exw">prediction 1(3) = 3; error 3 &#8722; 6 = &#8722;3; loss = (&#8722;3)<sup>2</sup> = <b>9.000</b></span></div></li><li><div class="exb"><span class="exl">Gradient</span><span class="exw">2(&#8722;3)(3) = <b>&#8722;18.0</b></span></div></li><li><div class="exb"><span class="exl">Update</span><span class="exw"><i>w</i> = 1 &#8722; 0.05(&#8722;18.0) = 1 + 0.9 = <b>1.900</b></span></div></li><li><div class="exb"><span class="exl">Step 1 &mdash; check the loss fell</span><span class="exw">prediction 1.9(3) = 5.7; error &#8722;0.3; loss = <b>0.090</b>, down from 9.000</span></div></li><li><div class="exb"><span class="exl">Gradient now</span><span class="exw">2(&#8722;0.3)(3) = <b>&#8722;1.8</b> &mdash; ten times smaller</span></div></li><li><div class="exb"><span class="exl">Update</span><span class="exw"><i>w</i> = 1.9 + 0.09 = <b>1.990</b>, loss <b>0.0009</b></span></div></li><li><div class="exb"><span class="exl">Steps 3 and 4</span><span class="exw"><i>w</i> = <b>1.999</b> then <b>1.9999</b>; loss &#8594; 0</span></div></li><li><div class="exb"><span class="exl">What happened to the step sizes</span><span class="exw">0.900, then 0.090, then 0.009 &mdash; each <b>ten times smaller</b> than the last</span></div></li></ol><div class="exans"><b>Converges to <i>w</i> = 2.0, loss 0.</b> The steps shrank automatically because the gradient shrinks as the minimum nears. Nothing told the algorithm to slow down &mdash; it falls out of the arithmetic.</div></div><div class="prac"><div class="prhd">Practice<button class="ghost pall" data-all="pr5">Show all answers</button></div><ol><li><div class="pq">With <i>x</i> = 2, <i>y</i> = 10, <i>w</i> = 3 and &#945; = 0.1, compute one step.</div><button class="ghost pbtn" data-ans="pr5-1">Show answer</button><div class="pa" id="pr5-1">Prediction 3(2) = 6; error 6 &minus; 10 = &minus;4; loss = <b>16</b>. Gradient = 2(&minus;4)(2) = <b>&minus;16</b>. New <i>w</i> = 3 &minus; 0.1(&minus;16) = 3 + 1.6 = <b>4.6</b>. New loss: 4.6(2) = 9.2, error &minus;0.8, loss = <b>0.64</b>.</div></li><li><div class="pq">Using the same setup but &#945; = 1.0, what happens?</div><button class="ghost pbtn" data-ans="pr5-2">Show answer</button><div class="pa" id="pr5-2">New <i>w</i> = 3 &minus; 1.0(&minus;16) = <b>19</b>. Prediction 38, error +28, loss = <b>784</b> &mdash; far worse than the 16 we started with. The step <b>overshot the minimum</b> and landed much further up the other side. This is what a divergent learning rate looks like.</div></li><li><div class="pq">Why does the gradient contain a factor of <i>x</i>?</div><button class="ghost pbtn" data-ans="pr5-3">Show answer</button><div class="pa" id="pr5-3">Because of the chain rule: the loss depends on <i>w</i> <i>through</i> the prediction <i>w</i><i>x</i>, and <span class="frac"><span class="num">&part;(<i>w</i><i>x</i>)</span><span class="den">&part;<i>w</i></span></span> = <i>x</i>. Practically, it means a weight attached to a <b>large input</b> gets a larger update &mdash; which is part of why unscaled features make training unstable.</div></li></ol></div></div></section>
+<section id="econ"><div class="wrap"><h2><span class="num">3</span>Parameter counts, cost and latency</h2><p class="lede">Three calculations that decide real architecture choices, and none of them is about accuracy.</p><div class="formula"><span class="flabel">Parameter counts</span><div class="math">dense: <span class="paren">(</span><i>n</i><sub><span class="op">in</span></sub> + 1<span class="paren">)</span><i>n</i><sub><span class="op">out</span></sub>,&nbsp;&nbsp;&nbsp;conv: <span class="paren">(</span><i>F</i>&#183;<i>F</i>&#183;<i>C</i><sub><span class="op">in</span></sub> + 1<span class="paren">)</span><i>C</i><sub><span class="op">out</span></sub></div><small>The conv count has <b>no image-size term</b> &mdash; the same filter is reused at every position. That is the entire saving.</small></div><div class="meth"><div class="methd">The method &mdash; what to actually do</div><ol><li><b>Dense:</b> (inputs + 1) &#215; neurons. The +1 is the bias.</li><li><b>Conv:</b> (filter &#215; filter &#215; input channels + 1) &#215; number of filters.</li><li><b>Break-even:</b> set (cost from scratch) &#215; <i>k</i> = pre-train + (adapt &#215; <i>k</i>) and solve for <i>k</i>.</li><li><b>Latency budget:</b> 1 / loop rate, in seconds. Convert to milliseconds.</li><li>Compare the model's inference time against that budget.</li><li>If it does not fit, no amount of accuracy rescues it &mdash; latency is a <b>correctness</b> constraint, accuracy only a quality one.</li><li>Blind distance = speed &#215; latency, which is usually the number that persuades people.</li></ol></div><div class="ex"><div class="exhd">Worked example &mdash; the three calculations, on one system</div><div class="exgiven">A robot vision system. Images are 224&times;224 RGB. The robot moves at 1.5 m/s and its control loop runs at 50 Hz.</div><ol class="exsteps"><li><div class="exb"><span class="exl">Dense first layer of 64 units</span><span class="exw">inputs = 224 &#215; 224 &#215; 3 = <b>150 528</b> &#8594; (150 528 + 1) &#215; 64 = <b>9 633 856</b> parameters</span></div></li><li><div class="exb"><span class="exl">Conv layer, 64 filters of 3&times;3 over 3 channels</span><span class="exw">(3 &#215; 3 &#215; 3 + 1) &#215; 64 = 28 &#215; 64 = <b>1 792</b></span></div></li><li><div class="exb"><span class="exl">Ratio</span><span class="exw"><span class="frac"><span class="num">9 633 856</span><span class="den">1 792</span></span> &#8776; <b>5 376&#215;</b> fewer</span></div></li><li><div class="exb"><span class="exl">Now the economics. From scratch &#8377;40 000 per task; pre-train &#8377;10 lakh then &#8377;500 per task</span><span class="exw">40 000<i>k</i> = 10 00 000 + 500<i>k</i> &#8594; 39 500<i>k</i> = 10 00 000 &#8594; <i>k</i> &#8776; <b>25 tasks</b></span></div></li><li><div class="exb"><span class="exl">Below 25 tasks</span><span class="exw">training from scratch is <b>cheaper</b>; above it, pre-training wins and the gap widens fast</span></div></li><li><div class="exb"><span class="exl">Latency budget</span><span class="exw"><span class="frac"><span class="num">1</span><span class="den">50 Hz</span></span> = 0.02 s = <b>20 ms</b> per cycle</span></div></li><li><div class="exb"><span class="exl">Cloud model at 260 ms</span><span class="exw">260 &gt; 20 &#8594; misses <b>13 cycles</b>; blind distance = 1.5 &#215; 0.260 = <b>0.39 m</b></span></div></li><li><div class="exb"><span class="exl">On-device model at 18 ms</span><span class="exw">18 &lt; 20 &#10003;; blind distance = 1.5 &#215; 0.018 = <b>0.027 m</b></span></div></li></ol><div class="exans"><b>5 376&times; fewer parameters, break-even at 25 tasks, and 39 cm versus 3 cm of blind travel.</b> The last one decides the architecture: the 88%-accurate on-device model is the correct engineering choice over the 98% cloud model, because latency here is a correctness constraint.</div></div><div class="prac"><div class="prhd">Practice<button class="ghost pall" data-all="pr6">Show all answers</button></div><ol><li><div class="pq">How many parameters in a dense layer with 500 inputs and 200 neurons?</div><button class="ghost pbtn" data-ans="pr6-1">Show answer</button><div class="pa" id="pr6-1">(500 + 1) &#215; 200 = 501 &#215; 200 = <b>100 200</b>. The 200 bias terms are the difference between this and the naive 100 000.</div></li><li><div class="pq">A drone flies at 20 m/s and must react within 2 m. What is the maximum acceptable inference latency?</div><button class="ghost pbtn" data-ans="pr6-2">Show answer</button><div class="pa" id="pr6-2">time = distance / speed = 2 / 20 = 0.1 s = <b>100 ms</b>. Any model slower than 100 ms cannot keep the drone inside its 2 m reaction envelope, regardless of accuracy.</div></li><li><div class="pq">Pre-training costs &#8377;50 lakh, adapting costs &#8377;2 000 per task, and training from scratch costs &#8377;60 000 per task. Break-even?</div><button class="ghost pbtn" data-ans="pr6-3">Show answer</button><div class="pa" id="pr6-3"><i>k</i> = 50 00 000 / (60 000 &minus; 2 000) = 50 00 000 / 58 000 &#8776; <b>86 tasks</b>. Below 86 tasks, train from scratch; above it, pre-train. Raising the adaptation cost pushes the break-even point up.</div></li></ol></div></div></section>
+<footer><div class="wrap">CSE276 &middot; Artificial Intelligence Foundations &middot; Unit IV &mdash; Evolution of Modern AI &mdash; Numericals &middot;
+School of Computer Science &amp; Engineering &middot; Session 2026&ndash;27</div></footer>
+<script>
+
+"use strict";
+var NS="http://www.w3.org/2000/svg";
+var C={navy:"#182B49",cyan:"#0096C7",purple:"#5C2D91",orange:"#ED771F",
+       green:"#107C41",red:"#B42318",grey:"#9AA7B5",rule:"#D8DFE8",ice:"#7EC5E2"};
+function el(p,n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);
+  p.appendChild(e);return e;}
+function clr(s){while(s.firstChild)s.removeChild(s.firstChild);}
+function line(s,A,B,col,w,dash){var l=el(s,"line",{x1:A.x,y1:A.y,x2:B.x,y2:B.y,
+  stroke:col,"stroke-width":w,"stroke-linecap":"round"});
+  if(dash)l.setAttribute("stroke-dasharray",dash);return l;}
+function dot(s,p,r,fill){return el(s,"circle",{cx:p.x,cy:p.y,r:r,fill:fill});}
+function nodeC(s,p,label,fill,r){r=r||17;
+  el(s,"circle",{cx:p.x,cy:p.y,r:r,fill:fill,stroke:"#fff","stroke-width":2.5});
+  var t=el(s,"text",{x:p.x,y:p.y+5,"text-anchor":"middle",fill:"#fff","font-size":"14",
+    "font-weight":"600","font-family":"Segoe UI,sans-serif"});t.textContent=label;}
+function txt(s,x,y,str,col,size,anchor,weight){
+  var t=el(s,"text",{x:x,y:y,"text-anchor":anchor||"middle",fill:col||C.navy,
+    "font-size":size||12,"font-weight":weight||"600","font-family":"Segoe UI,sans-serif"});
+  t.textContent=str;return t;}
+function box(s,x,y,w,h,fill,stroke,rx){return el(s,"rect",{x:x,y:y,width:w,height:h,
+  rx:rx===undefined?6:rx,fill:fill,stroke:stroke||"none","stroke-width":1.6});}
+function badge(s,A,B,str){var mx=(A.x+B.x)/2,my=(A.y+B.y)/2;
+  el(s,"circle",{cx:mx,cy:my,r:11,fill:"#fff",stroke:C.rule});
+  txt(s,mx,my+4,str,C.navy,12);}
+function arrow(s,A,B,col,w){
+  var dx=B.x-A.x,dy=B.y-A.y,L=Math.sqrt(dx*dx+dy*dy);if(!L)return;
+  var ux=dx/L,uy=dy/L,ex=B.x-ux*20,ey=B.y-uy*20;
+  el(s,"line",{x1:A.x+ux*20,y1:A.y+uy*20,x2:ex,y2:ey,stroke:col,"stroke-width":w||2.6,
+    "stroke-linecap":"round"});
+  var a=8;
+  el(s,"polygon",{points:[ex+","+ey,(ex-ux*a-uy*a*0.6)+","+(ey-uy*a+ux*a*0.6),
+    (ex-ux*a+uy*a*0.6)+","+(ey-uy*a-ux*a*0.6)].join(" "),fill:col});}
+
+/* ---- generic step player, wired to data-viz buttons ---- */
+var VIZ={};
+function register(id,build,render){
+  VIZ[id]={build:build,render:render,steps:[],i:0,timer:null};
+  resetViz(id);
+}
+function resetViz(id){var m=VIZ[id];if(!m)return;
+  m.steps=m.build();m.i=0;stopViz(id);drawViz(id);}
+function drawViz(id){var m=VIZ[id];
+  m.render(document.getElementById("svg-"+id),m.steps[m.i],m.i,m.steps);
+  var st=document.getElementById("st-"+id);
+  if(st)st.innerHTML=m.steps[m.i].msg||"";
+  syncViz(id);}
+/* keep the counter and the buttons honest about where we are */
+function syncViz(id){var m=VIZ[id],last=m.steps.length-1;
+  function btn(a){return document.querySelector(
+    'button[data-act="'+a+'"][data-viz="'+id+'"]');}
+  var b;
+  if((b=btn("step")))b.disabled=m.i>=last;
+  if((b=btn("back")))b.disabled=m.i<=0;
+  var sc=document.getElementById("sc-"+id);
+  if(sc)sc.innerHTML="step <em>"+m.i+"</em> of "+last;
+  var wrap=document.getElementById("wrap-"+id);
+  if(wrap){if(m.i>=last&&last>0)wrap.classList.add("done");
+           else wrap.classList.remove("done");}}
+function stepViz(id){var m=VIZ[id];
+  if(m.i<m.steps.length-1){m.i++;drawViz(id);}
+  if(m.i>=m.steps.length-1)stopViz(id);}
+/* step backwards, so a student can flip between before and after */
+function stepBackViz(id){var m=VIZ[id];
+  if(m.i>0){stopViz(id);m.i--;drawViz(id);}}
+function stopViz(id){var m=VIZ[id];if(m.timer){clearInterval(m.timer);m.timer=null;}
+  var b=document.querySelector('button[data-act="auto"][data-viz="'+id+'"]');
+  if(b)b.textContent="Auto-play";}
+/* ---- practice answers: reveal one, or all of a block ---- */
+document.addEventListener("click",function(e){
+  if(!e.target.closest)return;
+  var one=e.target.closest("button[data-ans]");
+  if(one){var p=document.getElementById(one.getAttribute("data-ans"));
+    if(p){var on=p.classList.toggle("on");
+      one.textContent=on?"Hide answer":"Show answer";}
+    return;}
+  var all=e.target.closest("button[data-all]");
+  if(all){var g=all.getAttribute("data-all"),
+      blk=all.closest(".prac"),show=all.textContent.indexOf("Show")===0;
+    blk.querySelectorAll(".pa").forEach(function(p){
+      p.classList.toggle("on",show);});
+    blk.querySelectorAll("button[data-ans]").forEach(function(b2){
+      b2.textContent=show?"Hide answer":"Show answer";});
+    all.textContent=show?"Hide all answers":"Show all answers";}
+});
+document.addEventListener("click",function(e){
+  var b=e.target.closest?e.target.closest("button[data-viz]"):null;if(!b)return;
+  var id=b.getAttribute("data-viz"),act=b.getAttribute("data-act"),m=VIZ[id];if(!m)return;
+  if(act==="step")stepViz(id);
+  else if(act==="back")stepBackViz(id);
+  else if(act==="reset")resetViz(id);
+  else if(act==="auto"){
+    if(m.timer){stopViz(id);return;}
+    if(m.i>=m.steps.length-1)resetViz(id);
+    b.textContent="Pause";
+    m.timer=setInterval(function(){if(m.i>=m.steps.length-1)stopViz(id);else stepViz(id);},950);
+  }});
+
+
+</script>
+</body>
+</html>
