@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSE276 &middot; Artificial Intelligence Foundations Unit V &mdash; Generative and Responsible AI &mdash; Numericals</title>
+<style>
+:root{--navy:#182B49;--navy2:#253E64;--cyan:#0096C7;--ice:#7EC5E2;--purple:#5C2D91;
+      --orange:#ED771F;--green:#107C41;--red:#B42318;--grey:#586476;--rule:#D8DFE8;
+      --bg:#F6F9FC;--card:#fff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--navy);
+     font:15px/1.65 "Segoe UI",system-ui,-apple-system,Arial,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+header{background:var(--navy);color:#fff;padding:28px 0 24px;border-bottom:4px solid var(--cyan)}
+header .eyebrow{color:var(--ice);font-size:12.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+header h1{margin:7px 0 6px;font-size:32px;font-weight:600;line-height:1.2}
+header p{margin:0;color:#C9D8E6;font-size:15.5px;max-width:860px}
+nav{background:var(--navy2);position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(24,43,73,.2)}
+nav ul{display:flex;flex-wrap:wrap;gap:2px;list-style:none;margin:0;padding:0}
+nav a{display:block;padding:11px 14px;color:#D8E6F2;text-decoration:none;font-size:13.5px;font-weight:600}
+nav a:hover{background:rgba(255,255,255,.13);color:#fff}
+section{padding:34px 0 12px;border-bottom:1px solid var(--rule)}
+h2{font-size:24px;margin:0 0 6px;font-weight:600}
+h2 .num{display:inline-block;background:var(--cyan);color:#fff;font-size:13px;
+        padding:3px 9px;border-radius:4px;margin-right:10px;vertical-align:3px}
+h3{font-size:17.5px;margin:24px 0 8px;font-weight:600;color:var(--navy)}
+.lede{color:var(--grey);font-size:15.5px;margin:0 0 16px;max-width:920px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+/* ---- formula sheet ---- */
+.fsheet{border:1px solid var(--rule);border-top:3px solid var(--navy);border-radius:4px;
+        background:var(--card);margin:18px 0;padding:15px 20px 8px}
+.fshd{font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;
+      color:var(--navy);margin-bottom:8px}
+.fst{width:100%;border-collapse:collapse;margin:0;font-size:14px;box-shadow:none}
+.fst td{border:0;border-top:1px solid #E1EAF3;padding:9px 8px;vertical-align:middle;
+        background:none}
+.fst tr:first-child td{border-top:0}
+.fst tbody tr:nth-child(even){background:none}
+td.fsn{width:23%;font-weight:600;color:var(--navy);font-size:13.5px}
+td.fsf{width:42%}
+td.fsf .math{font-size:16.5px;line-height:1.9;white-space:normal}
+td.fsw{color:var(--grey);font-size:13px}
+/* ---- the method ---- */
+.meth{border:1px solid var(--rule);border-left:3px solid var(--navy);border-radius:4px;
+      background:var(--card);margin:18px 0;padding:15px 20px 16px}
+.methd{font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;
+       color:var(--navy);margin-bottom:9px}
+.meth ol{margin:0;padding-left:22px}
+.meth li{font-size:14.8px;line-height:1.68;padding:4px 0;color:var(--navy)}
+.meth li::marker{color:var(--grey);font-weight:700}
+/* ---- practice ---- */
+.prac{border:1px solid var(--rule);border-radius:4px;background:var(--card);
+      margin:18px 0;padding:15px 20px 16px}
+.prhd{font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;
+      color:var(--navy);margin-bottom:10px;display:flex;align-items:center;gap:12px}
+.pall{margin-left:auto;font-size:12px;padding:5px 11px}
+.prac ol{margin:0;padding-left:22px}
+.prac>ol>li{padding:11px 0;border-top:1px solid #EEF2F6}
+.prac>ol>li:first-child{border-top:0}
+.prac li::marker{color:var(--grey);font-weight:700}
+/* Numericals pages run quiet: panels are white with a thin rule, and colour is
+   reserved for meaning (a revealed answer, a caution) rather than decoration. */
+body.quiet .formula{background:var(--card);border:1px solid var(--rule);
+      border-left:3px solid var(--navy);border-radius:4px}
+body.quiet .formula .flabel{color:var(--navy)}
+body.quiet .ex{background:var(--card);border:1px solid var(--rule);
+      border-left:3px solid var(--green);border-radius:4px}
+body.quiet .exgiven{background:#F7FAFC;border-color:var(--rule)}
+body.quiet .why{background:var(--card)}
+body.quiet .whygrid{background:var(--rule)}
+body.quiet .wq.w3{background:var(--card)}
+body.quiet .take{background:var(--card);border:1px solid var(--rule);
+      border-left:3px solid var(--green);border-radius:4px}
+body.quiet .warn{background:var(--card);border:1px solid var(--rule);
+      border-left:3px solid var(--orange);border-radius:4px}
+.pq{font-size:14.8px;line-height:1.68;color:var(--navy);margin-bottom:7px}
+.pbtn{font-size:12px;padding:4px 10px}
+.pa{display:none;margin-top:9px;background:#E4F6EB;border-left:3px solid var(--green);
+    border-radius:5px;padding:9px 13px;font-size:14.5px;line-height:1.7;color:var(--navy)}
+.pa.on{display:block}
+.pa b{color:var(--green)}
+.ex{border:1.5px solid #BFD9CB;border-left:5px solid var(--green);border-radius:9px;
+    background:#FBFEFC;margin:18px 0;padding:14px 18px 16px}
+.exhd{font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;
+      color:var(--green);margin-bottom:9px}
+.exgiven{font-size:14.5px;background:#fff;border:1px solid #DCE9E1;border-radius:6px;
+         padding:9px 13px;margin-bottom:12px}
+.exsteps{list-style:none;counter-reset:exs;margin:0;padding:0}
+.exsteps li{counter-increment:exs;display:grid;grid-template-columns:26px 1fr;gap:11px;
+            padding:7px 0;border-top:1px solid #E7F0EA;align-items:baseline}
+.exsteps li:first-child{border-top:0}
+.exsteps li::before{content:counter(exs);display:block;width:21px;height:21px;
+                    border-radius:50%;background:var(--green);color:#fff;font-size:11.5px;
+                    font-weight:700;text-align:center;line-height:21px}
+.exb{min-width:0}
+.exl{font-size:13.5px;color:var(--grey);display:block;margin-bottom:3px}
+.exw{font-size:15.5px;color:var(--navy);font-family:"Cambria Math",Cambria,Georgia,serif;
+     display:block;line-height:1.8}
+.exans{margin-top:12px;background:#E4F6EB;border-radius:6px;padding:10px 14px;
+       font-size:15px;color:var(--navy);font-weight:600}
+.exans b{color:var(--green)}
+@media(max-width:700px){.exsteps li{grid-template-columns:22px 1fr;gap:8px}}
+.why{border:1.5px solid #CBD9E6;border-radius:9px;margin:18px 0;overflow:hidden;
+     background:linear-gradient(180deg,#F4F9FD 0,#fff 54px)}
+.whyhd{font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;
+       color:var(--navy);padding:13px 18px 0}
+.whygrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#E3EAF1;
+         margin-top:12px;border-top:1px solid #E3EAF1}
+.wq{background:var(--card);padding:14px 17px 16px}
+.wq h5{margin:0 0 7px;font-size:12px;font-weight:700;letter-spacing:.03em}
+.wq p{margin:0;font-size:14px;line-height:1.62}
+.wq.w1 h5{color:var(--cyan)}
+.wq.w2 h5{color:var(--purple)}
+.wq.w3 h5{color:var(--orange)}
+.wq.w3{background:#FFFBF7}
+@media(max-width:900px){.whygrid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:15px 17px}
+.card h4{margin:0 0 7px;font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--cyan)}
+.card p{margin:0;font-size:14.5px}
+.take{background:#E4F6EB;border-left:5px solid var(--green);border-radius:6px;padding:12px 16px;margin:14px 0}
+.take b.hd{color:var(--green);text-transform:uppercase;font-size:12.5px;letter-spacing:.05em}
+.take b{color:var(--navy)}
+.warn{background:#FDEEEC;border-left:5px solid var(--orange);border-radius:6px;padding:12px 16px;margin:14px 0}
+.warn b.hd{color:var(--orange);text-transform:uppercase;font-size:12.5px;letter-spacing:.05em}
+.warn b{color:var(--navy)}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0}
+th,td{border:1px solid var(--rule);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:var(--navy);color:#fff;font-weight:600;font-size:13px}
+tbody tr:nth-child(even){background:#F2F7FB}
+td.hi{background:#FFF3E0;font-weight:700}
+code{background:#EEF3F8;padding:1px 5px;border-radius:4px;font-size:13.5px}
+footer{background:var(--navy);color:#9FB4CA;padding:22px 0;font-size:13.5px}
+
+/* ---------------- formula block ---------------- */
+.formula{background:#F3EEFB;border-left:5px solid var(--purple);border-radius:6px;
+         padding:14px 18px;margin:14px 0;overflow-x:auto}
+.formula .flabel{display:block;font-size:11.5px;font-weight:700;letter-spacing:.05em;
+                 text-transform:uppercase;color:var(--purple);margin-bottom:9px}
+.formula small{display:block;font:13.5px/1.55 "Segoe UI",sans-serif;color:var(--grey);margin-top:10px}
+
+/* ---------------- real maths ---------------- */
+.math{font-family:"Cambria Math",Cambria,"Times New Roman",Georgia,serif;
+      font-size:20px;line-height:2.1;color:var(--navy);white-space:nowrap}
+.math i,.math .var{font-style:italic;font-family:inherit}
+.math .op{font-style:normal;padding:0 .22em}
+.math b.vecb{font-weight:700;font-style:normal}
+.math sub{font-size:.62em;vertical-align:-.3em}
+.math sup{font-size:.62em;vertical-align:.45em}
+.cases{display:inline-flex;align-items:center;vertical-align:middle;margin:0 .2em}
+.cases .cb{font-size:2.5em;font-weight:300;line-height:.86;margin-right:.14em}
+.cases table{border-collapse:collapse;margin:0;width:auto;box-shadow:none;font-size:.86em}
+.cases tbody tr,.cases tbody tr:nth-child(even){border:0;background:none}
+.cases td{border:0;padding:.14em .2em;background:none;white-space:nowrap;
+          line-height:1.5;vertical-align:middle}
+.cases td.cc{font-size:.8em;font-style:normal;color:var(--grey);padding-left:1.5em;
+             font-family:"Segoe UI",system-ui,sans-serif}
+.frac{display:inline-block;vertical-align:-.52em;text-align:center;margin:0 .26em}
+.frac .num{display:block;padding:0 .4em .12em;border-bottom:1.7px solid currentColor;line-height:1.22}
+.frac .den{display:block;padding:.12em .4em 0;line-height:1.22}
+.sqrt{display:inline-block;position:relative;margin:0 .15em}
+.sqrt .rad{font-size:1.12em;vertical-align:-.06em}
+.sqrt .rand{border-top:1.6px solid currentColor;padding:.1em .22em 0 .12em;margin-left:-.12em}
+.bigop{display:inline-block;text-align:center;vertical-align:-.5em;margin:0 .2em;line-height:1}
+.bigop .glyph{display:block;font-size:1.5em;line-height:.88}
+.bigop.int .glyph{font-size:1.75em}
+.bigop .lim{display:block;font-size:.5em;line-height:1.25;font-style:italic}
+.paren{font-size:1.18em;padding:0 .06em}
+.paren.big{font-size:1.5em;vertical-align:-.16em}
+.bar{padding:0 .09em}
+.hat{position:relative;display:inline-block;font-style:italic}
+.hat::after{content:"\0302";position:absolute;left:0;right:0;top:-.46em;
+            text-align:center;font-size:.72em;font-style:normal;line-height:1;
+            font-family:"Cambria Math",Cambria,serif}
+.matrix{display:inline-block;vertical-align:middle;margin:0 .18em}
+.matrix .mb{display:inline-block;font-size:2.1em;vertical-align:middle;font-weight:300}
+.matrix table{display:inline-table;width:auto;border:0;margin:0 .1em;vertical-align:middle}
+.matrix td{border:0;padding:.08em .38em;text-align:center;font-size:.86em;background:none}
+
+/* ---------------- visualisation ---------------- */
+.viz{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:14px;margin:16px 0}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+button{font:600 13.5px "Segoe UI",sans-serif;padding:8px 14px;border-radius:6px;
+       border:1px solid var(--cyan);background:var(--cyan);color:#fff;cursor:pointer}
+button:hover{filter:brightness(1.08)}
+button.ghost{background:#fff;color:var(--cyan)}
+button:disabled{opacity:.45;cursor:not-allowed}
+select{font:14px "Segoe UI";padding:7px 9px;border-radius:6px;border:1px solid var(--rule);background:#fff}
+svg{width:100%;height:auto;display:block;background:#fff;border-radius:6px;max-width:1040px;margin:0 auto}
+.status{font-size:15.5px;line-height:1.6;background:#EAF4FA;border-left:4px solid var(--cyan);
+        border-radius:6px;padding:12px 16px;margin-top:12px;min-height:48px;color:var(--navy)}
+.status b{color:var(--cyan)}
+.stepcount{font-size:12.5px;font-weight:700;color:var(--grey);letter-spacing:.03em;
+           margin-left:auto;padding-right:4px;white-space:nowrap}
+.stepcount em{font-style:normal;color:var(--cyan);font-size:14.5px}
+.viz.done .stepcount em{color:var(--green)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--grey);margin-top:9px;justify-content:center}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+</style>
+</head>
+<body class="quiet">
+<header><div class="wrap">
+  <div class="eyebrow">CSE276 &middot; Artificial Intelligence Foundations &middot; Unit V</div>
+  <h1>Generative and Responsible AI &mdash; Numericals</h1>
+  <p>Every formula this unit needs, what to do with it, and a worked example with the full arithmetic. Work the practice questions before revealing the answers.</p>
+</div></header>
+<nav><div class="wrap"><ul><li><a href="#softmax">1 &middot; Softmax &amp; entropy</a></li><li><a href="#cos">2 &middot; Cosine similarity</a></li><li><a href="#fair">3 &middot; Fairness metrics</a></li></ul></div></nav>
+<div class="fsheet"><div class="fshd">Formula sheet &mdash; everything this unit needs</div><table class="fst"><tr><td class="fsn">Softmax</td><td class="fsf"><span class="math"><i>p</i><sub><i>j</i></sub> = <span class="frac"><span class="num">exp<span class="paren">(</span><i>z</i><sub><i>j</i></sub> / <i>T</i><span class="paren">)</span></span><span class="den"><span class="bigop"><span class="lim">&nbsp;</span><span class="glyph">&#8721;</span><span class="lim"><i>k</i></span></span> exp<span class="paren">(</span><i>z</i><sub><i>k</i></sub> / <i>T</i><span class="paren">)</span></span></span></span></td><td class="fsw">low <i>T</i> sharpens, high <i>T</i> flattens</td></tr><tr><td class="fsn">Entropy</td><td class="fsf"><span class="math"><i>H</i> = &#8722;<span class="bigop"><span class="lim">&nbsp;</span><span class="glyph">&#8721;</span><span class="lim"><i>i</i></span></span>&nbsp;<i>p</i><sub><i>i</i></sub> log<sub>2</sub> <i>p</i><sub><i>i</i></sub></span></td><td class="fsw">0 = certain; log<sub>2</sub><i>N</i> = uniform</td></tr><tr><td class="fsn">Cosine similarity</td><td class="fsf"><span class="math">cos<span class="paren">(</span><i>a</i>, <i>b</i><span class="paren">)</span> = <span class="frac"><span class="num"><i>a</i>&#183;<i>b</i></span><span class="den"><span class="bar">&#8214;</span><i>a</i><span class="bar">&#8214;</span> <span class="bar">&#8214;</span><i>b</i><span class="bar">&#8214;</span></span></span></span></td><td class="fsw">angle only &mdash; length is ignored</td></tr><tr><td class="fsn">True positive rate</td><td class="fsf"><span class="math">TPR = <span class="frac"><span class="num"><span class="op">TP</span></span><span class="den"><span class="op">TP</span> + <span class="op">FN</span></span></span></span></td><td class="fsw">= recall = 1 &#8722; FNR</td></tr><tr><td class="fsn">False positive rate</td><td class="fsf"><span class="math">FPR = <span class="frac"><span class="num"><span class="op">FP</span></span><span class="den"><span class="op">FP</span> + <span class="op">TN</span></span></span></span></td><td class="fsw">the rate at which the innocent are flagged</td></tr><tr><td class="fsn">Precision / PPV</td><td class="fsf"><span class="math">PPV = <span class="frac"><span class="num"><span class="op">TP</span></span><span class="den"><span class="op">TP</span> + <span class="op">FP</span></span></span></span></td><td class="fsw">equalising this across groups is <b>calibration</b></td></tr><tr><td class="fsn">Impossibility</td><td class="fsf"><span class="math">different base rates &#8658; cannot equalise PPV, FPR and FNR together</span></td><td class="fsw">you must choose which to equalise and defend it</td></tr></table></div>
+<section id="softmax"><div class="wrap"><h2><span class="num">1</span>Softmax, temperature and entropy</h2><p class="lede">How a language model turns scores into a choice &mdash; and how one dial changes its whole character.</p><div class="formula"><span class="flabel">Softmax and entropy</span><div class="math"><i>p</i><sub><i>j</i></sub> = <span class="frac"><span class="num">exp<span class="paren">(</span><i>z</i><sub><i>j</i></sub> / <i>T</i><span class="paren">)</span></span><span class="den"><span class="bigop"><span class="lim">&nbsp;</span><span class="glyph">&#8721;</span><span class="lim"><i>k</i></span></span>&nbsp;exp<span class="paren">(</span><i>z</i><sub><i>k</i></sub> / <i>T</i><span class="paren">)</span></span></span>,&nbsp;&nbsp;&nbsp;<i>H</i> = &#8722;<span class="bigop"><span class="lim">&nbsp;</span><span class="glyph">&#8721;</span><span class="lim"><i>i</i></span></span>&nbsp;<i>p</i><sub><i>i</i></sub> log<sub>2</sub> <i>p</i><sub><i>i</i></sub></div><small>Divide the logits by <i>T</i> <b>before</b> exponentiating. Entropy measures how undecided the result is: 0 bits means certain.</small></div><div class="meth"><div class="methd">The method &mdash; what to actually do</div><ol><li>Divide every logit by <i>T</i>.</li><li>Subtract the largest value from all of them (numerically safer, mathematically identical).</li><li>Exponentiate each.</li><li>Sum them, then divide each by the sum. <b>Check the result adds to 1.</b></li><li>For entropy: &#8722;<span class="bigop"><span class="lim">&nbsp;</span><span class="glyph">&#8721;</span><span class="lim">&nbsp;</span></span> <i>p</i> log<sub>2</sub> <i>p</i>. Use log<sub>2</sub><i>p</i> = ln <i>p</i> / ln 2.</li><li>Terms with <i>p</i> = 0 contribute 0.</li><li>Maximum entropy for <i>N</i> options is log<sub>2</sub> <i>N</i>.</li></ol></div><div class="ex"><div class="exhd">Worked example &mdash; the same logits at three temperatures</div><div class="exgiven">After “the cat sat on the&hellip;” the model outputs logits: mat 4.2, floor 3.1, chair 2.6, roof 1.4, banana &#8722;0.8.</div><ol class="exsteps"><li><div class="exb"><span class="exl">At <i>T</i> = 1, exponentiate</span><span class="exw"><i>e</i><sup>4.2</sup> = 66.69, <i>e</i><sup>3.1</sup> = 22.20, <i>e</i><sup>2.6</sup> = 13.46, <i>e</i><sup>1.4</sup> = 4.06, <i>e</i><sup>&#8722;0.8</sup> = 0.45</span></div></li><li><div class="exb"><span class="exl">Sum = 106.85, then divide</span><span class="exw">mat <span class="frac"><span class="num">66.69</span><span class="den">106.85</span></span> = <b>62.4%</b>, floor 20.8%, chair 12.6%, roof 3.8%, banana 0.4%</span></div></li><li><div class="exb"><span class="exl">Entropy at <i>T</i> = 1</span><span class="exw">&#8722;[0.624 log 0.624 + 0.208 log 0.208 + &hellip;] = <b>1.484 bits</b></span></div></li><li><div class="exb"><span class="exl">At <i>T</i> = 0.2, every logit is multiplied by 5 first</span><span class="exw">21.0, 15.5, 13.0, 7.0, &#8722;4.0 &#8594; gaps magnified &#8594; mat <b>99.6%</b>, entropy <b>0.043 bits</b></span></div></li><li><div class="exb"><span class="exl">At <i>T</i> = 2.0, every logit is halved</span><span class="exw">2.1, 1.55, 1.3, 0.7, &#8722;0.4 &#8594; mat <b>42.5%</b>, floor 24.5%, chair 19.1%, roof 10.5%, banana <b>3.5%</b></span></div></li><li><div class="exb"><span class="exl">Entropy at <i>T</i> = 2</span><span class="exw"><b>1.988 bits</b>, against a maximum of log<sub>2</sub> 5 = 2.322</span></div></li><li><div class="exb"><span class="exl">What never changed</span><span class="exw"><b>the logits</b> &mdash; the model's beliefs were identical in all three cases</span></div></li></ol><div class="exans"><b>62.4% &#8594; 99.6% &#8594; 42.5% for the same model.</b> At <i>T</i> = 0.2 the output is effectively deterministic; at <i>T</i> = 2.0 “banana” has a 1-in-29 chance of being emitted. Temperature belongs in every bug report.</div></div><div class="prac"><div class="prhd">Practice<button class="ghost pall" data-all="pr7">Show all answers</button></div><ol><li><div class="pq">Logits 3, 1, 0 at <i>T</i> = 1. Compute the softmax.</div><button class="ghost pbtn" data-ans="pr7-1">Show answer</button><div class="pa" id="pr7-1"><i>e</i><sup>3</sup> = 20.086, <i>e</i><sup>1</sup> = 2.718, <i>e</i><sup>0</sup> = 1.000; sum = 23.804. &#8594; <b>0.844</b>, <b>0.114</b>, <b>0.042</b>. They sum to 1.000 &#10003;</div></li><li><div class="pq">What is the entropy of a distribution that puts probability 1 on one option?</div><button class="ghost pbtn" data-ans="pr7-2">Show answer</button><div class="pa" id="pr7-2">&#8722;1 log<sub>2</sub>1 = &minus;1(0) = <b>0 bits</b>. Zero entropy means <b>no uncertainty at all</b> &mdash; the model will always emit the same token. This is what <i>T</i> &#8594; 0 approaches.</div></li><li><div class="pq">Why subtract the maximum logit before exponentiating?</div><button class="ghost pbtn" data-ans="pr7-3">Show answer</button><div class="pa" id="pr7-3">To avoid <b>numerical overflow</b>. With logits around 800, <i>e</i><sup>800</sup> exceeds the range of a floating-point number and becomes infinity. Subtracting the max makes the largest exponent 0, so <i>e</i><sup>0</sup> = 1 and everything else is smaller. The probabilities are <b>mathematically identical</b>, because the constant cancels between numerator and denominator.</div></li></ol></div></div></section>
+<section id="cos"><div class="wrap"><h2><span class="num">2</span>Cosine similarity and retrieval</h2><p class="lede">The arithmetic behind RAG: find the stored passages whose meaning is closest to the question.</p><div class="formula"><span class="flabel">Cosine similarity</span><div class="math">cos<span class="paren">(</span><i>a</i>, <i>b</i><span class="paren">)</span> = <span class="frac"><span class="num"><i>a</i>&#183;<i>b</i></span><span class="den"><span class="bar">&#8214;</span><i>a</i><span class="bar">&#8214;</span> <span class="bar">&#8214;</span><i>b</i><span class="bar">&#8214;</span></span></span> = <span class="frac"><span class="num"><span class="bigop"><span class="lim">&nbsp;</span><span class="glyph">&#8721;</span><span class="lim"><i>i</i></span></span><i>a</i><sub><i>i</i></sub><i>b</i><sub><i>i</i></sub></span><span class="den"><span class="sqrt"><span class="rad">&#8730;</span><span class="rand"><span class="bigop"><span class="lim">&nbsp;</span><span class="glyph">&#8721;</span><span class="lim"><i>i</i></span></span><i>a</i><sub><i>i</i></sub><sup>2</sup></span></span> <span class="sqrt"><span class="rad">&#8730;</span><span class="rand"><span class="bigop"><span class="lim">&nbsp;</span><span class="glyph">&#8721;</span><span class="lim"><i>i</i></span></span><i>b</i><sub><i>i</i></sub><sup>2</sup></span></span></span></span></div><small>Measures the <b>angle only</b>, so a long document and a short query can still match on topic. Range &#8722;1 to 1; for text embeddings, usually 0 to 1.</small></div><div class="meth"><div class="methd">The method &mdash; what to actually do</div><ol><li>Compute the dot product: multiply component by component and sum.</li><li>Compute each vector's magnitude: square the components, sum, square root.</li><li>Divide the dot product by the product of the two magnitudes.</li><li>Repeat for every stored vector.</li><li>Sort descending and keep the top <i>k</i>.</li><li>Sanity checks: cos = 1 means identical direction, 0 means orthogonal (unrelated).</li><li><b>Both vectors must come from the same embedding model</b>, or the comparison is meaningless.</li></ol></div><div class="ex"><div class="exhd">Worked example &mdash; retrieving the right passage</div><div class="exgiven">Query “Can I send this back?” embeds to <i>q</i> = (0.88, 0.20, 0.07). Two candidates: D2 “return window” = (0.86, 0.25, 0.10) and D5 “staff holidays” = (0.05, 0.10, 0.96).</div><ol class="exsteps"><li><div class="exb"><span class="exl">Dot product with D2</span><span class="exw">0.88(0.86) + 0.20(0.25) + 0.07(0.10) = 0.7568 + 0.0500 + 0.0070 = <b>0.8138</b></span></div></li><li><div class="exb"><span class="exl">Magnitude of <i>q</i></span><span class="exw"><span class="sqrt"><span class="rad">&#8730;</span><span class="rand">0.7744 + 0.0400 + 0.0049</span></span> = <span class="sqrt"><span class="rad">&#8730;</span><span class="rand">0.8193</span></span> = <b>0.9052</b></span></div></li><li><div class="exb"><span class="exl">Magnitude of D2</span><span class="exw"><span class="sqrt"><span class="rad">&#8730;</span><span class="rand">0.7396 + 0.0625 + 0.0100</span></span> = <span class="sqrt"><span class="rad">&#8730;</span><span class="rand">0.8121</span></span> = <b>0.9012</b></span></div></li><li><div class="exb"><span class="exl">Cosine with D2</span><span class="exw"><span class="frac"><span class="num">0.8138</span><span class="den">0.9052 &#215; 0.9012</span></span> = <span class="frac"><span class="num">0.8138</span><span class="den">0.8158</span></span> = <b>0.9977</b></span></div></li><li><div class="exb"><span class="exl">Dot product with D5</span><span class="exw">0.88(0.05) + 0.20(0.10) + 0.07(0.96) = 0.0440 + 0.0200 + 0.0672 = <b>0.1312</b></span></div></li><li><div class="exb"><span class="exl">Magnitude of D5</span><span class="exw"><span class="sqrt"><span class="rad">&#8730;</span><span class="rand">0.0025 + 0.0100 + 0.9216</span></span> = <b>0.9665</b></span></div></li><li><div class="exb"><span class="exl">Cosine with D5</span><span class="exw"><span class="frac"><span class="num">0.1312</span><span class="den">0.9052 &#215; 0.9665</span></span> = <span class="frac"><span class="num">0.1312</span><span class="den">0.8749</span></span> = <b>0.1500</b></span></div></li><li><div class="exb"><span class="exl">Note what made it work</span><span class="exw">the query shares <b>no words</b> with “return window” &mdash; keyword search would have returned nothing</span></div></li></ol><div class="exans"><b>0.9977 versus 0.1500.</b> The match is entirely on <b>meaning</b>, which is precisely what makes retrieval-augmented generation possible and what keyword search cannot do.</div></div><div class="prac"><div class="prhd">Practice<button class="ghost pall" data-all="pr8">Show all answers</button></div><ol><li><div class="pq">Compute cos between (1, 0) and (0, 1).</div><button class="ghost pbtn" data-ans="pr8-1">Show answer</button><div class="pa" id="pr8-1">Dot = 1(0) + 0(1) = <b>0</b>. Magnitudes both 1. cos = 0/1 = <b>0</b> &mdash; perfectly <b>orthogonal</b>, i.e. completely unrelated.</div></li><li><div class="pq">Compute cos between (3, 4) and (6, 8).</div><button class="ghost pbtn" data-ans="pr8-2">Show answer</button><div class="pa" id="pr8-2">Dot = 18 + 32 = 50. Magnitudes <span class="sqrt"><span class="rad">&#8730;</span><span class="rand">25</span></span> = 5 and <span class="sqrt"><span class="rad">&#8730;</span><span class="rand">100</span></span> = 10. cos = 50/50 = <b>1.000</b> &mdash; the second vector is just the first doubled, so the <b>direction is identical</b> and cosine ignores the length entirely.</div></li><li><div class="pq">You index your documents with embedding model X and query with model Y. What happens?</div><button class="ghost pbtn" data-ans="pr8-3">Show answer</button><div class="pa" id="pr8-3">The vectors live in <b>different spaces</b>, so the similarities are meaningless. <b>Nothing will error</b> &mdash; you simply get quietly irrelevant results, which is the dangerous part. Changing embedding model means <b>re-indexing the entire corpus</b>.</div></li></ol></div></div></section>
+<section id="fair"><div class="wrap"><h2><span class="num">3</span>Fairness metrics across groups</h2><p class="lede">The same confusion-matrix arithmetic, done <b>per group</b> &mdash; which is where aggregate metrics hide the problem.</p><div class="formula"><span class="flabel">Three rates, computed per group</span><div class="math">TPR = <span class="frac"><span class="num"><span class="op">TP</span></span><span class="den"><span class="op">TP</span>+<span class="op">FN</span></span></span>,&nbsp; FPR = <span class="frac"><span class="num"><span class="op">FP</span></span><span class="den"><span class="op">FP</span>+<span class="op">TN</span></span></span>,&nbsp; PPV = <span class="frac"><span class="num"><span class="op">TP</span></span><span class="den"><span class="op">TP</span>+<span class="op">FP</span></span></span></div><small>Equal <b>PPV</b> across groups is <b>calibration</b>. Equal <b>FPR and FNR</b> is <b>equalised odds</b>. With different base rates you cannot have both.</small></div><div class="meth"><div class="methd">The method &mdash; what to actually do</div><ol><li>Split the data by group and build a <b>separate</b> confusion matrix for each.</li><li>Compute accuracy, precision, TPR and FPR for each group independently.</li><li>Compare them side by side &mdash; never aggregate at this stage.</li><li>Compute the <b>ratio</b> of each metric between groups; a ratio far from 1 is the finding.</li><li>Check the base rates (positives / total) &mdash; if they differ, the impossibility result applies.</li><li>State which fairness criterion you are equalising, and why that one.</li><li>Report the per-group table, not just the gap.</li></ol></div><div class="ex"><div class="exhd">Worked example &mdash; a calibrated model that is still unfair</div><div class="exgiven">Two groups of 100. Group H has base rate 60% (60 genuinely positive); group L has 25%. <br><b>H:</b> TP=52, FP=7, FN=8, TN=33. &nbsp;<b>L:</b> TP=14, FP=2, FN=11, TN=73.</div><ol class="exsteps"><li><div class="exb"><span class="exl">Accuracy</span><span class="exw">H = <span class="frac"><span class="num">52 + 33</span><span class="den">100</span></span> = <b>0.850</b>; L = <span class="frac"><span class="num">14 + 73</span><span class="den">100</span></span> = <b>0.870</b> &#8594; near identical</span></div></li><li><div class="exb"><span class="exl">Precision (PPV)</span><span class="exw">H = <span class="frac"><span class="num">52</span><span class="den">59</span></span> = <b>0.881</b>; L = <span class="frac"><span class="num">14</span><span class="den">16</span></span> = <b>0.875</b> &#8594; the model is <b>calibrated</b></span></div></li><li><div class="exb"><span class="exl">So far it passes every usual check. Now FPR</span><span class="exw">H = <span class="frac"><span class="num">7</span><span class="den">40</span></span> = <b>0.175</b>; L = <span class="frac"><span class="num">2</span><span class="den">75</span></span> = <b>0.027</b></span></div></li><li><div class="exb"><span class="exl">The ratio</span><span class="exw"><span class="frac"><span class="num">0.175</span><span class="den">0.027</span></span> = <b>6.6&#215;</b> &mdash; an innocent person in group H is flagged six times more often</span></div></li><li><div class="exb"><span class="exl">And FNR</span><span class="exw">H = <span class="frac"><span class="num">8</span><span class="den">60</span></span> = <b>0.133</b>; L = <span class="frac"><span class="num">11</span><span class="den">25</span></span> = <b>0.440</b> &#8594; ratio <b>3.3&#215;</b></span></div></li><li><div class="exb"><span class="exl">Why this cannot be tuned away</span><span class="exw">with different base rates, equalising PPV <b>forces</b> FPR and FNR apart &mdash; Chouldechova's impossibility result</span></div></li></ol><div class="exans"><b>Equal accuracy, equal precision, yet 6.6&times; the false-positive rate for one group and 3.3&times; the miss rate for the other.</b> Both groups are harmed, in opposite ways, by a model that passes every aggregate check. The only honest response is to choose which error matters more and publish the per-group numbers.</div></div><div class="prac"><div class="prhd">Practice<button class="ghost pall" data-all="pr9">Show all answers</button></div><ol><li><div class="pq">Group A: TP=30, FP=20, FN=10, TN=40. Compute TPR, FPR and PPV.</div><button class="ghost pbtn" data-ans="pr9-1">Show answer</button><div class="pa" id="pr9-1">TPR = 30/(30+10) = <b>0.750</b>. FPR = 20/(20+40) = <b>0.333</b>. PPV = 30/(30+20) = <b>0.600</b>.</div></li><li><div class="pq">Group B has the same accuracy as group A but FPR 0.08 against A's 0.33. Is the model fair?</div><button class="ghost pbtn" data-ans="pr9-2">Show answer</button><div class="pa" id="pr9-2"><b>No.</b> Equal accuracy conceals a <b>4&times; difference</b> in how often innocent members of each group are wrongly flagged. Accuracy averages over both error types and both classes, so it can stay constant while the composition changes completely. Always report per-group FPR and FNR.</div></li><li><div class="pq">Why can a model not have equal precision, equal FPR and equal FNR across two groups with different base rates?</div><button class="ghost pbtn" data-ans="pr9-3">Show answer</button><div class="pa" id="pr9-3">Because the three are <b>algebraically linked</b> through the base rate: PPV can be written in terms of TPR, FPR and the base rate. Fix any two and the third is determined &mdash; so if the base rates differ, matching all three is impossible unless the classifier is perfect. This is a theorem, not an engineering shortfall.</div></li></ol></div></div></section>
+<footer><div class="wrap">CSE276 &middot; Artificial Intelligence Foundations &middot; Unit V &mdash; Generative and Responsible AI &mdash; Numericals &middot;
+School of Computer Science &amp; Engineering &middot; Session 2026&ndash;27</div></footer>
+<script>
+
+"use strict";
+var NS="http://www.w3.org/2000/svg";
+var C={navy:"#182B49",cyan:"#0096C7",purple:"#5C2D91",orange:"#ED771F",
+       green:"#107C41",red:"#B42318",grey:"#9AA7B5",rule:"#D8DFE8",ice:"#7EC5E2"};
+function el(p,n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);
+  p.appendChild(e);return e;}
+function clr(s){while(s.firstChild)s.removeChild(s.firstChild);}
+function line(s,A,B,col,w,dash){var l=el(s,"line",{x1:A.x,y1:A.y,x2:B.x,y2:B.y,
+  stroke:col,"stroke-width":w,"stroke-linecap":"round"});
+  if(dash)l.setAttribute("stroke-dasharray",dash);return l;}
+function dot(s,p,r,fill){return el(s,"circle",{cx:p.x,cy:p.y,r:r,fill:fill});}
+function nodeC(s,p,label,fill,r){r=r||17;
+  el(s,"circle",{cx:p.x,cy:p.y,r:r,fill:fill,stroke:"#fff","stroke-width":2.5});
+  var t=el(s,"text",{x:p.x,y:p.y+5,"text-anchor":"middle",fill:"#fff","font-size":"14",
+    "font-weight":"600","font-family":"Segoe UI,sans-serif"});t.textContent=label;}
+function txt(s,x,y,str,col,size,anchor,weight){
+  var t=el(s,"text",{x:x,y:y,"text-anchor":anchor||"middle",fill:col||C.navy,
+    "font-size":size||12,"font-weight":weight||"600","font-family":"Segoe UI,sans-serif"});
+  t.textContent=str;return t;}
+function box(s,x,y,w,h,fill,stroke,rx){return el(s,"rect",{x:x,y:y,width:w,height:h,
+  rx:rx===undefined?6:rx,fill:fill,stroke:stroke||"none","stroke-width":1.6});}
+function badge(s,A,B,str){var mx=(A.x+B.x)/2,my=(A.y+B.y)/2;
+  el(s,"circle",{cx:mx,cy:my,r:11,fill:"#fff",stroke:C.rule});
+  txt(s,mx,my+4,str,C.navy,12);}
+function arrow(s,A,B,col,w){
+  var dx=B.x-A.x,dy=B.y-A.y,L=Math.sqrt(dx*dx+dy*dy);if(!L)return;
+  var ux=dx/L,uy=dy/L,ex=B.x-ux*20,ey=B.y-uy*20;
+  el(s,"line",{x1:A.x+ux*20,y1:A.y+uy*20,x2:ex,y2:ey,stroke:col,"stroke-width":w||2.6,
+    "stroke-linecap":"round"});
+  var a=8;
+  el(s,"polygon",{points:[ex+","+ey,(ex-ux*a-uy*a*0.6)+","+(ey-uy*a+ux*a*0.6),
+    (ex-ux*a+uy*a*0.6)+","+(ey-uy*a-ux*a*0.6)].join(" "),fill:col});}
+
+/* ---- generic step player, wired to data-viz buttons ---- */
+var VIZ={};
+function register(id,build,render){
+  VIZ[id]={build:build,render:render,steps:[],i:0,timer:null};
+  resetViz(id);
+}
+function resetViz(id){var m=VIZ[id];if(!m)return;
+  m.steps=m.build();m.i=0;stopViz(id);drawViz(id);}
+function drawViz(id){var m=VIZ[id];
+  m.render(document.getElementById("svg-"+id),m.steps[m.i],m.i,m.steps);
+  var st=document.getElementById("st-"+id);
+  if(st)st.innerHTML=m.steps[m.i].msg||"";
+  syncViz(id);}
+/* keep the counter and the buttons honest about where we are */
+function syncViz(id){var m=VIZ[id],last=m.steps.length-1;
+  function btn(a){return document.querySelector(
+    'button[data-act="'+a+'"][data-viz="'+id+'"]');}
+  var b;
+  if((b=btn("step")))b.disabled=m.i>=last;
+  if((b=btn("back")))b.disabled=m.i<=0;
+  var sc=document.getElementById("sc-"+id);
+  if(sc)sc.innerHTML="step <em>"+m.i+"</em> of "+last;
+  var wrap=document.getElementById("wrap-"+id);
+  if(wrap){if(m.i>=last&&last>0)wrap.classList.add("done");
+           else wrap.classList.remove("done");}}
+function stepViz(id){var m=VIZ[id];
+  if(m.i<m.steps.length-1){m.i++;drawViz(id);}
+  if(m.i>=m.steps.length-1)stopViz(id);}
+/* step backwards, so a student can flip between before and after */
+function stepBackViz(id){var m=VIZ[id];
+  if(m.i>0){stopViz(id);m.i--;drawViz(id);}}
+function stopViz(id){var m=VIZ[id];if(m.timer){clearInterval(m.timer);m.timer=null;}
+  var b=document.querySelector('button[data-act="auto"][data-viz="'+id+'"]');
+  if(b)b.textContent="Auto-play";}
+/* ---- practice answers: reveal one, or all of a block ---- */
+document.addEventListener("click",function(e){
+  if(!e.target.closest)return;
+  var one=e.target.closest("button[data-ans]");
+  if(one){var p=document.getElementById(one.getAttribute("data-ans"));
+    if(p){var on=p.classList.toggle("on");
+      one.textContent=on?"Hide answer":"Show answer";}
+    return;}
+  var all=e.target.closest("button[data-all]");
+  if(all){var g=all.getAttribute("data-all"),
+      blk=all.closest(".prac"),show=all.textContent.indexOf("Show")===0;
+    blk.querySelectorAll(".pa").forEach(function(p){
+      p.classList.toggle("on",show);});
+    blk.querySelectorAll("button[data-ans]").forEach(function(b2){
+      b2.textContent=show?"Hide answer":"Show answer";});
+    all.textContent=show?"Hide all answers":"Show all answers";}
+});
+document.addEventListener("click",function(e){
+  var b=e.target.closest?e.target.closest("button[data-viz]"):null;if(!b)return;
+  var id=b.getAttribute("data-viz"),act=b.getAttribute("data-act"),m=VIZ[id];if(!m)return;
+  if(act==="step")stepViz(id);
+  else if(act==="back")stepBackViz(id);
+  else if(act==="reset")resetViz(id);
+  else if(act==="auto"){
+    if(m.timer){stopViz(id);return;}
+    if(m.i>=m.steps.length-1)resetViz(id);
+    b.textContent="Pause";
+    m.timer=setInterval(function(){if(m.i>=m.steps.length-1)stopViz(id);else stepViz(id);},950);
+  }});
+
+
+</script>
+</body>
+</html>

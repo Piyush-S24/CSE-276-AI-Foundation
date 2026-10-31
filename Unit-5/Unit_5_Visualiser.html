@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSE276 &middot; Artificial Intelligence Foundations Unit V &mdash; Generative and Responsible AI &mdash; Visual Walkthrough</title>
+<style>
+:root{--navy:#182B49;--navy2:#253E64;--cyan:#0096C7;--ice:#7EC5E2;--purple:#5C2D91;
+      --orange:#ED771F;--green:#107C41;--red:#B42318;--grey:#586476;--rule:#D8DFE8;
+      --bg:#F6F9FC;--card:#fff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--navy);
+     font:15px/1.65 "Segoe UI",system-ui,-apple-system,Arial,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+header{background:var(--navy);color:#fff;padding:28px 0 24px;border-bottom:4px solid var(--cyan)}
+header .eyebrow{color:var(--ice);font-size:12.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+header h1{margin:7px 0 6px;font-size:32px;font-weight:600;line-height:1.2}
+header p{margin:0;color:#C9D8E6;font-size:15.5px;max-width:860px}
+nav{background:var(--navy2);position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(24,43,73,.2)}
+nav ul{display:flex;flex-wrap:wrap;gap:2px;list-style:none;margin:0;padding:0}
+nav a{display:block;padding:11px 14px;color:#D8E6F2;text-decoration:none;font-size:13.5px;font-weight:600}
+nav a:hover{background:rgba(255,255,255,.13);color:#fff}
+section{padding:34px 0 12px;border-bottom:1px solid var(--rule)}
+h2{font-size:24px;margin:0 0 6px;font-weight:600}
+h2 .num{display:inline-block;background:var(--cyan);color:#fff;font-size:13px;
+        padding:3px 9px;border-radius:4px;margin-right:10px;vertical-align:3px}
+h3{font-size:17.5px;margin:24px 0 8px;font-weight:600;color:var(--navy)}
+.lede{color:var(--grey);font-size:15.5px;margin:0 0 16px;max-width:920px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.ex{border:1.5px solid #BFD9CB;border-left:5px solid var(--green);border-radius:9px;
+    background:#FBFEFC;margin:18px 0;padding:14px 18px 16px}
+.exhd{font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;
+      color:var(--green);margin-bottom:9px}
+.exgiven{font-size:14.5px;background:#fff;border:1px solid #DCE9E1;border-radius:6px;
+         padding:9px 13px;margin-bottom:12px}
+.exsteps{list-style:none;counter-reset:exs;margin:0;padding:0}
+.exsteps li{counter-increment:exs;display:grid;grid-template-columns:26px 1fr;gap:11px;
+            padding:7px 0;border-top:1px solid #E7F0EA;align-items:baseline}
+.exsteps li:first-child{border-top:0}
+.exsteps li::before{content:counter(exs);display:block;width:21px;height:21px;
+                    border-radius:50%;background:var(--green);color:#fff;font-size:11.5px;
+                    font-weight:700;text-align:center;line-height:21px}
+.exb{min-width:0}
+.exl{font-size:13.5px;color:var(--grey);display:block;margin-bottom:3px}
+.exw{font-size:15.5px;color:var(--navy);font-family:"Cambria Math",Cambria,Georgia,serif;
+     display:block;line-height:1.8}
+.exans{margin-top:12px;background:#E4F6EB;border-radius:6px;padding:10px 14px;
+       font-size:15px;color:var(--navy);font-weight:600}
+.exans b{color:var(--green)}
+@media(max-width:700px){.exsteps li{grid-template-columns:22px 1fr;gap:8px}}
+.why{border:1.5px solid #CBD9E6;border-radius:9px;margin:18px 0;overflow:hidden;
+     background:linear-gradient(180deg,#F4F9FD 0,#fff 54px)}
+.whyhd{font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;
+       color:var(--navy);padding:13px 18px 0}
+.whygrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#E3EAF1;
+         margin-top:12px;border-top:1px solid #E3EAF1}
+.wq{background:var(--card);padding:14px 17px 16px}
+.wq h5{margin:0 0 7px;font-size:12px;font-weight:700;letter-spacing:.03em}
+.wq p{margin:0;font-size:14px;line-height:1.62}
+.wq.w1 h5{color:var(--cyan)}
+.wq.w2 h5{color:var(--purple)}
+.wq.w3 h5{color:var(--orange)}
+.wq.w3{background:#FFFBF7}
+@media(max-width:900px){.whygrid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:15px 17px}
+.card h4{margin:0 0 7px;font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--cyan)}
+.card p{margin:0;font-size:14.5px}
+.take{background:#E4F6EB;border-left:5px solid var(--green);border-radius:6px;padding:12px 16px;margin:14px 0}
+.take b.hd{color:var(--green);text-transform:uppercase;font-size:12.5px;letter-spacing:.05em}
+.take b{color:var(--navy)}
+.warn{background:#FDEEEC;border-left:5px solid var(--orange);border-radius:6px;padding:12px 16px;margin:14px 0}
+.warn b.hd{color:var(--orange);text-transform:uppercase;font-size:12.5px;letter-spacing:.05em}
+.warn b{color:var(--navy)}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0}
+th,td{border:1px solid var(--rule);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:var(--navy);color:#fff;font-weight:600;font-size:13px}
+tbody tr:nth-child(even){background:#F2F7FB}
+td.hi{background:#FFF3E0;font-weight:700}
+code{background:#EEF3F8;padding:1px 5px;border-radius:4px;font-size:13.5px}
+footer{background:var(--navy);color:#9FB4CA;padding:22px 0;font-size:13.5px}
+
+/* ---------------- formula block ---------------- */
+.formula{background:#F3EEFB;border-left:5px solid var(--purple);border-radius:6px;
+         padding:14px 18px;margin:14px 0;overflow-x:auto}
+.formula .flabel{display:block;font-size:11.5px;font-weight:700;letter-spacing:.05em;
+                 text-transform:uppercase;color:var(--purple);margin-bottom:9px}
+.formula small{display:block;font:13.5px/1.55 "Segoe UI",sans-serif;color:var(--grey);margin-top:10px}
+
+/* ---------------- real maths ---------------- */
+.math{font-family:"Cambria Math",Cambria,"Times New Roman",Georgia,serif;
+      font-size:20px;line-height:2.1;color:var(--navy);white-space:nowrap}
+.math i,.math .var{font-style:italic;font-family:inherit}
+.math .op{font-style:normal;padding:0 .22em}
+.math b.vecb{font-weight:700;font-style:normal}
+.math sub{font-size:.62em;vertical-align:-.3em}
+.math sup{font-size:.62em;vertical-align:.45em}
+.cases{display:inline-flex;align-items:center;vertical-align:middle;margin:0 .2em}
+.cases .cb{font-size:2.5em;font-weight:300;line-height:.86;margin-right:.14em}
+.cases table{border-collapse:collapse;margin:0;width:auto;box-shadow:none;font-size:.86em}
+.cases tbody tr,.cases tbody tr:nth-child(even){border:0;background:none}
+.cases td{border:0;padding:.14em .2em;background:none;white-space:nowrap;
+          line-height:1.5;vertical-align:middle}
+.cases td.cc{font-size:.8em;font-style:normal;color:var(--grey);padding-left:1.5em;
+             font-family:"Segoe UI",system-ui,sans-serif}
+.frac{display:inline-block;vertical-align:-.52em;text-align:center;margin:0 .26em}
+.frac .num{display:block;padding:0 .4em .12em;border-bottom:1.7px solid currentColor;line-height:1.22}
+.frac .den{display:block;padding:.12em .4em 0;line-height:1.22}
+.sqrt{display:inline-block;position:relative;margin:0 .15em}
+.sqrt .rad{font-size:1.12em;vertical-align:-.06em}
+.sqrt .rand{border-top:1.6px solid currentColor;padding:.1em .22em 0 .12em;margin-left:-.12em}
+.bigop{display:inline-block;text-align:center;vertical-align:-.5em;margin:0 .2em;line-height:1}
+.bigop .glyph{display:block;font-size:1.5em;line-height:.88}
+.bigop.int .glyph{font-size:1.75em}
+.bigop .lim{display:block;font-size:.5em;line-height:1.25;font-style:italic}
+.paren{font-size:1.18em;padding:0 .06em}
+.paren.big{font-size:1.5em;vertical-align:-.16em}
+.bar{padding:0 .09em}
+.hat{position:relative;display:inline-block;font-style:italic}
+.hat::after{content:"\0302";position:absolute;left:0;right:0;top:-.46em;
+            text-align:center;font-size:.72em;font-style:normal;line-height:1;
+            font-family:"Cambria Math",Cambria,serif}
+.matrix{display:inline-block;vertical-align:middle;margin:0 .18em}
+.matrix .mb{display:inline-block;font-size:2.1em;vertical-align:middle;font-weight:300}
+.matrix table{display:inline-table;width:auto;border:0;margin:0 .1em;vertical-align:middle}
+.matrix td{border:0;padding:.08em .38em;text-align:center;font-size:.86em;background:none}
+
+/* ---------------- visualisation ---------------- */
+.viz{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:14px;margin:16px 0}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+button{font:600 13.5px "Segoe UI",sans-serif;padding:8px 14px;border-radius:6px;
+       border:1px solid var(--cyan);background:var(--cyan);color:#fff;cursor:pointer}
+button:hover{filter:brightness(1.08)}
+button.ghost{background:#fff;color:var(--cyan)}
+button:disabled{opacity:.45;cursor:not-allowed}
+select{font:14px "Segoe UI";padding:7px 9px;border-radius:6px;border:1px solid var(--rule);background:#fff}
+svg{width:100%;height:auto;display:block;background:#fff;border-radius:6px;max-width:1040px;margin:0 auto}
+.status{font-size:15.5px;line-height:1.6;background:#EAF4FA;border-left:4px solid var(--cyan);
+        border-radius:6px;padding:12px 16px;margin-top:12px;min-height:48px;color:var(--navy)}
+.status b{color:var(--cyan)}
+.stepcount{font-size:12.5px;font-weight:700;color:var(--grey);letter-spacing:.03em;
+           margin-left:auto;padding-right:4px;white-space:nowrap}
+.stepcount em{font-style:normal;color:var(--cyan);font-size:14.5px}
+.viz.done .stepcount em{color:var(--green)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--grey);margin-top:9px;justify-content:center}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="eyebrow">CSE276 &middot; Artificial Intelligence Foundations &middot; Unit V</div>
+  <h1>Generative and Responsible AI &mdash; Visual Walkthrough</h1>
+  <p>What a language model is really doing when it writes, how to steer it, and why “is it accurate?” is not the same question as “is it fair?”. Drag the temperature, step the RAG pipeline, and watch a calibrated model fail two groups at once.</p>
+</div></header>
+<nav><div class="wrap"><ul><li><a href="#genai">1 &middot; How it works</a></li><li><a href="#prompt">2 &middot; Prompt engineering</a></li><li><a href="#rag">3 &middot; RAG</a></li><li><a href="#halluc">4 &middot; Hallucination</a></li><li><a href="#fairness">5 &middot; Fairness &amp; bias</a></li><li><a href="#responsible">6 &middot; Responsible AI</a></li></ul></div></nav>
+<section id="genai"><div class="wrap"><h2><span class="num">1</span>Generative AI and how it actually works</h2><p class="lede">A language model does exactly one thing: given the text so far, put a probability on every possible next token. Everything else &mdash; essays, code, conversation &mdash; is that one operation run in a loop.</p><div class="why"><div class="whyhd">Why this, and why not something else</div><div class="whygrid"><div class="wq w1"><h5>Why we do this</h5><p>Almost every misconception about language models dissolves once you see that they do exactly one thing: assign a probability to every possible next token, then pick one. Essays, code and conversation are all that single operation in a loop.</p></div><div class="wq w2"><h5>Why not just do the simpler thing?</h5><p><b>&ldquo;Why not have it look the answer up in a database?&rdquo;</b> That is a different system &mdash; a search engine &mdash; and it is what RAG bolts on precisely because the model has no such database. The model has <i>weights</i>, not records. <b>&ldquo;Why not make it always pick the most likely word?&rdquo;</b> You can, by setting temperature to 0 &mdash; and for factual answers you usually should. For anything creative it produces flat, repetitive text.</p></div><div class="wq w3"><h5>What goes wrong if you skip it</h5><p>You assume fluent means correct. The model has <b>no step at which it checks whether what it is about to say is true</b> &mdash; plausibility and truth are produced by the same mechanism, which is why a fabricated citation reads exactly like a real one.</p></div></div></div><div class="formula"><span class="flabel">Next-token prediction</span><div class="math"><i>P</i><span class="paren">(</span><i>t</i><sub><i>i</i></sub> | <i>t</i><sub>1</sub>, &hellip;, <i>t</i><sub><i>i</i>&#8722;1</sub><span class="paren">)</span> = <span class="op">softmax</span><span class="paren">(</span><span class="frac"><span class="num"><i>z</i></span><span class="den"><i>T</i></span></span><span class="paren">)</span>,&nbsp;&nbsp;&nbsp;<span class="op">softmax</span><sub><i>j</i></sub><span class="paren">(</span><i>z</i><span class="paren">)</span> = <span class="frac"><span class="num"><span class="op">exp</span><span class="paren">(</span><i>z</i><sub><i>j</i></sub><span class="paren">)</span></span><span class="den"><span class="bigop"><span class="lim">&nbsp;</span><span class="glyph">&#8721;</span><span class="lim"><i>k</i></span></span>&nbsp;<span class="op">exp</span><span class="paren">(</span><i>z</i><sub><i>k</i></sub><span class="paren">)</span></span></span></div><small>The model outputs a raw score (a <b>logit</b>) per token; softmax turns those into probabilities. The temperature <i>T</i> divides the logits before softmax and so controls how peaked the distribution is.</small></div><h3>The sentence so far: <i>&ldquo;the cat sat on the&hellip;&rdquo;</i></h3><p class="lede">Five candidate next tokens with their logits. Drag the temperature and watch the distribution change &mdash; the logits never move, only how sharply they are read.</p><div class="viz" id="wrap-temp"><svg id="svg-temp" viewBox="0 0 560 300"></svg><div class="controls" style="margin:10px 0 0;justify-content:center"><span style="font-weight:600">temperature T =</span><input id="tSlider" type="range" min="10" max="250" value="100" style="width:250px;vertical-align:middle"><span id="tVal" style="font-weight:700;color:var(--cyan)">1.00</span></div><div class="status" id="st-temp"></div></div><div class="warn"><b class="hd">What a language model is not</b><br>It has no database of facts to look things up in, and no step where it checks whether what it is about to say is true. It is producing the <b>statistically plausible continuation</b>. Most of the time the plausible continuation is also the correct one, because the training text was mostly correct &mdash; but those are two different properties, and when they come apart you get the next section.</div><div class="ex"><div class="exhd">Worked example &mdash; how temperature reshapes the same prediction</div><div class="exgiven">After “the cat sat on the&hellip;” the model outputs these raw logits: mat 4.2, floor 3.1, chair 2.6, roof 1.4, banana &#8722;0.8. Softmax turns them into probabilities after dividing by <i>T</i>.</div><ol class="exsteps"><li><div class="exb"><span class="exl">At <i>T</i> = 1 &mdash; exponentiate each logit</span><span class="exw"><i>e</i><sup>4.2</sup> = 66.69, &nbsp;<i>e</i><sup>3.1</sup> = 22.20, &nbsp;<i>e</i><sup>2.6</sup> = 13.46, &nbsp;<i>e</i><sup>1.4</sup> = 4.06, &nbsp;<i>e</i><sup>&#8722;0.8</sup> = 0.45</span></div></li><li><div class="exb"><span class="exl">Divide by the total (106.85)</span><span class="exw">mat <b>62.4%</b>, floor 20.8%, chair 12.6%, roof 3.8%, banana 0.4%</span></div></li><li><div class="exb"><span class="exl">Now set <i>T</i> = 0.2 &mdash; every logit is multiplied by 5 first</span><span class="exw">the gaps are magnified enormously &#8594; mat <b>99.6%</b>, floor 0.4%, everything else essentially 0</span></div></li><li><div class="exb"><span class="exl">And <i>T</i> = 2.0 &mdash; every logit is halved</span><span class="exw">the gaps shrink &#8594; mat <b>42.5%</b>, floor 24.5%, chair 19.1%, roof 10.5%, banana <b>3.5%</b></span></div></li><li><div class="exb"><span class="exl">Measure the uncertainty at each setting</span><span class="exw">entropy = 0.04 bits at <i>T</i>=0.2, &nbsp;1.48 at <i>T</i>=1, &nbsp;1.99 at <i>T</i>=2 (the maximum for 5 options is 2.32)</span></div></li><li><div class="exb"><span class="exl">Note what never changed</span><span class="exw"><b>the logits</b> &mdash; the model's actual beliefs were identical in all three cases</span></div></li></ol><div class="exans">At <i>T</i> = 0.2 the output is effectively deterministic; at <i>T</i> = 2.0 “banana” has a <b>1-in-29 chance</b> of being emitted. Same model, same prediction, entirely different behaviour &mdash; which is why temperature belongs in every bug report.</div></div></div></section>
+<section id="prompt"><div class="wrap"><h2><span class="num">2</span>Prompt engineering</h2><p class="lede">The model is fixed. The only thing you control is what goes into the context window &mdash; so that is where the engineering happens.</p><div class="why"><div class="whyhd">Why this, and why not something else</div><div class="whygrid"><div class="wq w1"><h5>Why we do this</h5><p>You cannot retrain the model, so the context window is the only thing you control. Everything the model knows about your task, your format and your constraints has to arrive in the prompt &mdash; which makes prompt design a real engineering surface, not a knack.</p></div><div class="wq w2"><h5>Why not just do the simpler thing?</h5><p><b>&ldquo;Why not fine-tune instead?&rdquo;</b> Fine-tuning needs data, compute and repetition every time the model updates; a prompt change takes seconds. Start with the prompt and escalate only when you can say exactly what it failed at. <b>&ldquo;Why not just ask clearly once?&rdquo;</b> For common tasks that is enough &mdash; few-shot and chain-of-thought exist for the cases where it is not.</p></div><div class="wq w3"><h5>What goes wrong if you skip it</h5><p>An underspecified prompt is filled in with <b>whatever was most common in training</b>. If you did not state the length, the format, the audience or what it must not do, you have not left those free &mdash; you have delegated them.</p></div></div></div><table><thead><tr><th>Technique</th><th>What you do</th><th>When it helps</th></tr></thead><tbody><tr><td><b>Zero-shot</b></td><td>just state the task clearly</td><td>the task is common and well specified</td></tr><tr><td><b>Few-shot</b></td><td>give two to five worked examples first</td><td>you need a specific output format or an unusual convention</td></tr><tr><td><b>Chain of thought</b></td><td>ask it to reason step by step before answering</td><td>arithmetic, logic, multi-step problems</td></tr><tr><td><b>Role / system prompt</b></td><td>set who the model is and what the rules are</td><td>controlling tone, scope and refusals consistently</td></tr><tr><td><b>Structured output</b></td><td>specify a schema and ask for JSON</td><td>anything a program will have to parse</td></tr><tr><td><b>Decomposition</b></td><td>split one hard request into several small ones</td><td>long tasks where a single prompt degrades</td></tr></tbody></table><h3>The same question, four prompts</h3><div class="viz" id="wrap-prompts"><svg id="svg-prompts" viewBox="0 0 560 320"></svg><div class="controls" style="margin:10px 0 0;justify-content:center;flex-wrap:wrap;gap:6px"><button class="ghost" data-pr="0">Zero-shot</button><button class="ghost" data-pr="1">Few-shot</button><button class="ghost" data-pr="2">Chain of thought</button><button class="ghost" data-pr="3">Role + structure</button></div><div class="status" id="st-prompts"></div></div><div class="take"><b class="hd">Be specific about the things you will be annoyed about</b><br>Most bad output comes from an underspecified prompt rather than a weak model. If you care about the length, the format, the audience or the things it must not do, say so &mdash; the model cannot infer a requirement you did not state, and it will fill the gap with whatever was most common in training.</div><div class="ex"><div class="exhd">Worked example &mdash; the same question, four ways</div><div class="exgiven">Task: classify the sentiment of the review “Does the job, nothing special.” Watch what each technique adds.</div><ol class="exsteps"><li><div class="exb"><span class="exl">Zero-shot &mdash; just ask</span><span class="exw">“Classify the sentiment of this review.” &#8594; <i>“The sentiment is fairly neutral, perhaps slightly positive.”</i> &mdash; correct, but a sentence, not a label, and the next call may phrase it differently</span></div></li><li><div class="exb"><span class="exl">Few-shot &mdash; pin the label set and the format</span><span class="exw">show three examples first: “Broke in a week” &#8594; NEG, “Arrived early” &#8594; POS, “Does the job” &#8594; NEU &nbsp;&#8594;&nbsp; output is now exactly <b>NEU</b></span></div></li><li><div class="exb"><span class="exl">Chain of thought &mdash; for a task needing reasoning</span><span class="exw">“A shop sells pens at &#8377;12. Raj buys 7 and pays with &#8377;100. Think step by step.” &#8594; <i>7 &#215; 12 = 84; 100 &#8722; 84 = 16</i> &#8594; <b>&#8377;16</b></span></div></li><li><div class="exb"><span class="exl">Why that helps</span><span class="exw">the model must emit the intermediate products, so a slip is <b>visible</b> instead of hidden inside a single guessed answer</span></div></li><li><div class="exb"><span class="exl">Role and structure &mdash; for anything a program will parse</span><span class="exw">“You are a careful reviewer. If unsure, say unclear. Reply as JSON: {label, confidence, reason}”</span></div></li><li><div class="exb"><span class="exl">What that last one buys</span><span class="exw">a parseable object <i>and</i> an explicit escape hatch &mdash; permitting “unclear” measurably reduces confident guessing</span></div></li></ol><div class="exans">Each technique fixes one specific failure: few-shot fixes <b>format drift</b>, chain-of-thought fixes <b>reasoning errors</b>, a schema fixes <b>parsing</b>, and allowing “unclear” fixes <b>forced answers</b>. Reach for the one that matches your failure.</div></div></div></section>
+<section id="rag"><div class="wrap"><h2><span class="num">3</span>Retrieval-Augmented Generation</h2><p class="lede">Instead of hoping the model memorised your documents, fetch the relevant ones at question time and put them in the prompt.</p><div class="why"><div class="whyhd">Why this, and why not something else</div><div class="whygrid"><div class="wq w1"><h5>Why we do this</h5><p>A model's knowledge is frozen at training time and contains nothing about your company, your documents or last week. RAG fixes that without retraining: fetch the relevant passages at question time and put them in the prompt, so the model answers <i>from them</i>.</p></div><div class="wq w2"><h5>Why not just do the simpler thing?</h5><p><b>&ldquo;Why not fine-tune on our documents?&rdquo;</b> Fine-tuning teaches style and format well but is a poor way to install facts &mdash; and every document change means retraining. Re-indexing takes minutes. <b>&ldquo;Why not paste all the documents into the prompt?&rdquo;</b> Context windows are finite and priced per token; retrieval exists to send only the few passages that matter.</p></div><div class="wq w3"><h5>What goes wrong if you skip it</h5><p>If retrieval returns the <b>wrong passage</b>, the model answers confidently from the wrong passage. Most production RAG failures are retrieval failures wearing a generation costume &mdash; which is why the evaluation effort belongs on the retriever.</p></div></div></div><h3>The pipeline, one stage at a time</h3><div class="viz" id="wrap-ragviz"><div class="controls"><button class="ghost" data-act="back" data-viz="ragviz">&#9664; Back</button><button data-act="step" data-viz="ragviz">Step &#9654;</button><button class="ghost" data-act="auto" data-viz="ragviz">Auto-play</button><button class="ghost" data-act="reset" data-viz="ragviz">Reset</button><span class="stepcount" id="sc-ragviz">step <em>0</em> of 0</span></div><svg id="svg-ragviz" viewBox="0 0 560 330"></svg><div class="status" id="st-ragviz"></div></div><div class="grid"><div><div class="grid"><div class="card"><h4>What RAG fixes</h4><p>The model can answer from documents it never saw in training; the knowledge is <b>current</b>, because you control the index; the answer can be <b>cited</b>, so a reader can check it; and updating knowledge means re-indexing, not re-training.</p></div></div></div><div><div class="grid"><div class="card"><h4>What RAG does not fix</h4><p>If retrieval returns the wrong passage, the model will answer confidently from the wrong passage. Garbage retrieved is garbage generated. Most production RAG failures are <b>retrieval</b> failures, not generation failures &mdash; so that is where the evaluation effort belongs.</p></div></div></div></div><div class="formula"><span class="flabel">Two pipelines, not one</span><div class="math"><span class="op">chunk</span> &#8594; <span class="op">embed</span> &#8594; <span class="op">index</span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span class="op">query</span> &#8594; <span class="op">embed</span> &#8594; <span class="op">top-k</span> &#8594; <span class="op">prompt</span> &#8594; <span class="op">generate</span></div><small>The left half runs once, offline, over your corpus. The right half runs per question. Chunk size is the parameter people most often get wrong: too small and a chunk loses its context, too large and the embedding becomes a blur of several topics.</small></div><div class="ex"><div class="exhd">Worked example &mdash; tracing one question through the pipeline</div><div class="exgiven">A support corpus of five chunks, already embedded. The question is <b>“Can I send this back after three weeks?”</b></div><ol class="exsteps"><li><div class="exb"><span class="exl">Offline, once &mdash; chunk and embed the corpus</span><span class="exw">five chunks: returns policy, refund window, shipping times, courier tracking, staff holidays &#8594; five vectors in an index</span></div></li><li><div class="exb"><span class="exl">At question time &mdash; embed the query with the <b>same</b> model</span><span class="exw">“Can I send this back&hellip;” &#8594; (0.88, 0.20, 0.07)</span></div></li><li><div class="exb"><span class="exl">Score every chunk by cosine similarity</span><span class="exw">refund window <b>0.998</b>, returns policy <b>0.996</b>, courier tracking 0.457, shipping times 0.378, staff holidays 0.150</span></div></li><li><div class="exb"><span class="exl">Take the top-2 and build the prompt</span><span class="exw">paste those two chunks above the question, with “answer only from the text below; if it is not there, say so”</span></div></li><li><div class="exb"><span class="exl">Generate, and cite</span><span class="exw">the answer quotes the 30-day window and names the chunk it came from</span></div></li><li><div class="exb"><span class="exl">Notice what made it work</span><span class="exw">the query shares <b>no words</b> with “refund window” &mdash; keyword search would have missed it entirely; the match was on <b>meaning</b></span></div></li></ol><div class="exans">Had retrieval returned <i>shipping times</i> instead, the model would have produced a fluent, confident answer about delivery. <b>Retrieval quality is the ceiling on the whole system</b>, and no amount of prompt tuning raises it.</div></div></div></section>
+<section id="halluc"><div class="wrap"><h2><span class="num">4</span>Hallucination and how to reduce it</h2><p class="lede">A hallucination is output that is fluent, confident and wrong. It is not a bug that can be patched out &mdash; it follows from what the model is doing.</p><div class="why"><div class="whyhd">Why this, and why not something else</div><div class="whygrid"><div class="wq w1"><h5>Why we do this</h5><p>Hallucination is not a bug that can be patched out &mdash; it follows directly from what the model does. It is trained to produce <b>likely</b> text, and a plausible-looking citation is high-probability output whether or not that paper exists. Understanding that is what tells you which mitigations can work.</p></div><div class="wq w2"><h5>Why not just do the simpler thing?</h5><p><b>&ldquo;Why not just tell it to be accurate?&rdquo;</b> Because it has no internal fact-checker to switch on &mdash; the instruction changes the style of the output more than its truth. <b>&ldquo;Why not use a bigger model?&rdquo;</b> Bigger models hallucinate less <i>and more convincingly</i>; scale reduces the rate without changing the mechanism.</p></div><div class="wq w3"><h5>What goes wrong if you skip it</h5><p>You put a model where a wrong answer is both <b>costly and unverifiable</b>. Every technique reduces the rate; none drives it to zero. If nobody downstream can check the answer, no amount of prompt engineering makes that placement safe.</p></div></div></div><div class="grid"><div class="card"><h4>Why it happens</h4><p>The model is trained to produce likely text, not true text. A plausible-sounding citation is high-probability output whether or not that paper exists.</p></div><div class="card"><h4>Why it sounds confident</h4><p>Fluency and accuracy are produced by the same mechanism, so there is no linguistic signal that distinguishes a correct answer from a fabricated one.</p></div><div class="card"><h4>Where it concentrates</h4><p>Specifics the model has weak coverage of: exact numbers, dates, citations, names, API signatures, and anything after the training cut-off.</p></div><div class="card"><h4>Why it gets worse under pressure</h4><p>Asked a question it cannot answer, a model trained to be helpful produces <i>something</i>. Explicitly permitting “I don't know” measurably reduces fabrication.</p></div></div><h3>Mitigations, weakest to strongest</h3><div class="viz" id="wrap-mitig"><svg id="svg-mitig" viewBox="0 0 560 300"></svg><div class="status" id="st-mitig"></div></div><div class="warn"><b class="hd">The one that matters most</b><br><b>Do not put a model where a wrong answer is costly and unverifiable.</b> Every technique above reduces the rate; none drives it to zero. The architectural decision &mdash; which tasks get a model at all, and where a human stays in the loop &mdash; does more for safety than any amount of prompt tuning.</div><div class="ex"><div class="exhd">Worked example &mdash; watching the mitigations stack up on one question</div><div class="exgiven">Question: “What is our refund window, and which policy says so?” The true answer is 30 days, stated in Policy&nbsp;R-14.</div><ol class="exsteps"><li><div class="exb"><span class="exl">Bare model, <i>T</i> = 1.0</span><span class="exw"><i>“Our refund window is 14 days, per Policy R-22.”</i> &mdash; fluent, specific, and <b>both figures invented</b></span></div></li><li><div class="exb"><span class="exl">Add “if you do not know, say so”</span><span class="exw"><i>“I do not have access to your specific policy.”</i> &mdash; no longer wrong, but no longer useful either</span></div></li><li><div class="exb"><span class="exl">Lower the temperature to 0.2</span><span class="exw">removes the sampling of unlikely tokens, so it stops inventing <i>varied</i> wrong answers &mdash; it still cannot know the right one</span></div></li><li><div class="exb"><span class="exl">Add retrieval, with the policy text in the prompt</span><span class="exw"><i>“The refund window is 30 days (Policy R-14).”</i> &mdash; correct, and <b>attributed</b></span></div></li><li><div class="exb"><span class="exl">Add programmatic verification</span><span class="exw">check that the quoted policy id appears in the retrieved chunk &#8594; a fabricated citation is now <b>caught automatically</b></span></div></li><li><div class="exb"><span class="exl">What is left for a human</span><span class="exw">only the cases where retrieval found nothing &mdash; a far smaller queue</span></div></li></ol><div class="exans">Prompt-level fixes moved it from <b>confidently wrong</b> to <b>honestly useless</b>. Only <b>grounding in retrieved text</b> made it right, and only <b>verification against something outside the model</b> made it checkable.</div></div></div></section>
+<section id="fairness"><div class="wrap"><h2><span class="num">5</span>Fairness, bias and transparency</h2><p class="lede">A model can be accurate, calibrated and still harm one group far more than another. Worse, some fairness definitions are <b>mathematically incompatible</b>, so you have to choose.</p><div class="why"><div class="whyhd">Why this, and why not something else</div><div class="whygrid"><div class="wq w1"><h5>Why we do this</h5><p>A model can pass every aggregate check and still harm one group far more than another. Worse, the obvious fairness definitions are <b>mathematically incompatible</b> when groups have different base rates &mdash; so this is not a bug to fix but a trade-off to choose and defend.</p></div><div class="wq w2"><h5>Why not just do the simpler thing?</h5><p><b>&ldquo;Why not just remove race and gender from the features?&rdquo;</b> Because the model reconstructs them from proxies &mdash; postcode, name, purchase history &mdash; so the disparity survives while becoming harder to detect. <b>&ldquo;Why not equalise everything?&rdquo;</b> You cannot: equalising precision forces the error rates apart, and equalising error rates forces precision apart.</p></div><div class="wq w3"><h5>What goes wrong if you skip it</h5><p>You check only the <b>aggregate</b> metrics. Accuracy and precision can be identical across two groups while one group's innocent members are flagged at six times the rate &mdash; and nothing in a standard evaluation report would show it.</p></div></div></div><table><thead><tr><th>Source of bias</th><th>How it gets in</th></tr></thead><tbody><tr><td><b>Historical</b></td><td>the data faithfully records a world that was already unequal</td></tr><tr><td><b>Representation</b></td><td>some groups are thinly represented, so the model fits them worse</td></tr><tr><td><b>Measurement</b></td><td>the label is a proxy &mdash; <i>arrested</i> standing in for <i>committed a crime</i> &mdash; and the proxy is itself biased</td></tr><tr><td><b>Aggregation</b></td><td>one model for groups that genuinely behave differently</td></tr><tr><td><b>Deployment</b></td><td>the model is used on a population or for a purpose it was never validated for</td></tr></tbody></table><h3>A calibrated model that is still unfair</h3><p class="lede">Two groups, 100 people each. The model has the same accuracy and the same precision for both &mdash; by the usual checks it passes. Look at the error rates.</p><div class="viz" id="wrap-fair"><div class="controls"><button class="ghost" data-act="back" data-viz="fair">&#9664; Back</button><button data-act="step" data-viz="fair">Step &#9654;</button><button class="ghost" data-act="auto" data-viz="fair">Auto-play</button><button class="ghost" data-act="reset" data-viz="fair">Reset</button><span class="stepcount" id="sc-fair">step <em>0</em> of 0</span></div><svg id="svg-fair" viewBox="0 0 560 340"></svg><div class="status" id="st-fair"></div></div><div class="formula"><span class="flabel">Three metrics you cannot satisfy at once</span><div class="math"><span class="op">FPR</span> = <span class="frac"><span class="num"><span class="op">FP</span></span><span class="den"><span class="op">FP</span> + <span class="op">TN</span></span></span>,&nbsp;&nbsp;&nbsp;<span class="op">FNR</span> = <span class="frac"><span class="num"><span class="op">FN</span></span><span class="den"><span class="op">FN</span> + <span class="op">TP</span></span></span>,&nbsp;&nbsp;&nbsp;<span class="op">PPV</span> = <span class="frac"><span class="num"><span class="op">TP</span></span><span class="den"><span class="op">TP</span> + <span class="op">FP</span></span></span></div><small><b>The impossibility result.</b> When two groups have different base rates, no classifier can equalise PPV, FPR and FNR at the same time unless it is perfect. Equalising one forces the others apart. There is no technical fix &mdash; you must decide which error matters more, and defend that choice.</small></div><div class="take"><b class="hd">Transparency is what makes the choice defensible</b><br>Since the trade-off cannot be avoided, what responsible practice requires is that it be <b>visible</b>: document the intended use, the populations tested, the metrics per group and the known failure modes. Model cards and datasheets exist for exactly this &mdash; not to make the model fair, but to make its unfairness legible to the people affected by it.</div><div class="ex"><div class="exhd">Worked example &mdash; a model that is calibrated and still unfair</div><div class="exgiven">Two groups of 100. Group H has a base rate of 60% (60 genuinely positive); Group L has 25%. The same model scores both. H: TP=52, FP=7, FN=8, TN=33. L: TP=14, FP=2, FN=11, TN=73.</div><ol class="exsteps"><li><div class="exb"><span class="exl">Accuracy</span><span class="exw">H = <span class="frac"><span class="num">52 + 33</span><span class="den">100</span></span> = <b>0.850</b>; &nbsp;L = <span class="frac"><span class="num">14 + 73</span><span class="den">100</span></span> = <b>0.870</b> &nbsp;&#8594;&nbsp; near identical</span></div></li><li><div class="exb"><span class="exl">Precision &mdash; does a flag mean the same thing for both?</span><span class="exw">H = <span class="frac"><span class="num">52</span><span class="den">59</span></span> = <b>0.881</b>; &nbsp;L = <span class="frac"><span class="num">14</span><span class="den">16</span></span> = <b>0.875</b> &nbsp;&#8594;&nbsp; the model is <b>calibrated</b></span></div></li><li><div class="exb"><span class="exl">So far it passes every usual check. Now the false positive rate</span><span class="exw">H = <span class="frac"><span class="num">7</span><span class="den">40</span></span> = <b>0.175</b>; &nbsp;L = <span class="frac"><span class="num">2</span><span class="den">75</span></span> = <b>0.027</b></span></div></li><li><div class="exb"><span class="exl">Express that as a ratio</span><span class="exw"><span class="frac"><span class="num">0.175</span><span class="den">0.027</span></span> = <b>6.6&#215;</b> &mdash; an innocent person in group H is flagged six times more often</span></div></li><li><div class="exb"><span class="exl">And the false negative rate</span><span class="exw">H = <span class="frac"><span class="num">8</span><span class="den">60</span></span> = 0.133; &nbsp;L = <span class="frac"><span class="num">11</span><span class="den">25</span></span> = 0.440 &#8594; a genuinely positive person in L is <b>3.3&#215;</b> more likely to be missed</span></div></li><li><div class="exb"><span class="exl">Why this cannot be fixed by tuning</span><span class="exw">with different base rates, equal precision <b>forces</b> unequal error rates &mdash; Chouldechova's impossibility result</span></div></li></ol><div class="exans"><b>Both groups are harmed, in opposite ways</b>, by a model that passes accuracy and precision checks. The only honest response is to choose which error matters more, say so publicly, and publish the per-group numbers.</div></div></div></section>
+<section id="responsible"><div class="wrap"><h2><span class="num">6</span>Responsible AI principles and governance</h2><p class="lede">Principles only matter when they are attached to a decision someone has to make.</p><div class="why"><div class="whyhd">Why this, and why not something else</div><div class="whygrid"><div class="wq w1"><h5>Why we do this</h5><p>Principles only matter when attached to a decision somebody has to make. The useful question is never “is this AI ethical?” in the abstract, but <b>what can go wrong here, to whom, and what have we put in place about it?</b></p></div><div class="wq w2"><h5>Why not just do the simpler thing?</h5><p><b>&ldquo;Why not apply the same controls everywhere?&rdquo;</b> Because a film recommender and a hiring filter carry utterly different risks, and uniform process means either strangling the harmless or under-governing the dangerous. <b>&ldquo;Why not leave it to the lawyers?&rdquo;</b> Because most of the decisions &mdash; what to optimise, what to log, where a human intervenes &mdash; are made at build time by engineers.</p></div><div class="wq w3"><h5>What goes wrong if you skip it</h5><p>Governance added at the end cannot reach the decisions that mattered. If nothing was logged you cannot audit; if there is no override path a human cannot intervene; if the training data was never documented you cannot answer who is in it.</p></div></div></div><table><thead><tr><th>Principle</th><th>The question it forces</th><th>What it looks like in practice</th></tr></thead><tbody><tr><td><b>Fairness</b></td><td>who is harmed, and how much more than others?</td><td>per-group metrics, not just the aggregate</td></tr><tr><td><b>Transparency</b></td><td>can an affected person find out why?</td><td>model cards, logged decisions, a stated appeal route</td></tr><tr><td><b>Accountability</b></td><td>who is answerable when it goes wrong?</td><td>a named owner; “the model decided” is not an answer</td></tr><tr><td><b>Privacy</b></td><td>whose data is in here and did they agree?</td><td>minimisation, consent, the right to erasure</td></tr><tr><td><b>Security</b></td><td>what happens if someone attacks it?</td><td>prompt-injection and data-poisoning testing</td></tr><tr><td><b>Safety</b></td><td>what is the worst plausible outcome?</td><td>red teaming, staged rollout, a kill switch</td></tr><tr><td><b>Human oversight</b></td><td>can a person intervene in time?</td><td>a real override, not a button nobody is trained to use</td></tr></tbody></table><h3>Risk decides how much governance you need</h3><div class="viz" id="wrap-risk"><svg id="svg-risk" viewBox="0 0 560 290"></svg><div class="status" id="st-risk"></div></div><div class="take"><b class="hd">Governance is proportionate, not uniform</b><br>A film recommender and a model that screens job applicants do not need the same controls. Regulation such as the EU AI Act is built on exactly this idea &mdash; obligations scale with the risk the application poses to people. The practical question is never “is this AI ethical?” in the abstract, but “what can go wrong here, to whom, and what have we put in place about it?”</div><div class="ex"><div class="exhd">Worked example &mdash; classifying four systems by risk, and what each then owes</div><div class="exgiven">The same organisation is deploying four AI systems. Obligations should scale with what can go wrong, and to whom.</div><ol class="exsteps"><li><div class="exb"><span class="exl">A spam filter for internal email</span><span class="exw">worst case: a message is delayed &#8594; <b>minimal risk</b> &#8594; no specific obligation beyond normal engineering care</span></div></li><li><div class="exb"><span class="exl">A chatbot on the public website</span><span class="exw">worst case: a user mistakes it for a person, or acts on a wrong answer &#8594; <b>limited risk</b> &#8594; must <b>disclose</b> that it is AI</span></div></li><li><div class="exb"><span class="exl">A CV-screening model for hiring</span><span class="exw">worst case: someone is quietly denied a career on a proxy for ethnicity &#8594; <b>high risk</b></span></div></li><li><div class="exb"><span class="exl">What that fourth one therefore owes</span><span class="exw">per-group metrics (not just aggregate), documented training data, logged decisions, a stated appeal route, a named accountable owner, and a <b>real</b> human override</span></div></li><li><div class="exb"><span class="exl">A system that scores employees on social-media behaviour</span><span class="exw">this is social scoring &#8594; <b>unacceptable</b> &#8594; do not build it</span></div></li><li><div class="exb"><span class="exl">The test that separates tier 3 from tier 1</span><span class="exw"><i>can this quietly and irreversibly cost a specific person something that matters?</i></span></div></li></ol><div class="exans">All four are “AI”. Only one needs the full apparatus, and one should not be built at all. <b>Proportionality is the whole design</b> &mdash; treating them alike would be both wasteful and unsafe.</div></div></div></section>
+<footer><div class="wrap">CSE276 &middot; Artificial Intelligence Foundations &middot; Unit V &mdash; Generative and Responsible AI &mdash; Visual Walkthrough &middot;
+School of Computer Science &amp; Engineering &middot; Session 2026&ndash;27</div></footer>
+<script>
+
+"use strict";
+var NS="http://www.w3.org/2000/svg";
+var C={navy:"#182B49",cyan:"#0096C7",purple:"#5C2D91",orange:"#ED771F",
+       green:"#107C41",red:"#B42318",grey:"#9AA7B5",rule:"#D8DFE8",ice:"#7EC5E2"};
+function el(p,n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);
+  p.appendChild(e);return e;}
+function clr(s){while(s.firstChild)s.removeChild(s.firstChild);}
+function line(s,A,B,col,w,dash){var l=el(s,"line",{x1:A.x,y1:A.y,x2:B.x,y2:B.y,
+  stroke:col,"stroke-width":w,"stroke-linecap":"round"});
+  if(dash)l.setAttribute("stroke-dasharray",dash);return l;}
+function dot(s,p,r,fill){return el(s,"circle",{cx:p.x,cy:p.y,r:r,fill:fill});}
+function nodeC(s,p,label,fill,r){r=r||17;
+  el(s,"circle",{cx:p.x,cy:p.y,r:r,fill:fill,stroke:"#fff","stroke-width":2.5});
+  var t=el(s,"text",{x:p.x,y:p.y+5,"text-anchor":"middle",fill:"#fff","font-size":"14",
+    "font-weight":"600","font-family":"Segoe UI,sans-serif"});t.textContent=label;}
+function txt(s,x,y,str,col,size,anchor,weight){
+  var t=el(s,"text",{x:x,y:y,"text-anchor":anchor||"middle",fill:col||C.navy,
+    "font-size":size||12,"font-weight":weight||"600","font-family":"Segoe UI,sans-serif"});
+  t.textContent=str;return t;}
+function box(s,x,y,w,h,fill,stroke,rx){return el(s,"rect",{x:x,y:y,width:w,height:h,
+  rx:rx===undefined?6:rx,fill:fill,stroke:stroke||"none","stroke-width":1.6});}
+function badge(s,A,B,str){var mx=(A.x+B.x)/2,my=(A.y+B.y)/2;
+  el(s,"circle",{cx:mx,cy:my,r:11,fill:"#fff",stroke:C.rule});
+  txt(s,mx,my+4,str,C.navy,12);}
+function arrow(s,A,B,col,w){
+  var dx=B.x-A.x,dy=B.y-A.y,L=Math.sqrt(dx*dx+dy*dy);if(!L)return;
+  var ux=dx/L,uy=dy/L,ex=B.x-ux*20,ey=B.y-uy*20;
+  el(s,"line",{x1:A.x+ux*20,y1:A.y+uy*20,x2:ex,y2:ey,stroke:col,"stroke-width":w||2.6,
+    "stroke-linecap":"round"});
+  var a=8;
+  el(s,"polygon",{points:[ex+","+ey,(ex-ux*a-uy*a*0.6)+","+(ey-uy*a+ux*a*0.6),
+    (ex-ux*a+uy*a*0.6)+","+(ey-uy*a-ux*a*0.6)].join(" "),fill:col});}
+
+/* ---- generic step player, wired to data-viz buttons ---- */
+var VIZ={};
+function register(id,build,render){
+  VIZ[id]={build:build,render:render,steps:[],i:0,timer:null};
+  resetViz(id);
+}
+function resetViz(id){var m=VIZ[id];if(!m)return;
+  m.steps=m.build();m.i=0;stopViz(id);drawViz(id);}
+function drawViz(id){var m=VIZ[id];
+  m.render(document.getElementById("svg-"+id),m.steps[m.i],m.i,m.steps);
+  var st=document.getElementById("st-"+id);
+  if(st)st.innerHTML=m.steps[m.i].msg||"";
+  syncViz(id);}
+/* keep the counter and the buttons honest about where we are */
+function syncViz(id){var m=VIZ[id],last=m.steps.length-1;
+  function btn(a){return document.querySelector(
+    'button[data-act="'+a+'"][data-viz="'+id+'"]');}
+  var b;
+  if((b=btn("step")))b.disabled=m.i>=last;
+  if((b=btn("back")))b.disabled=m.i<=0;
+  var sc=document.getElementById("sc-"+id);
+  if(sc)sc.innerHTML="step <em>"+m.i+"</em> of "+last;
+  var wrap=document.getElementById("wrap-"+id);
+  if(wrap){if(m.i>=last&&last>0)wrap.classList.add("done");
+           else wrap.classList.remove("done");}}
+function stepViz(id){var m=VIZ[id];
+  if(m.i<m.steps.length-1){m.i++;drawViz(id);}
+  if(m.i>=m.steps.length-1)stopViz(id);}
+/* step backwards, so a student can flip between before and after */
+function stepBackViz(id){var m=VIZ[id];
+  if(m.i>0){stopViz(id);m.i--;drawViz(id);}}
+function stopViz(id){var m=VIZ[id];if(m.timer){clearInterval(m.timer);m.timer=null;}
+  var b=document.querySelector('button[data-act="auto"][data-viz="'+id+'"]');
+  if(b)b.textContent="Auto-play";}
+document.addEventListener("click",function(e){
+  var b=e.target.closest?e.target.closest("button[data-viz]"):null;if(!b)return;
+  var id=b.getAttribute("data-viz"),act=b.getAttribute("data-act"),m=VIZ[id];if(!m)return;
+  if(act==="step")stepViz(id);
+  else if(act==="back")stepBackViz(id);
+  else if(act==="reset")resetViz(id);
+  else if(act==="auto"){
+    if(m.timer){stopViz(id);return;}
+    if(m.i>=m.steps.length-1)resetViz(id);
+    b.textContent="Pause";
+    m.timer=setInterval(function(){if(m.i>=m.steps.length-1)stopViz(id);else stepViz(id);},950);
+  }});
+
+
+/* ---------- temperature ---------- */
+(function(){
+  var TOK=["mat","floor","chair","roof","banana"],Z=[4.2,3.1,2.6,1.4,-0.8];
+  var sl=document.getElementById("tSlider"),lab=document.getElementById("tVal"),
+      svg=document.getElementById("svg-temp"),st=document.getElementById("st-temp");
+  function draw(){
+    var T=(+sl.value)/100;lab.textContent=T.toFixed(2);clr(svg);
+    var s=Z.map(function(z){return z/T;}),mx=Math.max.apply(null,s),
+        ex=s.map(function(z){return Math.exp(z-mx);}),
+        sum=ex.reduce(function(a,b){return a+b;},0),p=ex.map(function(e){return e/sum;});
+    var W=560,x0=120,bw=300;
+    txt(svg,x0+bw/2,22,"P(next token)",C.grey,11.5);
+    TOK.forEach(function(t,i){
+      var y=40+i*44;
+      txt(svg,x0-12,y+17,"\u201c"+t+"\u201d",C.navy,12,"end","600");
+      txt(svg,x0-12,y+31,"logit "+Z[i].toFixed(1),C.grey,9.5,"end","400");
+      box(svg,x0,y,bw,24,"#F0F2F5",null,5);
+      box(svg,x0,y,Math.max(2,bw*p[i]),24,i===0?C.cyan:C.purple,null,5);
+      txt(svg,x0+bw+10,y+17,(100*p[i]).toFixed(1)+"%",
+          p[i]>0.02?C.navy:C.grey,11.5,"start","700");});
+    var ent=-p.reduce(function(a,q){return a+(q>1e-12?q*Math.log2(q):0);},0);
+    txt(svg,x0+bw/2,268,"entropy = "+ent.toFixed(3)+" bits  (0 = always the same word, "+
+        Math.log2(5).toFixed(2)+" = uniform)",C.grey,10.5,"middle","500");
+    st.innerHTML="At <b>T = "+T.toFixed(2)+"</b> the top token takes <b>"+
+      (100*p[0]).toFixed(1)+"%</b> of the mass. "+
+      (T<0.4?"Low temperature \u2014 nearly deterministic. Use this for factual answers, code and anything you want reproducible."
+       :T>1.6?"High temperature \u2014 the distribution is nearly flat, so even \u201cbanana\u201d has a real chance. Creative, and unreliable."
+       :"Around T = 1 the model samples roughly according to its own beliefs.")+
+      " The logits never changed \u2014 only how sharply they are read.";}
+  sl.addEventListener("input",draw);draw();
+})();
+/* ---------- prompt techniques ---------- */
+(function(){
+  var svg=document.getElementById("svg-prompts"),st=document.getElementById("st-prompts");
+  var P=[{n:"Zero-shot",c:C.grey,
+      pr:["Classify the sentiment of this review."],
+      out:["Positive"],
+      note:"Works, but you get whatever format it chooses, and it may differ next time."},
+     {n:"Few-shot",c:C.cyan,
+      pr:["\u201cBroke in a week\u201d \u2192 NEG","\u201cArrived early\u201d \u2192 POS",
+          "\u201cDoes the job\u201d \u2192 NEU","Now classify: \u2026"],
+      out:["NEU"],
+      note:"The examples pin down the label set and the format. This is the cheapest fix for inconsistent output."},
+     {n:"Chain of thought",c:C.purple,
+      pr:["A shop sells pens at \u20b912.","Raj buys 7 and pays with \u20b9100.",
+          "Think step by step, then answer."],
+      out:["7 \u00d7 12 = 84","100 \u2212 84 = 16","Answer: \u20b916"],
+      note:"Forcing the intermediate steps raises accuracy on arithmetic and logic sharply \u2014 and it lets you see where it went wrong."},
+     {n:"Role + structure",c:C.green,
+      pr:["You are a careful reviewer.","If unsure, say \u201cunclear\u201d.",
+          "Reply as JSON:","{label, confidence, reason}"],
+      out:["{\u201clabel\u201d:\u201cNEU\u201d,"," \u201cconfidence\u201d:0.62,",
+           " \u201creason\u201d:\u201c\u2026\u201d}"],
+      note:"A schema makes the output parseable, and permitting \u201cunclear\u201d gives it a way out other than guessing."}];
+  var cur=0;
+  function draw(){
+    var p=P[cur];clr(svg);var W=560;
+    txt(svg,150,24,"the prompt",C.grey,11);
+    box(svg,28,34,248,170,"#F7FAFC",p.c,6);
+    p.pr.forEach(function(l,i){txt(svg,42,58+i*22,l,C.navy,11,"start","500");});
+    arrow(svg,{x:284,y:118},{x:306,y:118},p.c,2.4);
+    txt(svg,420,24,"what comes back",C.grey,11);
+    box(svg,314,34,218,170,"#fff",C.rule,6);
+    p.out.forEach(function(l,i){txt(svg,330,62+i*22,l,p.c,12,"start","600");});
+    box(svg,28,216,504,62,"#F3EEFB",p.c,6);
+    txt(svg,280,238,p.n.toUpperCase(),p.c,11);
+    var words=p.note.split(" "),line="",ln=0;
+    words.forEach(function(w){ if((line+" "+w).length>74){
+        txt(svg,280,256+ln*16,line,C.navy,10.5,"middle","500");line=w;ln++;}
+      else line=line?line+" "+w:w;});
+    txt(svg,280,256+ln*16,line,C.navy,10.5,"middle","500");
+    st.innerHTML="<b>"+p.n+".</b> "+p.note;}
+  document.querySelectorAll("button[data-pr]").forEach(function(b){
+    b.addEventListener("click",function(){cur=+b.getAttribute("data-pr");
+      document.querySelectorAll("button[data-pr]").forEach(function(o){o.className="ghost";});
+      b.className="";draw();});});
+  draw();
+})();
+/* ---------- RAG pipeline ---------- */
+(function(){
+  var ST=[{t:"The corpus, offline",
+      d:"Split every document into chunks of a few hundred tokens. Chunk too small and a passage loses its context; too large and its embedding becomes a blur of several topics.",
+      hi:0},
+    {t:"Embed each chunk",
+      d:"An embedding model turns each chunk into a vector. Chunks about the same thing land near each other, whatever words they used.",hi:1},
+    {t:"Index the vectors",
+      d:"Store them in a vector database with an approximate-nearest-neighbour index, so search stays fast over millions of chunks.",hi:2},
+    {t:"A question arrives",
+      d:"\u201cCan I send this back after three weeks?\u201d \u2014 embedded by the same model, so it lands in the same space.",hi:3},
+    {t:"Retrieve the top-k",
+      d:"Take the k nearest chunks by cosine similarity. Here the returns-policy chunk and the refund chunk come back; the staff-holidays chunk does not.",hi:4},
+    {t:"Build the prompt",
+      d:"Those chunks are pasted into the prompt above the question, usually with an instruction to answer only from them and to say so if they do not contain the answer.",hi:5},
+    {t:"Generate, with citations",
+      d:"The model answers from the supplied text. Because you know which chunks went in, the answer can cite them \u2014 and a reader can check it.",hi:6},
+    {t:"Where it goes wrong",
+      d:"If retrieval had returned the shipping chunk instead, the model would have answered confidently about shipping. Retrieval quality is the ceiling on the whole system.",hi:7}];
+  function build(){return ST.map(function(s,i){
+    return{i:i,msg:"<b>"+s.t+".</b> "+s.d};});}
+  function render(svg,s){
+    clr(svg);var W=560;
+    var boxes=[["documents",40,54],["chunks",150,54],["vectors",260,54],
+               ["index",370,54],["question",40,170],["top-k",180,170],
+               ["prompt",300,170],["answer",430,170]];
+    boxes.forEach(function(b,i){
+      var on=s.i>=i||(s.i===7),cur=(s.i===i);
+      box(svg,b[1],b[2],100,42,cur?C.cyan:(on?"#E6F3FA":"#F2F5F9"),
+          cur?C.navy:C.rule,6);
+      txt(svg,b[1]+50,b[2]+26,b[0],cur?"#fff":(on?C.navy:"#AEB8C4"),11.5);});
+    [[0,1],[1,2],[2,3]].forEach(function(e){
+      arrow(svg,{x:boxes[e[0]][1]+100,y:75},{x:boxes[e[1]][1],y:75},"#CBD6E0",2);});
+    [[4,5],[5,6],[6,7]].forEach(function(e){
+      arrow(svg,{x:boxes[e[0]][1]+100,y:191},{x:boxes[e[1]][1],y:191},"#CBD6E0",2);});
+    arrow(svg,{x:420,y:96},{x:230,y:170},s.i>=4?C.purple:"#E0E6EC",2.2);
+    txt(svg,340,136,"search the index",s.i>=4?C.purple:C.grey,10,"middle","500");
+    txt(svg,245,36,"ONCE, OFFLINE",C.grey,10,"middle","700");
+    txt(svg,245,152,"PER QUESTION",C.purple,10,"middle","700");
+    /* retrieved chunks */
+    if(s.i>=4){
+      var docs=[["returns policy",0.998,1],["refund window",0.996,1],
+                ["shipping times",0.378,0],["staff holidays",0.150,0]];
+      docs.forEach(function(d,i){
+        var y=232+i*22,keep=d[2];
+        box(svg,150,y,180,19,keep?"#E4F6EB":"#F7FAFC",keep?C.green:C.rule,3);
+        txt(svg,160,y+14,d[0],keep?C.navy:"#AEB8C4",10,"start","600");
+        txt(svg,344,y+14,"cos "+d[1].toFixed(3),keep?C.green:C.grey,10,"start","600");
+        if(s.i===7&&i===2)txt(svg,406,y+14,"\u2190 if this came back instead",C.red,9.5,"start","700");});
+      txt(svg,240,226,"retrieved, ranked by similarity",C.grey,10,"middle","500");}}
+  register("ragviz",build,render);
+})();
+/* ---------- mitigation ladder ---------- */
+(function(){
+  var svg=document.getElementById("svg-mitig"),st=document.getElementById("st-mitig");
+  var M=[["Ask nicely (\u201cbe accurate\u201d)",12,C.red,"almost no effect on its own"],
+         ["Allow \u201cI don't know\u201d",34,C.orange,"removes the pressure to produce something"],
+         ["Lower the temperature",46,C.orange,"less sampling of unlikely tokens"],
+         ["Chain of thought",58,C.cyan,"intermediate steps are checkable"],
+         ["RAG with citations",80,C.green,"answer is tied to retrieved text"],
+         ["Programmatic verification",93,C.green,"run the code, check the figure, query the database"],
+         ["Human review",98,C.navy,"the only one that approaches zero"]];
+  var W=560,x0=212,bw=250;
+  txt(svg,x0+bw/2,20,"relative reduction in fabricated content (illustrative)",C.grey,10.5);
+  M.forEach(function(m,i){
+    var y=34+i*36;
+    txt(svg,x0-12,y+16,m[0],C.navy,10.5,"end","600");
+    box(svg,x0,y+3,bw,20,"#F0F2F5",null,5);
+    box(svg,x0,y+3,Math.max(4,bw*m[1]/100),20,m[2],null,5);
+    txt(svg,x0+bw+8,y+18,m[3],C.grey,9.5,"start","400");});
+  txt(svg,x0+bw/2,290,"cheap and weak at the top; expensive and strong at the bottom",
+      C.grey,10.5,"middle","500");
+  st.innerHTML="The bars are illustrative, not measured \u2014 what matters is the <b>ordering</b> "+
+    "and the shape. Prompt-level fixes help a little; grounding the answer in retrieved text "+
+    "helps a lot; and only <b>verification against something outside the model</b> \u2014 running "+
+    "the code, checking the database, asking a person \u2014 gets close to eliminating it.";
+})();
+/* ---------- fairness ---------- */
+(function(){
+  var H={TP:52,FP:7,FN:8,TN:33,P:60,N:40,name:"Group H",base:"60%"},
+      L={TP:14,FP:2,FN:11,TN:73,P:25,N:75,name:"Group L",base:"25%"};
+  function M(g){return{acc:(g.TP+g.TN)/100,prec:g.TP/(g.TP+g.FP),rec:g.TP/g.P,
+                       fpr:g.FP/g.N,fnr:g.FN/g.P,flag:(g.TP+g.FP)/100};}
+  function build(){
+    return [
+     {k:0,msg:"Two groups of 100. <b>Group H</b> has a base rate of 60% (60 of them are genuinely positive); <b>Group L</b> has 25%. The same model scores both."},
+     {k:1,msg:"<b>Accuracy:</b> "+M(H).acc.toFixed(2)+" vs "+M(L).acc.toFixed(2)+". Near enough identical \u2014 by this check the model is fair."},
+     {k:2,msg:"<b>Precision:</b> "+M(H).prec.toFixed(3)+" vs "+M(L).prec.toFixed(3)+". Also equal. The model is <b>calibrated</b>: a flag means the same thing for either group, which is the defence vendors usually offer."},
+     {k:3,msg:"<b>False positive rate:</b> "+M(H).fpr.toFixed(3)+" vs "+M(L).fpr.toFixed(3)+". An innocent person in Group H is <b>"+(M(H).fpr/M(L).fpr).toFixed(1)+"\u00d7</b> more likely to be wrongly flagged."},
+     {k:4,msg:"<b>False negative rate:</b> "+M(H).fnr.toFixed(3)+" vs "+M(L).fnr.toFixed(3)+". And a genuinely positive person in Group L is <b>"+(M(L).fnr/M(H).fnr).toFixed(1)+"\u00d7</b> more likely to be missed."},
+     {k:5,msg:"<b>Both groups are harmed, in opposite ways</b>, by a model that passes every aggregate check. This is not a bug in this particular model \u2014 with different base rates it is mathematically unavoidable. The only real question is which error you choose to equalise, and whether you say so out loud."}];}
+  function render(svg,s){
+    clr(svg);var W=560;
+    [[H,40],[L,300]].forEach(function(pair){
+      var g=pair[0],x0=pair[1];
+      txt(svg,x0+110,22,g.name+"  \u2014  base rate "+g.base,
+          g===H?C.purple:C.cyan,12);
+      var cw=106,ch=40;
+      [["TP",g.TP,0,0,C.green],["FN",g.FN,1,0,C.orange],
+       ["FP",g.FP,0,1,C.red],["TN",g.TN,1,1,C.cyan]].forEach(function(c){
+        var cx=x0+c[2]*cw,cy=34+c[3]*ch;
+        var hot=(s.k===3&&c[0]==="FP")||(s.k===4&&c[0]==="FN");
+        box(svg,cx,cy,cw-4,ch-4,hot?c[4]:"#F7FAFC",hot?"none":C.rule,4);
+        txt(svg,cx+cw/2-16,cy+25,c[1],hot?"#fff":C.navy,15);
+        txt(svg,cx+cw/2+24,cy+25,c[0],hot?"#fff":C.grey,10);});});
+    var rows=[["accuracy","acc",1],["precision","prec",2],
+              ["false positive rate","fpr",3],["false negative rate","fnr",4]];
+    txt(svg,180,142,"metric",C.grey,10.5,"end","700");
+    txt(svg,252,142,"Group H",C.purple,10.5,"middle","700");
+    txt(svg,352,142,"Group L",C.cyan,10.5,"middle","700");
+    txt(svg,452,142,"verdict",C.grey,10.5,"middle","700");
+    rows.forEach(function(r,i){
+      var y=166+i*30,on=s.k>=r[2],a=M(H)[r[1]],b=M(L)[r[1]];
+      var eq=Math.abs(a-b)<0.02;
+      box(svg,44,y-16,472,26,s.k===r[2]?"#FFF6E9":(i%2?"#F7FAFC":"#fff"),C.rule,4);
+      txt(svg,180,y+2,r[0],on?C.navy:"#C3CDD8",11,"end","600");
+      txt(svg,252,y+2,on?a.toFixed(3):"\u00b7",on?C.purple:"#C3CDD8",12,"middle","700");
+      txt(svg,352,y+2,on?b.toFixed(3):"\u00b7",on?C.cyan:"#C3CDD8",12,"middle","700");
+      txt(svg,452,y+2,on?(eq?"equal \u2713":((a>b?a/b:b/a).toFixed(1)+"\u00d7 gap")):"",
+          on?(eq?C.green:C.red):"#C3CDD8",11,"middle","700");});
+    if(s.k===5)txt(svg,280,300,"calibrated, accurate \u2014 and unfair to both groups at once",
+        C.red,12,"middle","700");}
+  register("fair",build,render);
+})();
+/* ---------- risk tiers ---------- */
+(function(){
+  var svg=document.getElementById("svg-risk"),st=document.getElementById("st-risk");
+  var R=[["Unacceptable","social scoring, covert manipulation","banned outright",C.red],
+         ["High risk","hiring, credit, medical, policing, education",
+          "conformity assessment, logging, human oversight, documentation",C.orange],
+         ["Limited risk","chatbots, deepfakes","disclose that it is AI",C.cyan],
+         ["Minimal risk","spam filters, recommenders, games","no specific obligation",C.green]];
+  var W=560,x0=40;
+  txt(svg,W/2,20,"obligations scale with what can go wrong",C.grey,11);
+  R.forEach(function(r,i){
+    var y=32+i*64,wd=480-i*0;
+    box(svg,x0,y,wd,56,"#fff",r[3],6);
+    box(svg,x0,y,6,56,r[3],null,0);
+    txt(svg,x0+18,y+20,r[0],r[3],12,"start","700");
+    txt(svg,x0+18,y+36,r[1],C.grey,10,"start","400");
+    txt(svg,x0+18,y+50,r[2],C.navy,10,"start","600");});
+  st.innerHTML="The useful question is never \u201cis this ethical?\u201d but <b>what can go "+
+    "wrong here, to whom, and what have we put in place about it?</b> A recommender and a "+
+    "hiring filter are both AI; only one of them can quietly cost someone a career.";
+})();
+
+</script>
+</body>
+</html>
